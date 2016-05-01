@@ -9,22 +9,22 @@
 <a href="http://shop.oreilly.com/product/0636920033752.do"><img src="async %26 performance/cover.jpg" width="75"></a>&nbsp;
 <a href="http://shop.oreilly.com/product/0636920033769.do"><img src="es6 %26 beyond/cover.jpg" width="75"></a>
 
-Не стесняйтесь вносить свой вклад в качество этого контента, отправляйте свои PR для улучшения фрагментов кода, пояснений и т.д. Исправление опечаток также приветствуется.
+Не стесняйтесь вносить свой вклад в улучшение качества материала данной серии книг, отправляйте свои PR для улучшения фрагментов кода, пояснений и т.д. Исправление опечаток также приветствуется.
 
-**Чтобы узнать больше о том, что послужило причиной для написания данной серии книг, ознакомьтесь с [Предисловием](preface.md).**
+**О том, что послужило причиной для написания данной серии книг, вы можете узнать из [Предисловия](preface.md).**
 
 ## Содержимое
 
 * Читать онлайн (бесплатно!): ["Начните и Совершенствуйтесь"](up & going/README.md#you-dont-know-js-up--going), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920039303.do) в бумажном варианте, электронная книга бесплатна!
-* Читать онлайн (бесплатно!): ["Scope & Closures"](scope & closures/README.md#you-dont-know-js-scope--closures), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920026327.do)
-* Читать онлайн (бесплатно!): ["this & Object Prototypes"](this & object prototypes/README.md#you-dont-know-js-this--object-prototypes), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033738.do)
-* Читать онлайн (бесплатно!): ["Types & Grammar"](types & grammar/README.md#you-dont-know-js-types--grammar), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033745.do)
-* Читать онлайн (бесплатно!): ["Async & Performance"](async & performance/README.md#you-dont-know-js-async--performance), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033752.do)
-* Читать онлайн (бесплатно!): ["ES6 & Beyond"](es6 & beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033769.do)
+* Читать онлайн (бесплатно!): ["Область Видимости и Замыкания"](scope & closures/README.md#you-dont-know-js-scope--closures), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920026327.do)
+* Читать онлайн (бесплатно!): ["This и Прототипы Объектов"](this & object prototypes/README.md#you-dont-know-js-this--object-prototypes), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033738.do)
+* Читать онлайн (бесплатно!): ["Типы и Синтаксис"](types & grammar/README.md#you-dont-know-js-types--grammar), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033745.do)
+* Читать онлайн (бесплатно!): ["Асинхронность и Производительность"](async & performance/README.md#you-dont-know-js-async--performance), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033752.do)
+* Читать онлайн (бесплатно!): ["ES6 и за его Пределами"](es6 & beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033769.do)
 
 ## Издательство
 
-Серия книг свободно распространяется для чтения, но редактируется, производится, и публикуется в издательстве O'Reilly.
+Серия книг свободно распространяется для чтения, но редактируется, производится, и публикуется в книжном издательстве O'Reilly.
 
 Если вам нравится содержание книг, и вы хотите поддержать развитие серии, пожалуйста, приобретите книги, как только они будут доступны для продажи, там, где вы обычно их покупаете. :)
 
@@ -58,4 +58,4 @@
 
 Автор материалов данной серии книг (c) 2013-2015 Kyle Simpson.
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />Данная работа лицензируется в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />Лицензируется в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
