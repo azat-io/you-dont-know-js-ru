@@ -1,102 +1,102 @@
-# You Don't Know JS: Up & Going
-# Chapter 1: Into Programming
+# Вы не знаете JS: Приступим!
+# Глава 1: В программировании
 
-Welcome to the *You Don't Know JS* (*YDKJS*) series.
+Добро пожаловать в серию книг *Вы не знаете JS* (*You don't know JS - YDKJS*).
 
-*Up & Going* is an introduction to several basic concepts of programming -- of course we lean toward JavaScript (often abbreviated JS) specifically -- and how to approach and understand the rest of the titles in this series. Especially if you're just getting into programming and/or JavaScript, this book will briefly explore what you need to get *up and going*.
+Книга *Приступим!* -- введение в некоторые базовые концепции программирования, конечно, с намеренным уклоном в JavaScript (часто сокращаемый до JS) и еще она о том как подступиться и понять оставшиеся книги серии. Эта книга кратко проанализирует  что именно вам нужно, чтобы *приступить*, особенно если вы только начинаете программировать, в том числе на JavaScript.
 
-This book starts off explaining the basic principles of programming at a very high level. It's mostly intended if you are starting *YDKJS* with little to no prior programming experience, and are looking to these books to help get you started along a path to understanding programming through the lens of JavaScript.
+Эта книга начинается с объяснения базовых принципов программирования на самом высоком уровне. Она в основном предназначена для тех из вас, кто начинает  *YDKJS* имея малый или не имея вовсе опыта в программировании и кто рассчитывает, что эти книги помогут встать на путь понимания программирования сквозь призму JavaScript.
 
-Chapter 1 should be approached as a quick overview of the things you'll want to learn more about and practice to get *into programming*. There are also many other fantastic programming introduction resources that can help you dig into these topics further, and I encourage you to learn from them in addition to this chapter.
+Главу 1 можно представить как быстрый обзор того, что вы захотели бы изучить и возможность попрактиковаться *в программировании*. Кроме того, есть много других фантастических ресурсов по основам программирования, которые могут помочь вам изучить во всех подробностях затрагиваемые темы и я призываю вас изучить их в дополнение к этой главе.
 
-Once you feel comfortable with general programming basics, Chapter 2 will help guide you to a familiarity with JavaScript's flavor of programming. Chapter 2 introduces what JavaScript is about, but again, it's not a comprehensive guide -- that's what the rest of the *YDKJS* books are for!
+Если вы хорошо знаете общие основы программирования, глава 2 подтолкнет вас к более близкому знакомству с духом программирования на JavaScript. Глава 2 знакомит с тем, что такое JavaScript, но, обращаю ваше внимание еще раз, это не подробное руководство -- это то, за что выступают остальные книги *YDKJS*!
 
-If you're already fairly comfortable with JavaScript, first check out Chapter 3 as a brief glimpse of what to expect from *YDKJS*, then jump right in!
+Если вы уже довольно комфортно чувствуете себя в JavaScript, сначала ознакомьтесь с главой 3 для беглого знакомства с тем, чего ожидать от *YDKJS*, а затем приступим!
 
-## Code
+## Код
 
-Let's start from the beginning.
+Начнем с начала.
 
-A program, often referred to as *source code* or just *code*, is a set of special instructions to tell the computer what tasks to perform. Usually code is saved in a text file, although with JavaScript you can also type code directly into a developer console in a browser, which we'll cover shortly.
+Программа, часто упоминаемая как *исходный код* или просто *код* -- это набор особых инструкций, сообщающих компьютеру какие задачи нужно сделать. Обычно код сохраняют в текстовый файл, хотя в случае JavaScript можно писать код прямо в консоли разработчика в браузере, чего мы кратко коснемся далее.
 
-The rules for valid format and combinations of instructions is called a *computer language*, sometimes referred to as its *syntax*, much the same as English tells you how to spell words and how to create valid sentences using words and punctuation.
+Правила допустимого формата и комбинаций операторов называются *язык программирования*, иногда их соотносят с его *синтаксисом*, аналогично  английскому языку, где правила говорят вам как произносить слова и как составлять правильные предложения используя слова и знаки препинания.
 
-### Statements
+### Операторы
 
-In a computer language, a group of words, numbers, and operators that performs a specific task is a *statement*. In JavaScript, a statement might look as follows:
-
-```js
-a = b * 2;
-```
-
-The characters `a` and `b` are called *variables* (see "Variables"), which are like simple boxes you can store any of your stuff in. In programs, variables hold values (like the number `42`) to be used by the program. Think of them as symbolic placeholders for the values themselves.
-
-By contrast, the `2` is just a value itself, called a *literal value*, because it stands alone without being stored in a variable.
-
-The `=` and `*` characters are *operators* (see "Operators") -- they perform actions with the values and variables such as assignment and mathematic multiplication.
-
-Most statements in JavaScript conclude with a semicolon (`;`) at the end.
-
-The statement `a = b * 2;` tells the computer, roughly, to get the current value stored in the variable `b`, multiply that value by `2`, then store the result back into another variable we call `a`.
-
-Programs are just collections of many such statements, which together describe all the steps that it takes to perform your program's purpose.
-
-### Expressions
-
-Statements are made up of one or more *expressions*. An expression is any reference to a variable or value, or a set of variable(s) and value(s) combined with operators.
-
-For example:
+В языке программирования группа слов, чисел и операций, которые выполняют определенную задачу, называются *оператором*. В JavaScript, оператор может выглядеть так:
 
 ```js
 a = b * 2;
 ```
 
-This statement has four expressions in it:
+Символы `a` и `b` называются *переменными* (см. "Переменные"), которые примерно как обычные коробки, в которых вы можете хранить что угодно. В программах переменные хранят значения (например, число `42`), используемые программой. Представляйте их как символьную подмену для самих значений.
 
-* `2` is a *literal value expression*
-* `b` is a *variable expression*, which means to retrieve its current value
-* `b * 2` is an *arithmetic expression*, which means to do the multiplication
-* `a = b * 2` is an *assignment expression*, which means to assign the result of the `b * 2` expression to the variable `a` (more on assignments later)
+В противоположность им, `2` -- это само значение, называемое *литеральным значением*, поскольку оно само по себе и не хранится в переменной.
 
-A general expression that stands alone is also called an *expression statement*, such as the following:
+Символы `=` и `*` -- это *операции* (см. "Операции") -- они выполняют действия со значениями и переменными, такие как присваивание и математическое умножение.
+
+Большинство операторов в JavaScript заканчиваются точкой с запятой (`;`).
+
+Оператор `a = b * 2;` сообщает компьютеру, грубо говоря, взять текущее значение из переменной `b`, умножить это значение на `2`, а затем сохранить результат в другую переменную, которую мы назвали `a`.
+
+Программы -- это всего лишь набор стольких операторов, сколько нужно для того, чтобы описать все шаги, необходимые для выполнения цели вашей программы.
+
+### Выражения
+
+Операторы состоят из одного или более *выражений*. Выражение -- это любая ссылка на переменную или значение или набор переменных и значений, объединенных операциями.
+
+Например:
+
+```js
+a = b * 2;
+```
+
+У этого оператора 4 выражения:
+
+* `2` -- это *выражение литерального значения*
+* `b` -- это *выражение переменной*, которое тут означает извлечение его текущего значения
+* `b * 2` -- это *арифметическое выражение*, в данном случае выполнение умножения
+* `a = b * 2` -- это *выражение присваивания*, в данном случае это присвоить результат выражения `b * 2` переменной `a` (подробнее о выражениях далее)
+
+Типичное выражение, которое является законченным, называется *оператор-выражение*, например, такое как это:
 
 ```js
 b * 2;
 ```
 
-This flavor of expression statement is not very common or useful, as generally it wouldn't have any effect on the running of the program -- it would retrieve the value of `b` and multiply it by `2`, but then wouldn't do anything with that result.
+Этот пример оператора-выражения не является типовым или полезным, и в целом не оказывает никакого эффекта на выполнение программы -- он всего лишь извлекает значение `b` и умножает его на `2`, но зачем ничего не делает с результатом.
 
-A more common expression statement is a *call expression* statement (see "Functions"), as the entire statement is the function call expression itself:
+Более распространенный оператор-выражение -- это *оператор-выражение вызова*  (см. "Функции"), поскольку весь оператор -- это выражение вызова функции:
 
 ```js
 alert( a );
 ```
 
-### Executing a Program
+### Выполнение программы
 
-How do those collections of programming statements tell the computer what to do? The program needs to be *executed*, also referred to as *running the program*.
+Так как же эти наборы программных операторов сообщают компьютеру что нужно делать? Программу нужно *выполнить*, также говорят *запуск программы*.
 
-Statements like `a = b * 2` are helpful for developers when reading and writing, but are not actually in a form the computer can directly understand. So a special utility on the computer (either an *interpreter* or a *compiler*) is used to translate the code you write into commands a computer can understand.
+Операторы, подобные `a = b * 2`, понятны для разработчиков как при чтении, так и записи, но фактически в такой форме они не понятны напрямую компьютеру. Поэтому используется специальная утилита в компьютере (либо *интерпретатор*, либо *компилятор*) для перевода кода, который вы пишете, в команды, понятные компьютеру.
 
-For some computer languages, this translation of commands is typically done from top to bottom, line by line, every time the program is run, which is usually called *interpreting* the code.
+В некоторых языках программирования перевод команд обычно выполняется сверху вниз, строка за строкой, каждый раз когда программа запускается, что обычно называется *интерпретацией* кода.
 
-For other languages, the translation is done ahead of time, called *compiling* the code, so when the program *runs* later, what's running is actually the already compiled computer instructions ready to go.
+В других языках, перевод, выполняемый заранее, называется *компиляцией* кода, поэтому когда позднее программа *запускается*, то, что запускается -- это по факту уже скомпилированные инструкции компьютера, готовые к выполнению.
 
-It's typically asserted that JavaScript is *interpreted*, because your JavaScript source code is processed each time it's run. But that's not entirely accurate. The JavaScript engine actually *compiles* the program on the fly and then immediately runs the compiled code.
+Обычно утверждают, что JavaScript -- *интерпретируемый*, так как ваш исходный код на JavaScript обрабатывается каждый раз, когда запускается. Но это не совсем точно. Среда исполнения JavaScript на самом деле *компилирует* программу на лету и затем сразу же запускает скомпилированный код.
 
-**Note:** For more information on JavaScript compiling, see the first two chapters of the *Scope & Closures* title of this series.
+**Примечание:** Подробнее о компиляции JavaScript смотрите в первых двух главах книги *Область действия и замыкания* этой серии.
 
-## Try It Yourself
+## Попробуйте сами
 
-This chapter is going to introduce each programming concept with simple snippets of code, all written in JavaScript (obviously!).
+Эта глава проиллюстрирует каждое понятие из программирования простыми примерами кода, полностью написанными на JavaScript (очевидно!).
 
-It cannot be emphasized enough: while you go through this chapter -- and you may need to spend the time to go over it several times -- you should practice each of these concepts by typing the code yourself. The easiest way to do that is to open up the developer tools console in your nearest browser (Firefox, Chrome, IE, etc.).
+Нельзя не отметить, что пока вы продвигаетесь по этой главе вам может понадобиться перечитать ее несколько раз и вам следует практиковаться в каждом из понятий набирая код самостоятельно. Простейший путь сделать это -- это открыть консоль в средствах разработки в ближайшем браузере (Firefox, Chrome, IE и т.п.).
 
-**Tip:** Typically, you can launch the developer console with a keyboard shortcut or from a menu item. For more detailed information about launching and using the console in your favorite browser, see "Mastering The Developer Tools Console" (http://blog.teamtreehouse.com/mastering-developer-tools-console). To type multiple lines into the console at once, use `<shift> + <enter>` to move to the next new line. Once you hit `<enter>` by itself, the console will run everything you've just typed.
+**Подсказка:** Обычно вы можете запустить консоль разработчика с помощью горячих клавиш или из меню. Подробнее о запуске и использовании консоли в вашем любимом браузере см. "Mastering The Developer Tools Console" (http://blog.teamtreehouse.com/mastering-developer-tools-console). Чтобы ввести несколько строк в консоли за раз, используйте `<shift> + <enter>` чтобы переместиться на новую строку. Как только вы просто нажмете `<enter>`, консоль выполнит всё, что вы написали.
 
-Let's get familiar with the process of running code in the console. First, I suggest opening up an empty tab in your browser. I prefer to do this by typing `about:blank` into the address bar. Then, make sure your developer console is open, as we just mentioned.
+Давайте познакомимся с процессом запуска кода в консоли. Сперва я предлагаю открыть пустую вкладку в браузере. Я предпочитаю делать это набирая `about:blank` в адресной строке. Затем убедитесь, что ваша консоль разработчика, о которой мы только что упоминали, открылась.
 
-Now, type this code and see how it runs:
+Теперь наберите этот код и посмотрите как он выполняется:
 
 ```js
 a = 21;
@@ -106,39 +106,39 @@ b = a * 2;
 console.log( b );
 ```
 
-Typing the preceding code into the console in Chrome should produce something like the following:
+Набрав в консоли вышеуказанный код в браузере Chrome мы увидим что-то вроде этого:
 
 <img src="fig1.png" width="500">
 
-Go on, try it. The best way to learn programming is to start coding!
+Вперед, попробуйте! Наилучший путь обучения программированию -- это начать писать код!
 
-### Output
+### Вывод
 
-In the previous code snippet, we used `console.log(..)`. Briefly, let's look at what that line of code is all about.
+В предыдущем кусочке кода мы использовали`console.log(..)`. Давайте взглянем вкратце о чем же эта строка кода.
 
-You may have guessed, but that's exactly how we print text (aka *output* to the user) in the developer console. There are two characteristics of that statement that we should explain.
+Возможно вы это предполагали, но это и в самом деле то, как мы печатаем текст  (т.е. *вывод* для пользователя) в консоли разработчика. Есть две характеристики этого оператора, которые нам следует пояснить.
 
-First, the `log( b )` part is referred to as a function call (see "Functions"). What's happening is we're handing the `b` variable to that function, which asks it to take the value of `b` and print it to the console.
+Первая часть, `log( b )` указывает на вызов функции (см. "Функции"). Здесь получается, что мы передаем переменную `b` в эту функцию, которая берет значение `b` и печатает его в консоли.
 
-Second, the `console.` part is an object reference where the `log(..)` function is located. We cover objects and their properties in more detail in Chapter 2.
+Вторая часть, `console.` -- это ссылка на объект, где расположена функция  `log(..)`. Мы рассмотрим объекты и их свойства более детально в главе 2.
 
-Another way of creating output that you can see is to run an `alert(..)` statement. For example:
+Еще один путь вывести информацию -- запустить оператор `alert(..)`. Например:
 
 ```js
 alert( b );
 ```
 
-If you run that, you'll notice that instead of printing the output to the console, it shows a popup "OK" box with the contents of the `b` variable. However, using `console.log(..)` is generally going to make learning about coding and running your programs in the console easier than using `alert(..)`, because you can output many values at once without interrupting the browser interface.
+Если вы запустите этот оператор, то заметите, что вместо вывода значения в консоль он показывает всплывающее окно с кнопкой "OK" и содержимым переменной `b`. Однако использование `console.log(..)` обычно лучше помогает кодировать и запускать программы в консоли, чем использование `alert(..)`, потому что вы можете вывести несколько значений за раз без остановки в интерфейсе браузера.
 
-For this book, we'll use `console.log(..)` for output.
+В этой книге мы будем использовать для вывода `console.log(..)`.
 
-### Input
+### Ввод
 
-While we're discussing output, you may also wonder about *input* (i.e., receiving information from the user).
+Пока мы обсуждаем вывод, вы попутно могли задаться вопросом о *ввода* (т.е. о получении информации от пользователя).
 
-The most common way that happens is for the HTML page to show form elements (like text boxes) to a user that they can type into, and then using JS to read those values into your program's variables.
+Самый распространенный путь -- показать элементы формы на HTML-странице  (например, строки ввода) для пользователя, чтобы он мог вводить туда данные, а затем, используя JS, считать эти значения в переменные программы.
 
-But there's an easier way to get input for simple learning and demonstration purposes such as what you'll be doing throughout this book. Use the `prompt(..)` function:
+Но есть более простой путь получать входные данные в целях обучения и демонстрации, который вы будете использовать на протяжении всей этой книги. Используйте функцию `prompt(..)`:
 
 ```js
 age = prompt( "Please tell me your age:" );
@@ -146,40 +146,40 @@ age = prompt( "Please tell me your age:" );
 console.log( age );
 ```
 
-As you may have guessed, the message you pass to `prompt(..)` -- in this case, `"Please tell me your age:"` -- is printed into the popup.
+Как вы уже могли догадаться, сообщение, которое вы передаете в  `prompt(..)`, в данном случае `"Please tell me your age:"` ('"Пожалуйста сообщите мне свой возраст:"'), выводится во всплывающем окне.
 
-This should look similar to the following:
+Это может выглядеть примерно так:
 
 <img src="fig2.png" width="500">
 
-Once you submit the input text by clicking "OK," you'll observe that the value you typed is stored in the `age` variable, which we then *output* with `console.log(..)`:
+Как только вы подтвердите ввод текста щелкнув по "OK," вы заметите, что введенное значение теперь хранится в переменной `age`, которую мы затем  *выведем* с помощью `console.log(..)`:
 
 <img src="fig3.png" width="500">
 
-To keep things simple while we're learning basic programming concepts, the examples in this book will not require input. But now that you've seen how to use `prompt(..)`, if you want to challenge yourself you can try to use input in your explorations of the examples.
+Для упрощения, пока мы изучаем основные понятия программирования, примеры в этой книге не потребуют ввода. Зато теперь вы увидели как пользоваться `prompt(..)`. Если вы хотите проверить себя, то можете попробовать использовать ввод в порядке экспериментов с примерами.
 
-## Operators
+## Операции
 
-Operators are how we perform actions on variables and values. We've already seen two JavaScript operators, the `=` and the `*`.
+Операции -- это те действия, которые мы выполняем над переменными и значениями. Мы уже видели две операции JavaScript, `=` и `*`.
 
-The `*` operator performs mathematic multiplication. Simple enough, right?
+Операция `*` выполняет математическое умножение. Достаточно просто, не так ли?
 
-The `=` equals operator is used for *assignment* -- we first calculate the value on the *right-hand side* (source value) of the `=` and then put it into the variable that we specify on the *left-hand side* (target variable).
+Операция `=` используется для *присвоения* -- сначала мы вычисляем значение с *правой стороны* (исходное значение) от `=`, а затем записываем его в переменную, которую мы указываем с *левой стороны* (переменная назначения).
 
-**Warning:** This may seem like a strange reverse order to specify assignment. Instead of `a = 42`, some might prefer to flip the order so the source value is on the left and the target variable is on the right, like `42 -> a` (this is not valid JavaScript!). Unfortunately, the `a = 42` ordered form, and similar variations, is quite prevalent in modern programming languages. If it feels unnatural, just spend some time rehearsing that ordering in your mind to get accustomed to it.
+**Предупреждение:** Такой обратный порядок для присвоения может выглядеть немного странно. Вместо `a = 42` кто-то может предпочесть поменять порядок, чтобы исходное значение было слева, а переменная назначения -- справа, например `42 -> a` (это -- неправильный JavaScript!). К сожалению, форма `a = 42` и похожие на нее практически полностью превалируют в современных языках программирования. Если вам такой порядок присвоения кажется неестественным, потратьте некоторое время на привыкание к нему.
 
-Consider:
+Пример:
 
 ```js
 a = 2;
 b = a + 1;
 ```
 
-Here, we assign the `2` value to the `a` variable. Then, we get the value of the `a` variable (still `2`), add `1` to it resulting in the value `3`, then store that value in the `b` variable.
+Тут мы присваиваем значение `2` переменной `a`. Затем мы получаем значение переменной `a` (пока еще `2`), прибавляем к нему `1` получая в результате `3`, потом сохраняем это значение в переменной `b`.
 
-While not technically an operator, you'll need the keyword `var` in every program, as it's the primary way you *declare* (aka *create*) *var*iables (see "Variables").
+Хоть и не являющееся технически операцией, вам необходимо ключевое слово `var` в любой программе, поскольку это основной способ, с помощью которого вы *объявляете* (т.е. *создаете*) переменные (сокращение от *var*iables) (см. "Переменные").
 
-You should always declare the variable by name before you use it. But you only need to declare a variable once for each *scope* (see "Scope"); it can be used as many times after that as needed. For example:
+Вы всегда должны объявить переменную с именем до того, как начнете ее использовать. Но вам достаточно объявить переменную всего раз для каждой *области действия* (см. "Область действия"), а затем пользоваться ею столько раз, сколько нужно. Например:
 
 ```js
 var a = 20;
@@ -190,50 +190,50 @@ a = a * 2;
 console.log( a );	// 42
 ```
 
-Here are some of the most common operators in JavaScript:
+Вот несколько самых базовых операций в JavaScript:
 
-* Assignment: `=` as in `a = 2`.
-* Math: `+` (addition), `-` (subtraction), `*` (multiplication), and `/` (division), as in `a * 3`.
-* Compound Assignment: `+=`, `-=`, `*=`, and `/=` are compound operators that combine a math operation with assignment, as in `a += 2` (same as `a = a + 2`).
-* Increment/Decrement: `++` (increment), `--` (decrement), as in `a++` (similar to `a = a + 1`).
-* Object Property Access: `.` as in `console.log()`.
+* Присваивание: `=` как в `a = 2`.
+* Математические: `+` (сложение), `-` (вычитание), `*` (умножение) и  `/` (деление), как в `a * 3`.
+* Составное присваивание: `+=`, `-=`, `*=`, and `/=` -- это составные операции, которые объединяют математическую операцию с присваиванием, как в `a += 2` (эквивалентно `a = a + 2`).
+* Инкремент/Декремент: `++` (инкремент), `--` (декремент), как в `a++` (эквивалентно `a = a + 1`).
+* Доступ к свойству объекта: `.` как в `console.log()`.
 
-   Objects are values that hold other values at specific named locations called properties. `obj.a` means an object value called `obj` with a property of the name `a`. Properties can alternatively be accessed as `obj["a"]`. See Chapter 2.
-* Equality: `==` (loose-equals), `===` (strict-equals), `!=` (loose not-equals), `!==` (strict not-equals), as in `a == b`.
+   Объекты -- это значения, которые хранят другие значения под своими именами, называемые свойства. `obj.a` означает значение из объекта  `obj` из его свойства `a`. Еще один способ доступа к свойствам -- `obj["a"]`. См. главу 2.
+* Равенство: `==` (нестрогое), `===` (строгое), `!=` (нестрогое неравенство), `!==` (строгое неравенство), как в `a == b`.
 
-   See "Values & Types" and Chapter 2.
-* Comparison: `<` (less than), `>` (greater than), `<=` (less than or loose-equals), `>=` (greater than or loose-equals), as in `a <= b`.
+   См. "Значения и типы" и главу 2.
+* Сравнение: `<` (меньше чем), `>` (больше чем), `<=` (меньше или нестрого равно), `>=` (больше или нестрого равно), как в `a <= b`.
 
-   See "Values & Types" and Chapter 2.
-* Logical: `&&` (and), `||` (or), as in `a || b` that selects either `a` *or* `b`.
+   См. "Значения и типы" и главу 2.
+* Логические: `&&` (и), `||` (или), как в `a || b`, которое выбирает или `a`, *или* (*or*) `b`.
 
-   These operators are used to express compound conditionals (see "Conditionals"), like if either `a` *or* `b` is true.
+   Эти операции используются для создания составных условных конструкций (см. "Условные конструкции"), например: если либо `a` *либо (*or*)* `b` -- истина.
 
-**Note:** For much more detail, and coverage of operators not mentioned here, see the Mozilla Developer Network (MDN)'s "Expressions and Operators" (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators).
+**Примечание:** Для более детального рассмотрения и охвата операций, не рассмотренных здесь, см. the Mozilla Developer Network (MDN)'s "Expressions and Operators" (https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Expressions_and_Operators).
 
-## Values & Types
+## Значения и типы
 
-If you ask an employee at a phone store how much a certain phone costs, and they say "ninety-nine, ninety-nine" (i.e., $99.99), they're giving you an actual numeric dollar figure that represents what you'll need to pay (plus taxes) to buy it. If you want to buy two of those phones, you can easily do the mental math to double that value to get $199.98 for your base cost.
+Если вы спросите сотрудника в магазине сотовой связи сколько стоит определенный телефон и он ответит "девяносто девять, девяносто девять" (т.е., 99.99), таким образом он дает вам точную информацию о сумме денег, которую вам необходимо заплатить, чтобы купить его. Если вы хотите купить два таких телефона, вы легко сможете в уме удвоить стоимость, получив 199.98 в качестве общей стоимости.
 
-If that same employee picks up another similar phone but says it's "free" (perhaps with air quotes), they're not giving you a number, but instead another kind of representation of your expected cost ($0.00) -- the word "free."
+Если тот же сотрудник возьмет другой аналогичный телефон и скажет, что  он "бесплатный" (конечно, в кавычках), он не скажет вам сумму, но взамен предоставит другую форму представления ожидаемой стоимости (0.00) -- слово "бесплатный".
 
-When you later ask if the phone includes a charger, that answer could only have been either "yes" or "no."
+Если затем вы спросите включено ли в комплект поставки телефона зарядное устройство, то ответ может быть только "да" или "нет".
 
-In very similar ways, when you express values in a program, you choose different representations for those values based on what you plan to do with them.
+Весьма схожим образом, когда вы указываете значения в программе, вы выбираете разные представления для этих значений в зависимости от того, что вы планируете делать с ними.
 
-These different representations for values are called *types* in programming terminology. JavaScript has built-in types for each of these so called *primitive* values:
+Эти разнообразные представления для значений называются *типы* в терминологии программирования. В JavaScript есть встроенные типы для каждого из этих так называемых *примитивных* значений:
 
-* When you need to do math, you want a `number`.
-* When you need to print a value on the screen, you need a `string` (one or more characters, words, sentences).
-* When you need to make a decision in your program, you need a `boolean` (`true` or `false`).
+* когда вам нужно работать с математикой, вам нужно `число`.
+* когда вам нужно вывести значение на экран, вам нужна `строка` (один или несколько символов, слов, предложений).
+* когда вам нужно принять решение в своей программе, вам нужно  `логическое значение` (`true` (`истина`) или `false` (`ложь`)).
 
-Values that are included directly in the source code are called *literals*. `string` literals are surrounded by double quotes `"..."` or single quotes (`'...'`) -- the only difference is stylistic preference. `number` and `boolean` literals are just presented as is (i.e., `42`, `true`, etc.).
+Значения, непосредственно включаемые в исходный код, называются *литералы*. `строковые` литералы заключаются в двойные кавычки `"..."` или одинарные (`'...'`) -- единственная разница в них -- это ваши стилистические предпочтения. Литералы `числа` и `логического зачения` пишутся как есть (т.е., `42`, `true` и т.д.).
 
-Consider:
+Пример:
 
 ```js
-"I am a string";
-'I am also a string';
+"Я - строка";
+'Я - тоже строка';
 
 42;
 
@@ -241,13 +241,13 @@ true;
 false;
 ```
 
-Beyond `string`/`number`/`boolean` value types, it's common for programming languages to provide *arrays*, *objects*, *functions*, and more. We'll cover much more about values and types throughout this chapter and the next.
+Кроме типов значений `строка`/`число`/`логическое значение`, для языков программирования привычно предоставлять такие типы как  *массивы*, *объекты*, *функции* и многое другое. Мы рассмотрим детально значения и типы на протяжении этой и следующей глав.
 
-### Converting Between Types
+### Преобразование между типами
 
-If you have a `number` but need to print it on the screen, you need to convert the value to a `string`, and in JavaScript this conversion is called "coercion." Similarly, if someone enters a series of numeric characters into a form on an ecommerce page, that's a `string`, but if you need to then use that value to do math operations, you need to *coerce* it to a `number`.
+Если у вас есть `число`, но вам надо вывести его на экран, вам нужно преобразовать его значение в `строку` и в JavaScript такая конвертация называется "приведение (coercion)." Аналогично, если кто-то вводит серию цифр в форму на веб-странице, это `строка`, но если нужно потом использовать это значение для выполнения математических операций, то вам понадобится *приведение* его к `числу`.
 
-JavaScript provides several different facilities for forcibly coercing between *types*. For example:
+JavaScript предоставляет несколько различных возможностей принудительного приведения между *типами*. Например:
 
 ```js
 var a = "42";
@@ -257,97 +257,97 @@ console.log( a );	// "42"
 console.log( b );	// 42
 ```
 
-Using `Number(..)` (a built-in function) as shown is an *explicit* coercion from any other type to the `number` type. That should be pretty straightforward.
+Использование `Number(..)` (встроенная функция), как было показано выше, это *явное* приведение из любого другого типа в тип `число`. Это выглядит достаточно очевидно.
 
-But a controversial topic is what happens when you try to compare two values that are not already of the same type, which would require *implicit* coercion.
+Но каверзный вопрос заключается в том, что произойдет когда вы попытаетесь сравнить два значения разных типов, которые могут потребовать *неявного* приведения.
 
-When comparing the string `"99.99"` to the number `99.99`, most people would agree they are equivalent. But they're not exactly the same, are they? It's the same value in two different representations, two different *types*. You could say they're "loosely equal," couldn't you?
+При сравнении строки `"99.99"` с числом `99.99` многие согласятся, что они равны. Но они ведь не совсем одно и то же, не так ли? Это одно и то же значение в двух разных представлениях, двух разных *типов*. Вы могли бы сказать, что они "нестрого равны," разве нет?
 
-To help you out in these common situations, JavaScript will sometimes kick in and *implicitly* coerce values to the matching types.
+Чтобы помочь вам в таких стандартных ситуациях, JavaScript иногда вмешивается и *неявно* приводит значения к подходящим типам.
 
-So if you use the `==` loose equals operator to make the comparison `"99.99" == 99.99`, JavaScript will convert the left-hand side `"99.99"` to its `number` equivalent `99.99`. The comparison then becomes `99.99 == 99.99`, which is of course `true`.
+Поэтому если вы используете операцию нестрогого равенства `==` для сравнения `"99.99" == 99.99`, JavaScript преобразует с левой стороны `"99.99"` в его `числовой` эквивалент `99.99`. После этого сравнение превращается в `99.99 == 99.99`, которое конечно является `истинным`.
 
-While designed to help you, implicit coercion can create confusion if you haven't taken the time to learn the rules that govern its behavior. Most JS developers never have, so the common feeling is that implicit coercion is confusing and harms programs with unexpected bugs, and should thus be avoided. It's even sometimes called a flaw in the design of the language.
+Несмотря на то, что неявное приведение было задумано чтобы помочь вам, оно может привести в замешательство, если вы не уделили достаточно времени изучению правил, которые определяют его поведение.  У большинства JS-разработчиков никогда его нет, поэтому общее отношение выражается в том, что неявное приведение сбивает с толку и вредит программам внося непредвиденные ошибки и поэтому следует его избегать. Иногда его даже называют изъяном дизайна языка.
 
-However, implicit coercion is a mechanism that *can be learned*, and moreover *should be learned* by anyone wishing to take JavaScript programming seriously. Not only is it not confusing once you learn the rules, it can actually make your programs better! The effort is well worth it.
+Однако, неявное приведение -- это механизм, который *может быть изучен* и даже более того *должен быть изучен* любым, кто хочет серьезно заниматься программированием на JavaScript. Не только потому, что после изучения его правил оно не будет смущать вас, оно может в самом деле улучшить ваши программы! Усилия того стоят!
 
-**Note:** For more information on coercion, see Chapter 2 of this title and Chapter 4 of the *Types & Grammar* title of this series.
+**Примечание:** Для получения более подробной информации о приведении см. главу 2 этой книги и главу 4 книги *Типы и грамматика* этой серии.
 
-## Code Comments
+## Комментарии в коде
 
-The phone store employee might jot down some notes on the features of a newly released phone or on the new plans her company offers. These notes are only for the employee -- they're not for customers to read. Nevertheless, these notes help the employee do her job better by documenting the hows and whys of what she should tell customers.
+Сотрудник салона сотовой связи может набросать некоторые заметки о возможностях только что выпущенных телефонов или о новых тарифных планах, которые предлагает его компания. Эти заметки только для самого сотрудника -- они не предназначены для чтения покупателями. Тем ни менее эти заметки помогают сотруднику улучшить свою работу документируя все "как" и "почему" того, что ему следует рассказать покупателям.
 
-One of the most important lessons you can learn about writing code is that it's not just for the computer. Code is every bit as much, if not more, for the developer as it is for the compiler.
+Один из самых важных уроков, который вы можете получить о написании кода, то, что код -- не только для компьютера. Код для разработчика как каждый бит, если не больше, для компилятора.
 
-Your computer only cares about machine code, a series of binary 0s and 1s, that comes from *compilation*. There's a nearly infinite number of programs you could write that yield the same series of 0s and 1s. The choices you make about how to write your program matter -- not only to you, but to your other team members and even to your future self.
+Ваш компьютер заботится только о машинном коде, последовательности бинарных 0 и 1, которые появляются после *компиляции*. Есть почти бесконечное количество программ, которые вы могли бы написать и которые состоят из одинаковых последовательностей 0 и 1. Выбор, который вы делаете о том как написать программу, имеет значение не только для вас, но и для других членов вашей команды и даже для самого вашего будущего.
 
-You should strive not just to write programs that work correctly, but programs that make sense when examined. You can go a long way in that effort by choosing good names for your variables (see "Variables") and functions (see "Functions").
+Вы должны стремиться писать программы, которые не только правильно работают, но и понятны при их изучении. Вы можете пройти долгий путь в этом направлении, к примеру выбирая понятные имена для своих переменных (см. "Переменные") и функций (см. "Функции").
 
-But another important part is code comments. These are bits of text in your program that are inserted purely to explain things to a human. The interpreter/compiler will always ignore these comments.
+Но еще одна важная часть этого процесса -- это комментарии в коде. Это кусочки текста в вашей программе, которые вставляются именно для того, чтобы пояснить какие-то вещи для человека. Интерпретатор/компилятор всегда игнорирует эти комментарии.
 
-There are lots of opinions on what makes well-commented code; we can't really define absolute universal rules. But some observations and guidelines are quite useful:
+Есть масса мнений о том, что делает код хорошо документируемым, мы не можем на самом деле определить абсолютные и универсальные правила. Но некоторые соображения и рекомендации будут весьма полезны:
 
-* Code without comments is suboptimal.
-* Too many comments (one per line, for example) is probably a sign of poorly written code.
-* Comments should explain *why*, not *what*. They can optionally explain *how* if that's particularly confusing.
+* Код без комментариев не оптимален.
+* Слишком много комментариев (по одному на каждую строку кода, например) возможно являются признаком плохонаписанного кода.
+* Комментарии должны объяснять *почему*, а не *что*. Они могут дополнительно объяснять *как*, когда код особенно сложен.
 
-In JavaScript, there are two types of comments possible: a single-line comment and a multiline comment.
+В JavaScript есть два типа комментариев: однострочный комментарий и многострочный комментарий.
 
-Consider:
+Пример:
 
 ```js
-// This is a single-line comment
+// Это - однострочный комментарий
 
-/* But this is
-       a multiline
-             comment.
+/* А это
+       многострочный
+             комментарий.
                       */
 ```
 
-The `//` single-line comment is appropriate if you're going to put a comment right above a single statement, or even at the end of a line. Everything on the line after the `//` is treated as the comment (and thus ignored by the compiler), all the way to the end of the line. There's no restriction to what can appear inside a single-line comment.
+Однострочный комментарий `//` подходит если вы собираетесь разместить комментарий прямо над одиночным оператором или даже в конце строки. Всё что написано в строке после `//` интерпретируется как комментарий (и потому игнорируется компилятором) до самого конца строки. Нет никаких ограничений на то, что должно быть внутри однострочного комментария.
 
-Consider:
+Пример:
 
 ```js
-var a = 42;		// 42 is the meaning of life
+var a = 42;		// 42 - смысл жизни
 ```
 
-The `/* .. */` multiline comment is appropriate if you have several lines worth of explanation to make in your comment.
+Многострочный комментарий `/* .. */` подходит в случае, если у вас есть несколько строк пояснений для вашего кода.
 
-Here's a common usage of multiline comments:
+Вот типичный пример использования многострочного комментария:
 
 ```js
-/* The following value is used because
-   it has been shown that it answers
-   every question in the universe. */
+/* Нижеприведенное значение используется, поскольку
+   выяснилось, что оно отвечает
+   на любой вопрос во вселенной. */
 var a = 42;
 ```
 
-It can also appear anywhere on a line, even in the middle of a line, because the `*/` ends it. For example:
+Он может появляться в любом месте строки, даже в середине строки, поскольку есть `*/`, обозначающий его окончание. Например:
 
 ```js
-var a = /* arbitrary value */ 42;
+var a = /* произвольное значение */ 42;
 
 console.log( a );	// 42
 ```
 
-The only thing that cannot appear inside a multiline comment is a `*/`, because that would be interpreted to end the comment.
+Единственное, что не может появляться в многострочном комментарии -- это `*/`, так как это будет означать конец комментария.
 
-You will definitely want to begin your learning of programming by starting off with the habit of commenting code. Throughout the rest of this chapter, you'll see I use comments to explain things, so do the same in your own practice. Trust me, everyone who reads your code will thank you!
+Вы несомненно захотите начать обучение программированию начав с привычки комментировать код. На всем протяжении оставшейся части этой главы вы увидите, что я использую комментарии, чтобы пояснить код, поэтому и вы делайте также в вашей собственной практике написания кода. Поверьте, все, кто будет читать ваш код, скажут вам спасибо!
 
-## Variables
+## Переменные
 
-Most useful programs need to track a value as it changes over the course of the program, undergoing different operations as called for by your program's intended tasks.
+Большинству программ нужно отслеживать то, как меняется значение на протяжении выполнения программы, проходя через различные операции, вызываемые для соответствующих задач вашей программы.
 
-The easiest way to go about that in your program is to assign a value to a symbolic container, called a *variable* -- so called because the value in this container can *vary* over time as needed.
+Самый простой путь сделать это в программе -- это присвоить значение символьному контейнеру, называемому *переменной*, называющейся так потому, что значение в этом контейнере может *меняться* с течением времени при необходимости.
 
-In some programming languages, you declare a variable (container) to hold a specific type of value, such as `number` or `string`. *Static typing*, otherwise known as *type enforcement*, is typically cited as a benefit for program correctness by preventing unintended value conversions.
+В некоторых языках программирования вы определяете переменную (контейнер) чтобы хранить определенный тип значения, такой как `число` или `строка`. *Статическая типизация*, также известная как  *контроль типов*, обычно упоминается как преимущество в корректности программы, предотвращая непредусмотренные преобразования значений.
 
-Other languages emphasize types for values instead of variables. *Weak typing*, otherwise known as *dynamic typing*, allows a variable to hold any type of value at any time. It's typically cited as a benefit for program flexibility by allowing a single variable to represent a value no matter what type form that value may take at any given moment in the program's logic flow.
+Другие языки выводят типы для значений вместо переменных. *Слабая типизация*, также известная как *динамическая типизация*, позволяет переменной хранить значения любого типа в любое время. Это обычно упоминается как преимущество в гибкости программы позволяя одной переменной представлять значение вне зависимости от того, в форме какого типа это значение может понадобиться в любой момент выполнения программы.
 
-JavaScript uses the latter approach, *dynamic typing*, meaning variables can hold values of any *type* without any *type* enforcement.
+JavaScript использует второй подход, *динамическую типизацию*, что означает, что переменные могут хранить значения любого *типа* без какого-либо контроля *типов*.
 
-As mentioned earlier, we declare a variable using the `var` statement -- notice there's no other *type* information in the declaration. Consider this simple program:
+Как уже упоминалось ранее, мы объявляем переменную используя оператор `var`, заметьте, что при этом нет больше никакой другой информации о *типе* в объявлении. Обратите внимание на эту простую программу:
 
 ```js
 var amount = 99.99;
@@ -356,33 +356,33 @@ amount = amount * 2;
 
 console.log( amount );		// 199.98
 
-// convert `amount` to a string, and
-// add "$" on the beginning
+// преобразует `amount` в строку и
+// добавляет "$" в начало
 amount = "$" + String( amount );
 
 console.log( amount );		// "$199.98"
 ```
 
-The `amount` variable starts out holding the number `99.99`, and then holds the `number` result of `amount * 2`, which is `199.98`.
+Переменная `amount` начинает свой жизненный цикл с хранения числа `99.99`, а затем хранит `числовой` результат `amount * 2`, который равен `199.98`.
 
-The first `console.log(..)` command has to *implicitly* coerce that `number` value to a `string` to print it out.
+Первая команда `console.log(..)` должна *неявно* привести это `числовое` значение к `строке` чтобы вывести его в консоль.
 
-Then the statement `amount = "$" + String(amount)` *explicitly* coerces the `199.98` value to a `string` and adds a `"$"` character to the beginning. At this point, `amount` now holds the `string` value `"$199.98"`, so the second `console.log(..)` statement doesn't need to do any coercion to print it out.
+Затем оператор `amount = "$" + String(amount)` *явно* приводит значение `199.98` к `строке` и добавляет символ `"$"` в начало. С этого момента, `amount` хранит `строковое` значение `"$199.98"`, поэтому второму оператору `console.log(..)` не нужно выполнять никакого приведения чтобы вывести его в консоль.
 
-JavaScript developers will note the flexibility of using the `amount` variable for each of the `99.99`, `199.98`, and the `"$199.98"` values. Static-typing enthusiasts would prefer a separate variable like `amountStr` to hold the final `"$199.98"` representation of the value, because it's a different type.
+Разработчики на JavaScript отметят гибкость использования переменной  `amount` для каждого из значений `99.99`, `199.98` и `"$199.98"`. Энтузиасты статической типизации предпочтут отдельную переменную, например `amountStr`, чтобы хранить окончательное представление значения `"$199.98"`, поскольку оно уже будет другого типа.
 
-Either way, you'll note that `amount` holds a running value that changes over the course of the program, illustrating the primary purpose of variables: managing program *state*.
+В любом случае, вы заметите, что `amount` хранит текущее значение, которое меняется по ходу выполнения программы, иллюстрируя первичную цель переменных: управление *состоянием* программы.
 
-In other words, *state* is tracking the changes to values as your program runs.
+Другими словами, *состояние* отслеживает изменения значений при выполнении программы.
 
-Another common usage of variables is for centralizing value setting. This is more typically called *constants*, when you declare a variable with a value and intend for that value to *not change* throughout the program.
+Еще одно общеупотребительное использование переменных -- для централизации установки значений. Обычно это называется *константами*, когда вы объявляете переменную со значением и предполагаете, что это значение не будет меняться в течение работы программы.
 
-You declare these *constants*, often at the top of a program, so that it's convenient for you to have one place to go to alter a value if you need to. By convention, JavaScript variables as constants are usually capitalized, with underscores `_` between multiple words.
+Вы объявляете эти *константы*, чаще всего в начале программы, таким образом, чтобы для вас было удобно иметь всего одно место для того, чтобы поменять значение, если нужно. По соглашению, переменные в JavaScript, являющиеся константами, обычно пишутся большими буквами, с подчеркиваниями `_` между словами.
 
-Here's a silly example:
+Вот глупый пример:
 
 ```js
-var TAX_RATE = 0.08;	// 8% sales tax
+var TAX_RATE = 0.08;	// 8% налог с продаж
 
 var amount = 99.99;
 
@@ -394,14 +394,14 @@ console.log( amount );				// 215.9784
 console.log( amount.toFixed( 2 ) );	// "215.98"
 ```
 
-**Note:** Similar to how `console.log(..)` is a function `log(..)` accessed as an object property on the `console` value, `toFixed(..)` here is a function that can be accessed on `number` values. JavaScript `number`s aren't automatically formatted for dollars -- the engine doesn't know what your intent is and there's no type for currency. `toFixed(..)` lets us specify how many decimal places we'd like the `number` rounded to, and it produces the `string` as necessary.
+**Примечание:** Также как `console.log(..)` -- это функция `log(..)`, доступная как свойство объекта `console`, `toFixed(..)` здесь -- это функция, которая может быть доступна у `числовых` значений. `Число` в JavaScript не форматируется автоматически со знаком валюты -- среда выполнения не знает ваших намерений плюс к этому не существует типа для валюты. `toFixed(..)` позволяет нам указать до скольки знаков после запятой мы хотим округлить `число` и она возвращает `строку` при необходимости.
 
-The `TAX_RATE` variable is only *constant* by convention -- there's nothing special in this program that prevents it from being changed. But if the city raises the sales tax rate to 9%, we can still easily update our program by setting the `TAX_RATE` assigned value to `0.09` in one place, instead of finding many occurrences of the value `0.08` strewn throughout the program and updating all of them.
+Переменная `TAX_RATE` -- всего лишь *константа* по соглашению, в этой программе нет ничего, что могло бы предотвратить ее изменение. Но если ставка налога повысится до 9%, мы все еще можем легко обновить нашу программу установив присвоенное `TAX_RATE` значение в `0.09` всего в одном месте вместо поиска всех вхождений значения `0.08` разбросанных по программе и изменения их всех.
 
-The newest version of JavaScript at the time of this writing (commonly called "ES6") includes a new way to declare *constants*, by using `const` instead of `var`:
+Новейшая версия JavaScript на момент написания этих строк (обычно называемая "ES6") включает в себя новый способ объявления *констант*, используя `const` вместо `var`:
 
 ```js
-// as of ES6:
+// согласно ES6:
 const TAX_RATE = 0.08;
 
 var amount = 99.99;
@@ -409,64 +409,64 @@ var amount = 99.99;
 // ..
 ```
 
-Constants are useful just like variables with unchanged values, except that constants also prevent accidentally changing value somewhere else after the initial setting. If you tried to assign any different value to `TAX_RATE` after that first declaration, your program would reject the change (and in strict mode, fail with an error -- see "Strict Mode" in Chapter 2).
+Константы полезны также как и переменные с неизменяемыми значениями, за исключением того, что константы также предотвращают случайное изменение где-либо после начальной установки значения. Если вы попытаетесь присвоить любое значение в `TAX_RATE` после ее объявления, ваша программа отвергнет это изменение (а в строгом (strict) режиме, прервется с ошибкой, см. "Строгий режим" в главе 2).
 
-By the way, that kind of "protection" against mistakes is similar to the static-typing type enforcement, so you can see why static types in other languages can be attractive!
+Кстати, такой тип "защиты" против ошибок похож на контроль типов статической типизации, так что вы в какой-то степени поймете почему статические типы в других языках могут быть привлекательными!
 
-**Note:** For more information about how different values in variables can be used in your programs, see the *Types & Grammar* title of this series.
+**Примечание:** Для получения более подробной информации о том, как различные значения в переменных могут использоваться в программах, см. книгу *Типы и грамматика* этой серии.
 
-## Blocks
+## Блоки
 
-The phone store employee must go through a series of steps to complete the checkout as you buy your new phone.
+Сотрудник салона сотовой связи должен пройти последовательность шагов для завершения оформления покупки если вы покупаете новый телефон.
 
-Similarly, in code we often need to group a series of statements together, which we often call a *block*. In JavaScript, a block is defined by wrapping one or more statements inside a curly-brace pair `{ .. }`. Consider:
+Примерно также в коде нам часто нужно группировать последовательности операторов вместе, которые мы часто называем  *блоком*. В JavaScript блок определяется обрамлением одного или более операторов парой фигурных скобок `{ .. }`. Пример:
 
 ```js
 var amount = 99.99;
 
-// a general block
+// отдельный блок
 {
 	amount = amount * 2;
 	console.log( amount );	// 199.98
 }
 ```
 
-This kind of standalone `{ .. }` general block is valid, but isn't as commonly seen in JS programs. Typically, blocks are attached to some other control statement, such as an `if` statement (see "Conditionals") or a loop (see "Loops"). For example:
+Такой вид отдельного блока `{ .. }` вполне допустим, но не часто встречается в JS-программах. Обычно блоки присоединяются к другим управляющим операторам, таким как оператор `if` (см. "Условные операторы") или цикл (см. "Циклы"). Например:
 
 ```js
 var amount = 99.99;
 
-// is amount big enough?
-if (amount > 10) {			// <-- block attached to `if`
+// сумма достаточно велика?
+if (amount > 10) {			// <-- блок прикрепляется к `if`
 	amount = amount * 2;
 	console.log( amount );	// 199.98
 }
 ```
 
-We'll explain `if` statements in the next section, but as you can see, the `{ .. }` block with its two statements is attached to `if (amount > 10)`; the statements inside the block will only be processed if the conditional passes.
+Мы расскажем об операторе `if` в следующем разделе, но как вы видите блок `{ .. }` с двумя операторами присоединен к `if (amount > 10)`. Операторы внутри этого блока будут выполнены только при выполнении условия в условном операторе.
 
-**Note:** Unlike most other statements like `console.log(amount);`, a block statement does not need a semicolon (`;`) to conclude it.
+**Примечание:** В отличие от многих других операторов, таких как `console.log(amount);`, блоковый оператор не требует точки с запятой (`;`) в конце оператора.
 
-## Conditionals
+## Условные операторы
 
-"Do you want to add on the extra screen protectors to your purchase, for $9.99?" The helpful phone store employee has asked you to make a decision. And you may need to first consult the current *state* of your wallet or bank account to answer that question. But obviously, this is just a simple "yes or no" question.
+"Хотите ли вы добавить дополнительную защитную пленку в вашу покупку за $9.99?" Предупредительный сотрудник магазина попросил вас принять решение. И вам может сначала понадобиться проинспектировать текущее *состояние* вашего кошелька или банковского счета чтобы ответить на этот вопрос. Но, очевидно, что это всего лишь простой вопрос из разряда "да или нет".
 
-There are quite a few ways we can express *conditionals* (aka decisions) in our programs.
+Есть довольно много способов, которыми мы можем выразить *условные инструкции* (т.е. решения) в наших программах.
 
-The most common one is the `if` statement. Essentially, you're saying, "*If* this condition is true, do the following...". For example:
+Самый распространенный из них -- это оператор `if`. По сути, вы говорите, "*Если* (*if*) это условие истинно, сделать следующее...". Например:
 
 ```js
 var bank_balance = 302.13;
 var amount = 99.99;
 
 if (amount < bank_balance) {
-	console.log( "I want to buy this phone!" );
+	console.log( "Я хочу купить этот телефон" );
 }
 ```
 
-The `if` statement requires an expression in between the parentheses `( )` that can be treated as either `true` or `false`. In this program, we provided the expression `amount < bank_balance`, which indeed will either evaluate to `true` or `false` depending on the amount in the `bank_balance` variable.
+Оператор `if` требует выражение между скобками `( )`, которое может быть интерпретировано либо как `истина` (`true`), либо `ложь` (`false`). В этой программе мы написали выражение `amount < bank_balance`, которое конечно же будет вычислено как `true` или `false` в зависимости от количества в переменной `bank_balance`.
 
-You can even provide an alternative if the condition isn't true, called an `else` clause. Consider:
+Вы даже можете предоставить альтернативу если условие не будет истинным, называющуюся оператором `else`. Пример:
 
 ```js
 const ACCESSORY_PRICE = 9.99;
@@ -476,77 +476,77 @@ var amount = 99.99;
 
 amount = amount * 2;
 
-// can we afford the extra purchase?
+// может ли мы позволить себе дополнительную покупку?
 if ( amount < bank_balance ) {
-	console.log( "I'll take the accessory!" );
+	console.log( "Я возьму этот аксессуар!" );
 	amount = amount + ACCESSORY_PRICE;
 }
-// otherwise:
+// иначе:
 else {
-	console.log( "No, thanks." );
+	console.log( "Нет, спасибо." );
 }
 ```
 
-Here, if `amount < bank_balance` is `true`, we'll print out `"I'll take the accessory!"` and add the `9.99` to our `amount` variable. Otherwise, the `else` clause says we'll just politely respond with `"No, thanks."` and leave `amount` unchanged.
+Тут если `amount < bank_balance` `истинно`, мы выведем `"Я возьму этот аксессуар!"` и добавим `9.99` в нашу переменную `amount`. В противном случае, оператор `else` говорит, что мы вежливо ответим `"Нет, спасибо."` и оставим переменную `amount` без изменений.
 
-As we discussed in "Values & Types" earlier, values that aren't already of an expected type are often coerced to that type. The `if` statement expects a `boolean`, but if you pass it something that's not already `boolean`, coercion will occur.
+Как мы уже обсуждали ранее в "Значения и типы", значения, которые  не совпадают с ожидаемым типом, часто приводятся к этому типу. Оператор `if` ожидает `логическое значение`, но если вы передадите что-либо отличное от `логического значения`, произойдет приведение.
 
-JavaScript defines a list of specific values that are considered "falsy" because when coerced to a `boolean`, they become `false` -- these include values like `0` and `""`. Any other value not on the "falsy" list is automatically "truthy" -- when coerced to a `boolean` they become `true`. Truthy values include things like `99.99` and `"free"`. See "Truthy & Falsy" in Chapter 2 for more information.
+JavaScript определяет список особых значений, которые считаются "ложными", так как при приведении к `логическому значению` они станут значением `false`, такие значения включают в себя `0` и `""`. Любое другое значение, не входящее в список "ложных", автоматически считается "истинным", когда приводится к `логическому значению`, оно становится равным `true`. Истинные значения включают в себя такие значения как `99.99` и `"free"`. См. "Истинный и ложный" в главе 2 для получения более детальной информации.
 
-*Conditionals* exist in other forms besides the `if`. For example, the `switch` statement can be used as a shorthand for a series of `if..else` statements (see Chapter 2). Loops (see "Loops") use a *conditional* to determine if the loop should keep going or stop.
+*Условные операторы* существуют и в других формах, отличных от `if`. Например, оператор `switch` может использоваться как сокращение для последовательности операторов `if..else` (см. главу 2). Циклы (см. "Циклы") используют *условный оператор* чтобы определить надо ли завершить выполнение цикла или нет.
 
-**Note:** For deeper information about the coercions that can occur implicitly in the test expressions of *conditionals*, see Chapter 4 of the *Types & Grammar* title of this series.
+**Примечание:** Детальную информацию о приведениях, которые происходят неявно в проверочных выражениях *условных операторов*, см. главу 4 книги *Типы и грамматика* этой серии.
 
-## Loops
+## Циклы
 
-During busy times, there's a waiting list for customers who need to speak to the phone store employee. While there's still people on that list, she just needs to keep serving the next customer.
+При большой посещаемости магазина есть очередь из покупателей, которым нужно поговорить с сотрудником магазина. Пока в этой очереди есть люди, сотруднику нужно продолжать обслуживать очередного покупателя.
 
-Repeating a set of actions until a certain condition fails -- in other words, repeating only while the condition holds -- is the job of programming loops; loops can take different forms, but they all satisfy this basic behavior.
+Повторение набора действий пока не нарушится определенное условие, другими словами, повторение только пока соблюдается условие -- это как раз работа для циклов. Циклы могут принимать различные формы, но все они удовлетворяют этому базовому поведению.
 
-A loop includes the test condition as well as a block (typically as `{ .. }`). Each time the loop block executes, that's called an *iteration*.
+Цикл включает в себя проверяемое условие и блок (обычно в виде `{ .. }`). Каждый раз, когда выполняется блок в цикле, это называется  *итерацией*.
 
-For example, the `while` loop and the `do..while` loop forms illustrate the concept of repeating a block of statements until a condition no longer evaluates to `true`:
+Например, цикл `while` и цикл `do..while` иллюстрируют принцип повторения блока операторов до тех пора пока условие не перестанет быть равным `true`:
 
 ```js
 while (numOfCustomers > 0) {
-	console.log( "How may I help you?" );
+	console.log( "Чем я могу вам помочь?" );
 
-	// help the customer...
+	// помощь покупателю...
 
 	numOfCustomers = numOfCustomers - 1;
 }
 
-// versus:
+// против:
 
 do {
-	console.log( "How may I help you?" );
+	console.log( "Чем я могу вам помочь?" );
 
-	// help the customer...
+	// помощь покупателю...
 
 	numOfCustomers = numOfCustomers - 1;
 } while (numOfCustomers > 0);
 ```
 
-The only practical difference between these loops is whether the conditional is tested before the first iteration (`while`) or after the first iteration (`do..while`).
+Единственная разница между этими циклами -- это будет ли проверяться условный оператор до первой итерации (`while`) или после первой итерации (`do..while`).
 
-In either form, if the conditional tests as `false`, the next iteration will not run. That means if the condition is initially `false`, a `while` loop will never run, but a `do..while` loop will run just the first time.
+В любом из этих циклов если условный оператор возвратит `false`, следующая итерация не будет выполнена. Это значит, что если условие изначально будет `false`, цикл `while` никогда не будет выполнен, а цикл `do..while` выполнится только один раз.
 
-Sometimes you are looping for the intended purpose of counting a certain set of numbers, like from `0` to `9` (ten numbers). You can do that by setting a loop iteration variable like `i` at value `0` and incrementing it by `1` each iteration.
+Иногда вы используете цикл для подсчета определенного набора чисел, например от `0` до `9` (десять чисел). Это можно сделать установкой переменной в цикле итерации, например  `i`, в значение `0` и увеличивая его на `1` в каждой итерации.
 
-**Warning:** For a variety of historical reasons, programming languages almost always count things in a zero-based fashion, meaning starting with `0` instead of `1`. If you're not familiar with that mode of thinking, it can be quite confusing at first. Take some time to practice counting starting with `0` to become more comfortable with it!
+**Предупреждение:** По множеству исторических причин языки программирования почти всегда ведут подсчет в нолеподобной манере, т.е. начиная с `0` вместо `1`. Если вы не знакомы с таким типом подсчета, поначалу это может сбивать с толку. Уделите некоторое время тому, чтобы попрактиковаться в подсчете, начинающимся с `0`, чтобы освоиться в нем!
 
-The conditional is tested on each iteration, much as if there is an implied `if` statement inside the loop.
+Условный оператор проверяется на каждой итерации, как если бы был неявный оператор `if` внутри цикла.
 
-We can use JavaScript's `break` statement to stop a loop. Also, we can observe that it's awfully easy to create a loop that would otherwise run forever without a `break`ing mechanism.
+Для выхода из цикла можно использовать JavaScript-оператор `break`. К тому же, можно обнаружить, что ужасно легко можно создать цикл, который в противном случае будет работать вечно без механизма  `break`.
 
-Let's illustrate:
+Проиллюстрируем:
 
 ```js
 var i = 0;
 
-// a `while..true` loop would run forever, right?
+// цикл `while..true` будет выполняться вечно, не так ли?
 while (true) {
-	// stop the loop?
+	// прервать цикл?
 	if ((i <= 9) === false) {
 		break;
 	}
@@ -557,9 +557,9 @@ while (true) {
 // 0 1 2 3 4 5 6 7 8 9
 ```
 
-**Warning:** This is not necessarily a practical form you'd want to use for your loops. It's presented here for illustration purposes only.
+**Предупреждение:** Показанное выше не является практикой, которой вы должны придерживаться при реализации ваших циклов. Это представлено только в иллюстративных целях.
 
-While a `while` (or `do..while`) can accomplish the task manually, there's another syntactic form called a `for` loop for just that purpose:
+Если `while` (или `do..while`) может достичь цели вручную, есть еще одна синтаксическая форма, называемая цикл `for` именно для такой вот цели:
 
 ```js
 for (var i = 0; i <= 9; i = i + 1) {
@@ -568,19 +568,19 @@ for (var i = 0; i <= 9; i = i + 1) {
 // 0 1 2 3 4 5 6 7 8 9
 ```
 
-As you can see, in both cases the conditional `i <= 9` is `true` for the first 10 iterations (`i` of values `0` through `9`) of either loop form, but becomes `false` once `i` is value `10`.
+Как видите, в обоих случаях условный оператор `i <= 9` равен `true` для первых 10 итераций (`i` принимает значения от `0` до `9`) любой из форм цикла, но становится равным `false` как только `i` становится равным `10`.
 
-The `for` loop has three clauses: the initialization clause (`var i=0`), the conditional test clause (`i <= 9`), and the update clause (`i = i + 1`). So if you're going to do counting with your loop iterations, `for` is a more compact and often easier form to understand and write.
+У цикла `for` есть три составных части: инициализация (`var i=0`), проверка условия (`i <= 9`) и обновление значения (`i = i + 1`). Поэтому если вы собираетесь заниматься выполнением конкретного количества итераций, `for` будет более компактной и часто более легкой формой цикла для понимания и записи.
 
-There are other specialized loop forms that are intended to iterate over specific values, such as the properties of an object (see Chapter 2) where the implied conditional test is just whether all the properties have been processed. The "loop until a condition fails" concept holds no matter what the form of the loop.
+Есть другие особые формы циклов, которые предназначены для итерирования по особым значениям, таким как свойства объекта (см. главу 2), где неявная проверка условного оператора -- это все ли свойства или нет уже обработаны. Принцип "цикл работает пока не нарушится условие" соблюдается независимо от формы цикла.
 
-## Functions
+## Функции
 
-The phone store employee probably doesn't carry around a calculator to figure out the taxes and final purchase amount. That's a task she needs to define once and reuse over and over again. Odds are, the company has a checkout register (computer, tablet, etc.) with those "functions" built in.
+Сотрудник магазина возможно не носит постоянно с собой калькулятор, чтобы учесть налоги и рассчитать окончательную стоимость покупки. Это задача, которую ему нужно определить один раз и использовать раз за разом. Преимущество в том, что у компании есть контрольно-кассовый аппарат (компьютер, планшет и т.п.), в который эти "функции" уже встроены.
 
-Similarly, your program will almost certainly want to break up the code's tasks into reusable pieces, instead of repeatedly repeating yourself repetitiously (pun intended!). The way to do this is to define a `function`.
+Похожим образом и в вашей программе вам определенно захочется разбить задачи в коде на повторноиспользуемые части, вместо того, чтобы снова и снова однообразно повторять себя. Для реализации этого необходимо определить `функцию`.
 
-A function is generally a named section of code that can be "called" by name, and the code inside it will be run each time. Consider:
+Функция -- обычно это именованная секция кода, которая может быть "вызвана" по имени и код внутри нее будет при этом запускаться каждый раз. Пример:
 
 ```js
 function printAmount() {
@@ -596,7 +596,7 @@ amount = amount * 2;
 printAmount(); // "199.98"
 ```
 
-Functions can optionally take arguments (aka parameters) -- values you pass in. And they can also optionally return a value back.
+У функций могут быть аргументы (т.е. параметры) -- это значения которые вы ей передаете. А также функции могут возвращать значение.
 
 ```js
 function printAmount(amt) {
@@ -615,20 +615,20 @@ amount = formatAmount();
 console.log( amount );			// "$99.99"
 ```
 
-The function `printAmount(..)` takes a parameter that we call `amt`. The function `formatAmount()` returns a value. Of course, you can also combine those two techniques in the same function.
+Функция `printAmount(..)` принимает параметр, который мы назвали `amt`. Функция `formatAmount()` возвращает значение. Конечно, вы можете комбинировать параметры и возвращаемое значение в одной и той же функции.
 
-Functions are often used for code that you plan to call multiple times, but they can also be useful just to organize related bits of code into named collections, even if you only plan to call them once.
+Функции часто используются для кода, который вы планируете вызывать несколько раз, но они также полезны для организации связанных частей кода в именованные наборы, даже если вы будете вызывать их всего лишь раз.
 
-Consider:
+Пример:
 
 ```js
 const TAX_RATE = 0.08;
 
 function calculateFinalPurchaseAmount(amt) {
-	// calculate the new amount with the tax
+	// вычисляем новую сумму с налогом
 	amt = amt + (amt * TAX_RATE);
 
-	// return the new amount
+	// возвращаем новую сумму
 	return amt;
 }
 
@@ -639,25 +639,25 @@ amount = calculateFinalPurchaseAmount( amount );
 console.log( amount.toFixed( 2 ) );		// "107.99"
 ```
 
-Although `calculateFinalPurchaseAmount(..)` is only called once, organizing its behavior into a separate named function makes the code that uses its logic (the `amount = calculateFinal...` statement) cleaner. If the function had more statements in it, the benefits would be even more pronounced.
+Хотя `calculateFinalPurchaseAmount(..)` вызывается только один раз, выделение ее поведения в отдельную именованную функцию делает код, использующий ее логику (оператор `amount = calculateFinal...`), яснее. Если в функции есть несколько операторов, ее преимущества будут более очевидны.
 
-### Scope
+### Область действия
 
-If you ask the phone store employee for a phone model that her store doesn't carry, she will not be able to sell you the phone you want. She only has access to the phones in her store's inventory. You'll have to try another store to see if you can find the phone you're looking for.
+Если вы попросите у продавца телефонов модель телефона, которой у магазина нет в продаже, он не сможет продать вам телефон, который вы хотите. У него есть доступ только к телефонам которые есть в наличии в магазине. Вы должны попробовать найти другой магазин, чтобы посмотреть есть ли в нем нужный вам телефон.
 
-Programming has a term for this concept: *scope* (technically called *lexical scope*). In JavaScript, each function gets its own scope. Scope is basically a collection of variables as well as the rules for how those variables are accessed by name. Only code inside that function can access that function's *scoped* variables.
+В программировании есть термин для этого принципа: *область действия* (технически называемая *лексическая область действия*). В JavaScript каждая функция получает свою собственную область действия. Область действия -- это в основном коллекция переменных и правила доступа к этим переменным по имени. Только код внутри функции имеет доступ к переменным, *действующим в области*  функции.
 
-A variable name has to be unique within the same scope -- there can't be two different `a` variables sitting right next to each other. But the same variable name `a` could appear in different scopes.
+Имя переменной должно быть уникальным в рамках одной и той же области действия -- не может быть двух различных переменных `a`, расположенных рядом друг с другом. Но одно и тоже имя переменной `a` может появляться в разных областях действия.
 
 ```js
 function one() {
-	// this `a` only belongs to the `one()` function
+	// эта `a` принадлежит только функции `one()`
 	var a = 1;
 	console.log( a );
 }
 
 function two() {
-	// this `a` only belongs to the `two()` function
+	// эта `a` принадлежит только функции `two()`
 	var a = 2;
 	console.log( a );
 }
@@ -666,9 +666,9 @@ one();		// 1
 two();		// 2
 ```
 
-Also, a scope can be nested inside another scope, just like if a clown at a birthday party blows up one balloon inside another balloon. If one scope is nested inside another, code inside the innermost scope can access variables from either scope.
+Также, область действия может быть вложена внутрь другой области действия, прямо как клоун на дне рождения надувает один шарик внутри другого. Если одна область вложена в другую, для кода внутри самой внутренней области доступны переменные из окружающей области.
 
-Consider:
+Пример:
 
 ```js
 function outer() {
@@ -677,59 +677,59 @@ function outer() {
 	function inner() {
 		var b = 2;
 
-		// we can access both `a` and `b` here
+		// здесь у нас есть доступ и к `a`, и к `b`
 		console.log( a + b );	// 3
 	}
 
 	inner();
 
-	// we can only access `a` here
+	// здесь у нас есть доступ только к  `a`
 	console.log( a );			// 1
 }
 
 outer();
 ```
 
-Lexical scope rules say that code in one scope can access variables of either that scope or any scope outside of it.
+Правила лексической области действия говорят, что код в одной области может иметь доступ к переменным как ее самой, так и к переменным любой области снаружи этой области.
 
-So, code inside the `inner()` function has access to both variables `a` and `b`, but code in `outer()` has access only to `a` -- it cannot access `b` because that variable is only inside `inner()`.
+Таким образом, код внутри функции `inner()` имеет доступ к обеим переменным `a` и `b`, но у кода в `outer()` есть доступ только к `a` -- у него нет доступа к `b` потому что эта переменная внутри `inner()`.
 
-Recall this code snippet from earlier:
+Вспомните этот код, который появлялся выше:
 
 ```js
 const TAX_RATE = 0.08;
 
 function calculateFinalPurchaseAmount(amt) {
-	// calculate the new amount with the tax
+	// вычисляем новую сумму с налогом
 	amt = amt + (amt * TAX_RATE);
 
-	// return the new amount
+	// возвращаем новую сумму
 	return amt;
 }
 ```
 
-The `TAX_RATE` constant (variable) is accessible from inside the `calculateFinalPurchaseAmount(..)` function, even though we didn't pass it in, because of lexical scope.
+Константа (переменная) `TAX_RATE` доступна внутри функции `calculateFinalPurchaseAmount(..)`, даже несмотря на то, что мы не передавали ее внутрь, из-за лексической области действия.
 
-**Note:** For more information about lexical scope, see the first three chapters of the *Scope & Closures* title of this series.
+**Примечание:** Подробная информация о лексической области действия есть в первых трех главах книги *Область действия и замыкания* этой серии.
 
-## Practice
+## Практика
 
-There is absolutely no substitute for practice in learning programming. No amount of articulate writing on my part is alone going to make you a programmer.
+Нет абсолютно никакой адекватной замены практике при обучении программированию. Никакое, даже самое ясное, описание с моей стороны само по себе не сделает из вас программиста.
 
-With that in mind, let's try practicing some of the concepts we learned here in this chapter. I'll give the "requirements," and you try it first. Then consult the code listing below to see how I approached it.
+Держа это в уме, давайте попробуем попрактиковаться в некоторых принципах, которые мы изучили в этой главе. Я дам вам "требования", а вы попробуете их реализовать. Затем сверьтесь с кодом, приведенным ниже, чтобы увидеть как я их реализовал.
 
-* Write a program to calculate the total price of your phone purchase. You will keep purchasing phones (hint: loop!) until you run out of money in your bank account. You'll also buy accessories for each phone as long as your purchase amount is below your mental spending threshold.
-* After you've calculated your purchase amount, add in the tax, then print out the calculated purchase amount, properly formatted.
-* Finally, check the amount against your bank account balance to see if you can afford it or not.
-* You should set up some constants for the "tax rate," "phone price," "accessory price," and "spending threshold," as well as a variable for your "bank account balance.""
-* You should define functions for calculating the tax and for formatting the price with a "$" and rounding to two decimal places.
-* **Bonus Challenge:** Try to incorporate input into this program, perhaps with the `prompt(..)` covered in "Input" earlier. You may prompt the user for their bank account balance, for example. Have fun and be creative!
+* Напишите программу для вычисления общей стоимости покупки телефона. Вы будете продолжать покупать телефоны (подсказка: циклы!) пока у вас не закончатся деньги на банковском счете. Вы также будете покупать аксессуары для каждого из телефонов до тех пор, пока сумма покупки не превысит ваш мысленный предел трат.
+* После того, как вы посчитаете сумму покупки, прибавьте налог, затем выведите на экран вычисленную сумму покупки, правильно отформатировав ее.
+* Наконец, сверьте сумму с балансом вашего банковского счета, чтобы понять можете вы себе это позволить или нет.
+* Вы должны настроить некоторые константы для "ставки налога", "цены телефона", "цены аксессуара" и "предела трат" также как и переменную для вашего "баланса банковского счета".
+* Вам следует определить функции для вычисления налога и для форматирования цены со знаком валюты и округлением до двух знаков после запятой.
+* **Бонусная задача:** Попробуйте включить ввод данных в вашу программу, например с помощью `prompt(..)`, рассмотренную ранее в разделе "Ввод". Вы можете, например, запросить у пользователя баланс банковского счета. Развлекайтесь и будьте изобретательны!
 
-OK, go ahead. Try it. Don't peek at my code listing until you've given it a shot yourself!
+Хорошо, вперед. Попробуйте. Не подсматривайте в мой код пока сами не попробуете!
 
-**Note:** Because this is a JavaScript book, I'm obviously going to solve the practice exercise in JavaScript. But you can do it in another language for now if you feel more comfortable.
+**Примечание:** Так как это книга о JavaScript, очевидно что я буду решать практические упражнения на JavaScript. Но вы можете сделать это на другом языке, если чувствуете себя в нем более уверенно.
 
-Here's my JavaScript solution for this exercise:
+Вот мое решение для этого упражнения, написанное на JavaScript:
 
 ```js
 const SPENDING_THRESHOLD = 200;
@@ -748,55 +748,55 @@ function formatAmount(amount) {
 	return "$" + amount.toFixed( 2 );
 }
 
-// keep buying phones while you still have money
+// продолжаем покупать телефоны пока у нас остаются деньги
 while (amount < bank_balance) {
-	// buy a new phone!
+	// покупаем новый телефон!
 	amount = amount + PHONE_PRICE;
 
-	// can we afford the accessory?
+	// можем ли мы позволить себе аксессуар?
 	if (amount < SPENDING_THRESHOLD) {
 		amount = amount + ACCESSORY_PRICE;
 	}
 }
 
-// don't forget to pay the government, too
+// не забудьте заплатить налог
 amount = amount + calculateTax( amount );
 
 console.log(
-	"Your purchase: " + formatAmount( amount )
+	"Ваша покупка: " + formatAmount( amount )
 );
-// Your purchase: $334.76
+// Ваша покупка: $334.76
 
-// can you actually afford this purchase?
+// можете ли вы в самом деле позволить себе эту покупку?
 if (amount > bank_balance) {
 	console.log(
-		"You can't afford this purchase. :("
+		"Вы не можете позволить себе эту покупку. :("
 	);
 }
-// You can't afford this purchase. :(
+// Вы не можете позволить себе эту покупку. :(
 ```
 
-**Note:** The simplest way to run this JavaScript program is to type it into the developer console of your nearest browser.
+**Примечание:** Простейший способ запустить эту JavaScript программу -- набрать ее в консоли разработчика в вашем браузере.
 
-How did you do? It wouldn't hurt to try it again now that you've seen my code. And play around with changing some of the constants to see how the program runs with different values.
+Как у вас получилось? Не так уж сложно попробовать снова теперь, когда вы увидели мой код. И поиграть с изменением констант, чтобы увидеть как программа работает с разными значениями.
 
-## Review
+## Резюме
 
-Learning programming doesn't have to be a complex and overwhelming process. There are just a few basic concepts you need to wrap your head around.
+Обучение программированию не такой уж сложный и непреодолимый процесс. Есть всего несколько базовых принципов, которые вам нужно уложить у себя в голове.
 
-These act like building blocks. To build a tall tower, you start first by putting block on top of block on top of block. The same goes with programming. Here are some of the essential programming building blocks:
+Они действуют подобно строительным блокам. Чтобы построить высокую башню, вы начинаете класть блок на блок, блок на блок. То же самое и в программировании. Вот несколько необходимых строительных блоков в программировании:
 
-* You need *operators* to perform actions on values.
-* You need values and *types* to perform different kinds of actions like math on `number`s or output with `string`s.
-* You need *variables* to store data (aka *state*) during your program's execution.
-* You need *conditionals* like `if` statements to make decisions.
-* You need *loops* to repeat tasks until a condition stops being true.
-* You need *functions* to organize your code into logical and reusable chunks.
+* Вам нужны *операции* для выполнения действий над значениями.
+* Вам нужны значения и *типы* для выполнения различного рода действий, например, математических с `числом` или вывод со `строкой`.
+* Вам нужны *переменные* для хранения данных (т.е. *состояния*) в процессе выполнения программы.
+* Вам нужны *условные операторы*, такие как оператор `if`, чтобы принимать решения.
+* Вам нужны *циклы* чтобы повторять действия пока заданное условие не прекратить быть истинным.
+* Вам нужны *функции* для организации вашего кода в логические и повторноиспользуемые части программы.
 
-Code comments are one effective way to write more readable code, which makes your program easier to understand, maintain, and fix later if there are problems.
+Комментарии к коду -- это весьма эффективный путь к написанию более читаемого кода, которые сделают вашу программу легче понимаемой, обслуживаемой и позднее исправляемой в случае проблем.
 
-Finally, don't neglect the power of practice. The best way to learn how to write code is to write code.
+Наконец, не пренебрегайте мощью практики. Лучший путь научиться как писать код -- это писать код.
 
-I'm excited you're well on your way to learning how to code, now! Keep it up. Don't forget to check out other beginner programming resources (books, blogs, online training, etc.). This chapter and this book are a great start, but they're just a brief introduction.
+Я рад, что вы теперь на верном пути к изучению написания кода! Так держать! Не забудьте ознакомиться с другими ресурсами по программированию для начинающих (книги, блоги, онлайн-тренировки и т.д.). Эта глава и эта книга -- это большой старт, но они -- всего лишь краткое введение.
 
-The next chapter will review many of the concepts from this chapter, but from a more JavaScript-specific perspective, which will highlight most of the major topics that are addressed in deeper detail throughout the rest of the series.
+Следующая глава рассмотрит многие принципы из этой главы, но с более специфичной для JavaScript перспективы, которая осветит многие основные темы,  которые будут рассматриваться более детально на протяжении оставшихся книг серии.
