@@ -1,28 +1,28 @@
-# You Don't Know JS: Up & Going
-# Chapter 2: Into JavaScript
+# Вы не знаете JS: Приступим!
+# Глава 2: В JavaScript
 
-In the previous chapter, I introduced the basic building blocks of programming, such as variables, loops, conditionals, and functions. Of course, all the code shown has been in JavaScript. But in this chapter, we want to focus specifically on things you need to know about JavaScript to get up and going as a JS developer.
+В предыдущей главе я представил основные строительные блоки программирования, такие как переменные, циклы, условные операторы и функции. Конечно же, весь код, который был показан, был на JavaScript. Но в этой главе, мы хотим особенно сконцентрироваться на вещах, которые вам необходимо знать о JavaScript, чтобы усиленно изучать JS и стать JS-разработчиком.
 
-We will introduce quite a few concepts in this chapter that will not be fully explored until subsequent *YDKJS* books. You can think of this chapter as an overview of the topics covered in detail throughout the rest of this series.
+Мы представим довольно много концепций в этой главе, которые не будут полностью рассмотрены до последующих книг *YDKJS*. Вы можете думать об этой главе как об обзоре тем, раскрытых в деталях на протяжении остальных книг серии.
 
-Especially if you're new to JavaScript, you should expect to spend quite a bit of time reviewing the concepts and code examples here multiple times. Any good foundation is laid brick by brick, so don't expect that you'll immediately understand it all the first pass through.
+Особенно это касается вас, если вы -- новичок в JavaScript. Вам понадобится потратить немало времени изучая эти концепции и примеры кода, которые есть тут, много раз. Любой хороший фундамент закладывается кирпич за кирпичом, поэтому не ждите, что вы сразу же поймете их все с первого раза.
 
-Your journey to deeply learn JavaScript starts here.
+Здесь начинается ваше путешествие к серьезному изучению JavaScript.
 
-**Note:** As I said in Chapter 1, you should definitely try all this code yourself as you read and work through this chapter. Be aware that some of the code here assumes capabilities introduced in the newest version of JavaScript at the time of this writing (commonly referred to as "ES6" for the 6th edition of ECMAScript -- the official name of the JS specification). If you happen to be using an older, pre-ES6 browser, the code may not work. A recent update of a modern browser (like Chrome, Firefox, or IE) should be used.
+**Примечание:** Как я упоминал в главе 1, вам определенно стоит попробовать весь этот код самим пока вы читаете и работаете над этой главой. Имейте в виду, что здесь есть код, который предполагает возможности, представленные в последней версии JavaScript на момент написания (обычно упоминаемой как "ES6" из-за шестой версии ECMAScript -- официального названия JS спецификации). Если вы вдруг используете более старый, пред-ES6 браузер, код может не заработать. Следует использовать последние версии современных браузеров (такие как Chrome, Firefox или IE).
 
-## Values & Types
+## Значения и типы
 
-As we asserted in Chapter 1, JavaScript has typed values, not typed variables. The following built-in types are available:
+Как мы утверждали в главе 1, в JavaScript есть типизированные значения, а не типизированные переменные. Доступны следующие встроенные типы:
 
-* `string`
-* `number`
-* `boolean`
-* `null` and `undefined`
-* `object`
-* `symbol` (new to ES6)
+* `string` (строка)
+* `number` (число)
+* `boolean` (логическое значение)
+* `null` и `undefined` (пустое значение)
+* `object` (объект)
+* `symbol` (символ, новое в ES6) 
 
-JavaScript provides a `typeof` operator that can examine a value and tell you what type it is:
+JavaScript предоставляет операцию `typeof`, которая умеет оценивать значение и сообщать вам какого оно типа:
 
 ```js
 var a;
@@ -38,7 +38,7 @@ a = true;
 typeof a;				// "boolean"
 
 a = null;
-typeof a;				// "object" -- weird, bug
+typeof a;				// "object" -- черт, ошибка
 
 a = undefined;
 typeof a;				// "undefined"
@@ -47,19 +47,19 @@ a = { b: "c" };
 typeof a;				// "object"
 ```
 
-The return value from the `typeof` operator is always one of six (seven as of ES6! - the "symbol" type) string values. That is, `typeof "abc"` returns `"string"`, not `string`.
+Значение, возвращаемое операцией `typeof`, всегда одно из шести (семи в ES6! - тип "symbol") строковых значений. Это значит, что `typeof "abc"` вернет `"string"`, а не `string`.
 
-Notice how in this snippet the `a` variable holds every different type of value, and that despite appearances, `typeof a` is not asking for the "type of `a`", but rather for the "type of the value currently in `a`." Only values have types in JavaScript; variables are just simple containers for those values.
+Обратите внимание, как в этом коде переменная `a` хранит каждый из различных типов значений и несмотря на видимость, `typeof a` спрашивает не "тип `a`", а "тип текущего значения в `a`." Только у значений есть типы в JavaScript, переменные являются всего лишь контейнерами для этих значений.
 
-`typeof null` is an interesting case, because it errantly returns `"object"`, when you'd expect it to return `"null"`.
+`typeof null` -- это интересный случай, так как он ошибочно возвращает `"object"`, тогда как вы ожидали бы, что он вернет `"null"`.
 
-**Warning:** This is a long-standing bug in JS, but one that is likely never going to be fixed. Too much code on the Web relies on the bug and thus fixing it would cause a lot more bugs!
+**Предупреждение:** Это давнишняя ошибка в JS, но она похоже никогда не будет исправлена. Слишком много кода в интернет полагается на нее и ее исправление соответственно повлечет за собой намного больше ошибок!
 
-Also, note `a = undefined`. We're explicitly setting `a` to the `undefined` value, but that is behaviorally no different from a variable that has no value set yet, like with the `var a;` line at the top of the snippet. A variable can get to this "undefined" value state in several different ways, including functions that return no values and usage of the `void` operator.
+А еще, обратите внимание на `a = undefined`. Мы явно установили `a` в значение `undefined`, но это по поведению не отличается от переменной, у которой еще не установлено значение, например как тут `var a;`, в строке в начале блока кода. Переменная может получать такое состояние значения "undefined" разными путями, включая функции, которые не возвращают значения, и использование операции `void`.
 
-### Objects
+### Объекты
 
-The `object` type refers to a compound value where you can set properties (named locations) that each hold their own values of any type. This is perhaps one of the most useful value types in all of JavaScript.
+Тип `object` указывает на составное значение, где вы можете устанавливать свойства (именованные области) , которые сами хранят свои собственные значения любого типа. Это возможно одни из самых полезных типов значений во всем JavaScript.
 
 ```js
 var obj = {
@@ -77,15 +77,15 @@ obj["b"];	// 42
 obj["c"];	// true
 ```
 
-It may be helpful to think of this `obj` value visually:
+Полезно представить значение этого `obj` визуально:
 
 <img src="fig4.png">
 
-Properties can either be accessed with *dot notation* (i.e., `obj.a`) or *bracket notation* (i.e., `obj["a"]`). Dot notation is shorter and generally easier to read, and is thus preferred when possible.
+Свойства могут быть доступны либо через *точечную нотацию* (т.е., `obj.a`), либо через *скобочную нотацию* (т.е., `obj["a"]`). Точечная нотация короче и в целом легче для чтения и следовательно ей нужно отдавать предпочтение по возможности.
 
-Bracket notation is useful if you have a property name that has special characters in it, like `obj["hello world!"]` -- such properties are often referred to as *keys* when accessed via bracket notation. The `[ ]` notation requires either a variable (explained next) or a `string` *literal* (which needs to be wrapped in `" .. "` or `' .. '`).
+Скобочная нотация полезна, если у вас есть имя свойства, содержащее спецсимволы, например `obj["hello world!"]` -- такие свойства часто называют  *ключами*, когда к ним обращаются с помощью скобочной нотации. Нотация `[ ]` требует либо переменную (поясняется ниже), либо `строковый` *литерал* (который должен быть заключен в `" .. "` или `' .. '`).
 
-Of course, bracket notation is also useful if you want to access a property/key but the name is stored in another variable, such as:
+Конечно, скобочная нотация также полезна, если вы хотите получить доступ к свойству/ключу, но имя хранится в другой переменной, как здесь, например:
 
 ```js
 var obj = {
@@ -99,13 +99,13 @@ obj[b];			// "hello world"
 obj["b"];		// 42
 ```
 
-**Note:** For more information on JavaScript `object`s, see the *this & Object Prototypes* title of this series, specifically Chapter 3.
+**Примечание:** Более детальная информация о JavaScript `object` есть в книге *this и прототипы объектов* этой серии, особенно в главе 3.
 
-There are a couple of other value types that you will commonly interact with in JavaScript programs: *array* and *function*. But rather than being proper built-in types, these should be thought of more like subtypes -- specialized versions of the `object` type.
+Есть пара других типов значений, с которыми вы обычно взаимодействуете в JavaScript программах: *array* (массив) и *function* (функция). Точнее, вместо того чтобы быть полноценными встроенными типами, о них следует думать скорее как о подтипах -- особых версиях типа `object`.
 
-#### Arrays
+#### Массивы
 
-An array is an `object` that holds values (of any type) not particularly in named properties/keys, but rather in numerically indexed positions. For example:
+Массив -- это `объект`, который хранит значения (любого типа) не отдельно в именованных свойствах/ключах, а в ячейках, доступных по числовому индексу. Например:
 
 ```js
 var arr = [
@@ -122,21 +122,21 @@ arr.length;		// 3
 typeof arr;		// "object"
 ```
 
-**Note:** Languages that start counting at zero, like JS does, use `0` as the index of the first element in the array.
+**Примечание:** Языки, которые начинают счет с нуля, как и JS, используют `0` как индекс первого элемента массива.
 
-It may be helpful to think of `arr` visually:
+Полезно представить `arr` визуально:
 
 <img src="fig5.png">
 
-Because arrays are special objects (as `typeof` implies), they can also have properties, including the automatically updated `length` property.
+Поскольку массивы -- это особые объекты (как намекает `typeof`), то у них могут быть свойства, включая автообновляемое свойство `length` (длина).
 
-You theoretically could use an array as a normal object with your own named properties, or you could use an `object` but only give it numeric properties (`0`, `1`, etc.) similar to an array. However, this would generally be considered improper usage of the respective types.
+Теоретически, вы можете использовать массив как обычный объект со своими собственными свойствами или использовать `object`, но дать ему числовые свойства (`0`, `1` и т.д.) как у массива. Однако, в общем это было бы использование соответствующих типов не по назначению.
 
-The best and most natural approach is to use arrays for numerically positioned values and use `object`s for named properties.
+Лучший и самый естественный подход -- использование массивов для значений, расположенных по числовым позициям и использовать `object` для именованных свойств.
 
-#### Functions
+#### Функции
 
-The other `object` subtype you'll use all over your JS programs is a function:
+Еще один подтип `object`, которым вы будете пользоваться во всех ваших JS программах -- это функция :
 
 ```js
 function foo() {
@@ -150,15 +150,15 @@ typeof foo();		// "number"
 typeof foo.bar;		// "string"
 ```
 
-Again, functions are a subtype of `objects` -- `typeof` returns `"function"`, which implies that a `function` is a main type -- and can thus have properties, but you typically will only use function object properties (like `foo.bar`) in limited cases.
+И еще раз, функции -- это подтипы `объектов` -- `typeof` вернет `"function"`, что говорит о том,  что `function` -- основной тип и поэтому у него могут быть свойства, но обычно вы будете пользоваться свойствами функций (как например `foo.bar`) в редких случаях.
 
-**Note:** For more information on JS values and their types, see the first two chapters of the *Types & Grammar* title of this series.
+**Примечание:** Более детальная информация о JS значениях и их типах есть в первых двух главах книги *Типы и грамматика*  этой серии.
 
-### Built-In Type Methods
+### Методы встроенных типов
 
-The built-in types and subtypes we've just discussed have behaviors exposed as properties and methods that are quite powerful and useful.
+Встроенные типы и подтипы, которые мы только что обсудили, содержат логику, отраженную в свойствах и методах, которые достаточно мощны и полезны.
 
-For example:
+Например:
 
 ```js
 var a = "hello world";
@@ -169,31 +169,31 @@ a.toUpperCase();		// "HELLO WORLD"
 b.toFixed(4);			// "3.1416"
 ```
 
-The "how" behind being able to call `a.toUpperCase()` is more complicated than just that method existing on the value.
+Вопрос "Как?", возникающий о возможности вызова `a.toUpperCase()` более сложен, чем то, что этот метод существует у значения.
 
-Briefly, there is a `String` (capital `S`) object wrapper form, typically called a "native," that pairs with the primitive `string` type; it's this object wrapper that defines the `toUpperCase()` method on its prototype.
+Коротко говоря, есть форма обертки объекта `String` (заглавная `S`), обычно называемая "родной," которая связывается с примитивным типом `string`, и именно эта обертка определяет метод `toUpperCase()` в своем прототипе.
 
-When you use a primitive value like `"hello world"` as an `object` by referencing a property or method (e.g., `a.toUpperCase()` in the previous snippet), JS automatically "boxes" the value to its object wrapper counterpart (hidden under the covers).
+Когда вы используете примитивное значение, такое как `"hello world"`, как  `object` ссылаясь на свойство или метод (к примеру, `a.toUpperCase()` в предыдущем кусочке кода), JS автоматически "упаковывает" значение в его обертку-двойника (скрытую внутри).
 
-A `string` value can be wrapped by a `String` object, a `number` can be wrapped by a `Number` object, and a `boolean` can be wrapped by a `Boolean` object. For the most part, you don't need to worry about or directly use these object wrapper forms of the values -- prefer the primitive value forms in practically all cases and JavaScript will take care of the rest for you.
+Значение типа `string` может быть обернуто объектом `String`, значение типа `number` может быть обернуто объектом `Number` и `boolean` может быть обернуто объектом `Boolean`. В основном, вам не нужно беспокоиться о прямом использовании этих оберток значений -- отдавайте предпочтение примитивным формам значений практически во всех случаях, а об остальном позаботится  JavaScript.
 
-**Note:** For more information on JS natives and "boxing," see Chapter 3 of the *Types & Grammar* title of this series. To better understand the prototype of an object, see Chapter 5 of the *this & Object Prototypes* title of this series.
+**Примечание:** Более детальная информация о родных типах JS и "упаковке" есть в главе 3 книги *Типы и грамматика* этой серии. Для лучшего понимания прототипов объектов см. главу 5 книги *this и прототипы объектов*  этой серии.
 
-### Comparing Values
+### Сравнение значений
 
-There are two main types of value comparison that you will need to make in your JS programs: *equality* and *inequality*. The result of any comparison is a strictly `boolean` value (`true` or `false`), regardless of what value types are compared.
+Есть два основных типа сравнения значений, которые могут понадобится вам в JS программах: *равенство* и *неравенство*. Результатом любого сравнения является только значение типа `boolean` (`true` или `false`), независимо от сравниваемых типов значений.
 
-#### Coercion
+#### Приведение типов (coercion)
 
-We talked briefly about coercion in Chapter 1, but let's revisit it here.
+Мы немного касались приведения в главе 1, давайте здесь освежим это в памяти еще раз.
 
-Coercion comes in two forms in JavaScript: *explicit* and *implicit*. Explicit coercion is simply that you can see obviously from the code that a conversion from one type to another will occur, whereas implicit coercion is when the type conversion can happen as more of a non-obvious side effect of some other operation.
+Приведение в JavaScript существует в двух формах: *явное* и *неявное*. Явное приведение, это просто то приведение, которое можно очевидным образом увидеть в коде в виде конвертации из одного типа в другой, в свою очередь неявное приведение -- это когда конвертация типа может произойти в результате менее очевидных побочных эффектов других операций.
 
-You've probably heard sentiments like "coercion is evil" drawn from the fact that there are clearly places where coercion can produce some surprising results. Perhaps nothing evokes frustration from developers more than when the language surprises them.
+Возможно вы слышали такие мнения как "приведение - зло", опирающиеся на факт, что несомненно есть места, где приведение может привести к удивительным результатам. Вероятно ничто не вызывает расстройство у разработчиков более, чем когда язык преподносит им сюрпризы.
 
-Coercion is not evil, nor does it have to be surprising. In fact, the majority of cases you can construct with type coercion are quite sensible and understandable, and can even be used to *improve* the readability of your code. But we won't go much further into that debate -- Chapter 4 of the *Types & Grammar* title of this series covers all sides.
+Приведение -- не зло и не должно преподносить сюрпризы. На самом деле, большинство случаев, которые вы можете представить используя приведение типов  -- вполне адекватны и понятны и даже могут использоваться чтобы *увеличить* читаемость вашего кода. Но мы не будет далее вступать в дебаты -- глава 4 книги *Типы и грамматика* этой серии книг раскроет все стороны приведения.
 
-Here's an example of *explicit* coercion:
+Вот пример *явного* приведения:
 
 ```js
 var a = "42";
@@ -201,49 +201,49 @@ var a = "42";
 var b = Number( a );
 
 a;				// "42"
-b;				// 42 -- the number!
+b;				// 42 -- число!
 ```
 
-And here's an example of *implicit* coercion:
+А вот пример *неявного* приведения:
 
 ```js
 var a = "42";
 
-var b = a * 1;	// "42" implicitly coerced to 42 here
+var b = a * 1;	// здесь "42" неявно приводится к 42
 
 a;				// "42"
-b;				// 42 -- the number!
+b;				// 42 -- число!
 ```
 
-#### Truthy & Falsy
+#### Истинный и ложный
 
-In Chapter 1, we briefly mentioned the "truthy" and "falsy" nature of values: when a non-`boolean` value is coerced to a `boolean`, does it become `true` or `false`, respectively?
+В главе 1, мы кратко рассмотрели "истинную" и "ложную" природу значений: когда не-`boolean` значение приводится к `boolean`, становится ли оно `true` или `false`, соответственно?
 
-The specific list of "falsy" values in JavaScript is as follows:
+Особый список "ложных" значений в JavaScript таков:
 
-* `""` (empty string)
-* `0`, `-0`, `NaN` (invalid `number`)
+* `""` (пустая строка)
+* `0`, `-0`, `NaN` (некорректное `число`)
 * `null`, `undefined`
 * `false`
 
-Any value that's not on this "falsy" list is "truthy." Here are some examples of those:
+Любое число, не входящее в этот "ложный" список -- "истинно." Вот несколько примеров:
 
 * `"hello"`
 * `42`
 * `true`
-* `[ ]`, `[ 1, "2", 3 ]` (arrays)
-* `{ }`, `{ a: 42 }` (objects)
-* `function foo() { .. }` (functions)
+* `[ ]`, `[ 1, "2", 3 ]` (массивы)
+* `{ }`, `{ a: 42 }` (объекты)
+* `function foo() { .. }` (функции)
 
-It's important to remember that a non-`boolean` value only follows this "truthy"/"falsy" coercion if it's actually coerced to a `boolean`. It's not all that difficult to confuse yourself with a situation that seems like it's coercing a value to a `boolean` when it's not.
+Важно помнить, что не-`boolean` значение следует такому приведению "истинный"/"ложный" только если оно действительно приводится к `boolean`. Это -- не единственная трудность, которая может смутить вас в ситуации, когда кажется что есть приведение значения к `boolean`, когда на самом деле его нет.
 
-#### Equality
+#### Равенство
 
-There are four equality operators: `==`, `===`, `!=`, and `!==`. The `!` forms are of course the symmetric "not equal" versions of their counterparts; *non-equality* should not be confused with *inequality*.
+Есть четыре операции равенства: `==`, `===`, `!=` и `!==`. Формы с `!` -- конечно же, симметричные версии "не равно" своих  противоположностей; *не равно* не следует путать с *неравенством*.
 
-The difference between `==` and `===` is usually characterized that `==` checks for value equality and `===` checks for both value and type equality. However, this is inaccurate. The proper way to characterize them is that `==` checks for value equality with coercion allowed, and `===` checks for value equality without allowing coercion; `===` is often called "strict equality" for this reason.
+Разница между `==` и `===` -- обычно состоит в том, что `==` проверяет на равенство значений, а `===` проверяет на равенство и значений, и типов. Однако, это не точно. Подходящий способ охарактеризовать их: `==` проверяет на равенство значений с использованием приведения, а `===` проверяет на равенство не разрешая приведение. Операцию `===` часто называют "строгое равенство" по этой причине.
 
-Consider the implicit coercion that's allowed by the `==` loose-equality comparison and not allowed with the `===` strict-equality:
+Посмотрите на пример неявного приведения, которое допускается нестрогим равенством `==` и не допускается строгим равенством `===`:
 
 ```js
 var a = "42";
@@ -253,29 +253,29 @@ a == b;			// true
 a === b;		// false
 ```
 
-In the `a == b` comparison, JS notices that the types do not match, so it goes through an ordered series of steps to coerce one or both values to a different type until the types match, where then a simple value equality can be checked.
+В сравнении `a == b`, JS замечает, что типы не совпадают, поэтому он делает упорядоченный ряд шагов чтобы привести одно или оба значения к различным типам, пока типы не совпадут, а затем уже может быть проверено простое равенство значений.
 
-If you think about it, there's two possible ways `a == b` could give `true` via coercion. Either the comparison could end up as `42 == 42` or it could be `"42" == "42"`. So which is it?
+Если подумать, то есть два возможных пути, когда `a == b` может стать `true` через приведение. Либо сравнение может закончится на `42 == 42`, либо на `"42" == "42"`. Так какое же из них?
 
-The answer: `"42"` becomes `42`, to make the comparison `42 == 42`. In such a simple example, it doesn't really seem to matter which way that process goes, as the end result is the same. There are more complex cases where it matters not just what the end result of the comparison is, but *how* you get there.
+Ответ: `"42"` становится `42` чтобы сделать сравнение `42 == 42`. В таком простом примере не так уж важно по какому пути пойдет сравнение, в конце результат будет один и тот же. Есть более сложные случаи, где важно не только каков конечный результат сравнения, но и *как* вы к нему пришли.
 
-The `a === b` produces `false`, because the coercion is not allowed, so the simple value comparison obviously fails. Many developers feel that `===` is more predictable, so they advocate always using that form and staying away from `==`. I think this view is very shortsighted. I believe `==` is a powerful tool that helps your program, *if you take the time to learn how it works.*
+Сравнение `a === b` даст `false`, так как приведение не разрешено, поэтому простое сравнение значений очевидно не завершится успехом. Многие разработчики чувствуют, что операция `===` -- более предсказуема, поэтому они  советуют всегда использовать эту форму и держаться подальше от `==`. Думаю, такая точка зрения очень недальновидна. Я верю, что операция `==` -- мощный инструмент, который помогает вашей программе, *если вы уделите время на изучение того, как это работает.*
 
-We're not going to cover all the nitty-gritty details of how the coercion in `==` comparisons works here. Much of it is pretty sensible, but there are some important corner cases to be careful of. You can read section 11.9.3 of the ES5 specification (http://www.ecma-international.org/ecma-262/5.1/) to see the exact rules, and you'll be surprised at just how straightforward this mechanism is, compared to all the negative hype surrounding it.
+Мы не собираемся рассматривать все скучные мельчайшие подробности того, как работает приведение в сравнениях `==`. Многие из них очень разумные, но есть несколько важных тупиковых ситуаций, с которыми надо быть осторожным. Чтобы посмотреть точные правила, можно заглянуть в раздел 11.9.3 спецификации ES5 (http://www.ecma-international.org/ecma-262/5.1/) и вы будете удивлены тем, насколько этот механизм прямолинейный, по сравнению со всей этой негативной шумихой вокруг него.
 
-To boil down a whole lot of details to a few simple takeaways, and help you know whether to use `==` or `===` in various situations, here are my simple rules:
+Чтобы свести целое множество деталей к нескольким простым мыслям и помочь вам узнать, использовать ли `==` или `===` в различных ситуациях, вот мои простые правила:
 
-* If either value (aka side) in a comparison could be the `true` or `false` value, avoid `==` and use `===`.
-* If either value in a comparison could be of these specific values (`0`, `""`, or `[]` -- empty array), avoid `==` and use `===`.
-* In *all* other cases, you're safe to use `==`. Not only is it safe, but in many cases it simplifies your code in a way that improves readability.
+* Если одно из значений (т.е. сторона) в сравнении может быть значением `true` или `false`, избегайте `==` и используйте `===`.
+* Если одно из значений в сравнении может быть одним из этих особых значений (`0`, `""` или `[]` -- пустой массив), избегайте `==` и используйте `===`.
+* Во *всех* остальных случаях, вы можете безопасно использовать `==`. Это не только безопасно, но во многих случаях это упрощает ваш код путем повышения читаемости.
 
-What these rules boil down to is requiring you to think critically about your code and about what kinds of values can come through variables that get compared for equality. If you can be certain about the values, and `==` is safe, use it! If you can't be certain about the values, use `===`. It's that simple.
+Эти правила сводятся к тому, что требуют от вас критически оценивать свой код и думать о том, какого вида значения могут исходить из переменных, которые проверяются на равенство. Если вы уверены насчет значений и `==` безопасна, используйте ее! Если вы не уверены насчет значений, используйте `===`. Это просто.
 
-The `!=` non-equality form pairs with `==`, and the `!==` form pairs with `===`. All the rules and observations we just discussed hold symmetrically for these non-equality comparisons.
+Форма не-равно `!=` идет в паре с `==`, а форма `!==` -- в паре с `===`. Все правила и утверждения, которые мы только что обсудили также применимы для этих сравнений на не равно.
 
-You should take special note of the `==` and `===` comparison rules if you're comparing two non-primitive values, like `object`s (including `function` and `array`). Because those values are actually held by reference, both `==` and `===` comparisons will simply check whether the references match, not anything about the underlying values.
+Вам следует особо обратить внимение на правила сравнения `==` и `===`, если вы сравниваете два непримитивных значения, таких как `object` (включая `function` и `array`). Так как эти значения на самом деле хранятся по ссылке, оба сравнения `==` и `===` просто проверят равны ли ссылки, но ничего не сделают касаемо самих значений.
 
-For example, `array`s are by default coerced to `string`s by simply joining all the values with commas (`,`) in between. You might think that two `array`s with the same contents would be `==` equal, but they're not:
+Например, `массив` по умолчанию приводится к `строке` простым присоединением всех значений с запятыми (`,`) между ними. Можно было бы подумать, что эти два `массива` с одинаковым содержимым будут равны по `==`, но это не так:
 
 ```js
 var a = [1,2,3];
@@ -287,17 +287,17 @@ b == c;		// true
 a == b;		// false
 ```
 
-**Note:** For more information about the `==` equality comparison rules, see the ES5 specification (section 11.9.3) and also consult Chapter 4 of the *Types & Grammar* title of this series; see Chapter 2 for more information about values versus references.
+**Примечание:** Детальную информацию о правилах сравнения равенства `==` можно посмотреть в спецификации ES5 (раздел 11.9.3) а также свериться с главой 4 книги *Типы и грамматика* этой серии; см. главу 2 для детальной информации о значениях в сравнении с ссылками.
 
-#### Inequality
+#### Неравенство
 
-The `<`, `>`, `<=`, and `>=` operators are used for inequality, referred to in the specification as "relational comparison." Typically they will be used with ordinally comparable values like `number`s. It's easy to understand that `3 < 4`.
+Операции `<`, `>`, `<=` и `>=`, использующиеся для неравенств, упоминаются в спецификации как "относительное сравнение." Обычно они используются со  значениями, сравниваемыми порядками, как `числа`. Легко понять, что `3 < 4`.
 
-But JavaScript `string` values can also be compared for inequality, using typical alphabetic rules (`"bar" < "foo"`).
+Но `строковые` значения в JavaScript  тоже могут участвовать в неравенствах, используя типичные алфавитные правила (`"bar" < "foo"`).
 
-What about coercion? Similar rules as `==` comparison (though not exactly identical!) apply to the inequality operators. Notably, there are no "strict inequality" operators that would disallow coercion the same way `===` "strict equality" does.
+Как насчет приведения? Тут всё похоже на правила в сравнении `==` (хотя и не совсем идентично!). Примечательно, что нет операций "строгого неравенства", которые бы запрещали приведение таким же путем как и "строгое равенство" `===`.
 
-Consider:
+Пример:
 
 ```js
 var a = 41;
@@ -308,9 +308,9 @@ a < b;		// true
 b < c;		// true
 ```
 
-What happens here? In section 11.8.5 of the ES5 specification, it says that if both values in the `<` comparison are `string`s, as it is with `b < c`, the comparison is made lexicographically (aka alphabetically like a dictionary). But if one or both is not a `string`, as it is with `a < b`, then both values are coerced to be `number`s, and a typical numeric comparison occurs.
+Что здесь происходит? В разделе 11.8.5 спецификации ES5 говорится, что если оба значения в сравнении `<` являются `строками`, как это было в случае с `b < c`, сравнение производится лексикографически (т.е. в алфавитном порядке, как в словаре). но если одно или оба значения не являются `строкой`, как в случае с `a < b`, то оба значения приводятся к `числу` и происходит типичное числовое сравнение.
 
-The biggest gotcha you may run into here with comparisons between potentially different value types -- remember, there are no "strict inequality" forms to use -- is when one of the values cannot be made into a valid number, such as:
+Самое большое затруднение, в которое вы можете попасть со сравнениями между потенциально разными типами значений (помните, что нет формы "строгого неравенства"?) -- это когда одно из значений не может быть превращено в корректное число, например:
 
 ```js
 var a = 42;
@@ -321,57 +321,57 @@ a > b;		// false
 a == b;		// false
 ```
 
-Wait, how can all three of those comparisons be `false`? Because the `b` value is being coerced to the "invalid number value" `NaN` in the `<` and `>` comparisons, and the specification says that `NaN` is neither greater-than nor less-than any other value.
+Подождите-ка, как это все эти три сравнения могут быть `false`? Так как значение `b` приводится к "некорректному числовому значению" `NaN` в сравнениях `<` и `>`, а спецификация говорит, что `NaN` не больше и не меньше чем любое другое значение.
 
-The `==` comparison fails for a different reason. `a == b` could fail if it's interpreted either as `42 == NaN` or `"42" == "foo"` -- as we explained earlier, the former is the case.
+Сравнение `==` не проходит по другой причине. `a == b` может быть некорректным если оно интерпретируется как `42 == NaN` или `"42" == "foo"` -- как мы объяснили ранее, второй вариант -- наш случай.
 
-**Note:** For more information about the inequality comparison rules, see section 11.8.5 of the ES5 specification and also consult Chapter 4 of the *Types & Grammar* title of this series.
+**Примечание:** Более детальная информация о правилах сравнения в неравенствах есть в разделе 11.8.5 спецификации ES5, также сверьтесь с главой 4 книги *Типы и грамматика* этой серии.
 
-## Variables
+## Переменные
 
-In JavaScript, variable names (including function names) must be valid *identifiers*. The strict and complete rules for valid characters in identifiers are a little complex when you consider nontraditional characters such as Unicode. If you only consider typical ASCII alphanumeric characters, though, the rules are simple.
+В JavaScript имена переменных (включая имена функций) должны быть корректными *идентификаторами*. Строгие и полные правила о корректных символах в идентификаторах --  немного сложны, когда вы хотите использовать нестандартные символы, такие как Unicode-символы. Если вы предполагаете использовать только типичные буквенно-цифровые ASCII-символы, то правила просты.
 
-An identifier must start with `a`-`z`, `A`-`Z`, `$`, or `_`. It can then contain any of those characters plus the numerals `0`-`9`.
+Идентификатор должен начинаться с `a`-`z`, `A`-`Z`, `$` или `_`. Дальше он может содержать любые из этих же символов плюс цифры `0`-`9`.
 
-Generally, the same rules apply to a property name as to a variable identifier. However, certain words cannot be used as variables, but are OK as property names. These words are called "reserved words," and include the JS keywords (`for`, `in`, `if`, etc.) as well as `null`, `true`, and `false`.
+В общем-то, те же правила, как и к идентификатору переменной, применяются и к имени свойства. Однако, определенные слова не могут использоваться как переменные, но могут как имена свойств. Эти слова называются "зарезервированными словами," и включают ключевые слова JS (`for`, `in`, `if` и т.д.), также как и `null`, `true` и `false`.
 
-**Note:** For more information about reserved words, see Appendix A of the *Types & Grammar* title of this series.
+**Примечание:** Более детальная информация о зарезервированных словах есть в приложении А книги *Типы и грамматика* этой серии.
 
-### Function Scopes
+### Области действия функций
 
-You use the `var` keyword to declare a variable that will belong to the current function scope, or the global scope if at the top level outside of any function.
+Вы используете ключевое `var` чтобы объявить переменную, которая принадлежит области действия текущей функции или глобальной области, если находится на верхнем уровне вне любой функции.
 
-#### Hoisting
+#### Поднятие переменной (hoisting)
 
-Wherever a `var` appears inside a scope, that declaration is taken to belong to the entire scope and accessible everywhere throughout.
+Где бы ни появлялось `var` внутри области действия, это объявление принадлежит всей области действия и доступно везде в ней.
 
-Metaphorically, this behavior is called *hoisting*, when a `var` declaration is conceptually "moved" to the top of its enclosing scope. Technically, this process is more accurately explained by how code is compiled, but we can skip over those details for now.
+Метафорически это поведение называется *поднятие (hoisting)*, когда объявление `var` концептуально "перемещается" на вершину своей объемлющей области действия. Технически этот процесс более точно объясняется тем, как компилируется код, но сейчас опустим эти подробности.
 
-Consider:
+Пример:
 
 ```js
 var a = 2;
 
-foo();					// works because `foo()`
-						// declaration is "hoisted"
+foo();					// работает, так как определение `foo()`
+						// "всплыло"
 
 function foo() {
 	a = 3;
 
 	console.log( a );	// 3
 
-	var a;				// declaration is "hoisted"
-						// to the top of `foo()`
+	var a;				// определение "всплыло"
+						// наверх `foo()`
 }
 
 console.log( a );	// 2
 ```
 
-**Warning:** It's not common or a good idea to rely on variable *hoisting* to use a variable earlier in its scope than its `var` declaration appears; it can be quite confusing. It's much more common and accepted to use *hoisted* function declarations, as we do with the `foo()` call appearing before its formal declaration.
+**Предупреждение:** Не общепринято и не так уж здраво полагаться на *поднятие* переменной, чтобы использовать переменную раньше в ее области действия, чем появится ее объявление `var`, такое может сбить с толку. Общепринято и приемлемо использовать *всплытие* объявлений функций, что мы и делали с вызовом `foo()`, появившемся до ее объявления.
 
-#### Nested Scopes
+#### Вложенные области действия
 
-When you declare a variable, it is available anywhere in that scope, as well as any lower/inner scopes. For example:
+Когда вы объявляете переменную, она доступна везде в ее области действия, также как и в более нижних/внутренних областях действия. Например:
 
 ```js
 function foo() {
@@ -397,22 +397,22 @@ function foo() {
 foo();
 ```
 
-Notice that `c` is not available inside of `bar()`, because it's declared only inside the inner `baz()` scope, and that `b` is not available to `foo()` for the same reason.
+Заметьте, что `c` не доступна внутри `bar()`, потому что она объявлена только внутри внутренней области действия `baz()` и `b` не доступна в `foo()` по той же причине.
 
-If you try to access a variable's value in a scope where it's not available, you'll get a `ReferenceError` thrown. If you try to set a variable that hasn't been declared, you'll either end up creating a variable in the top-level global scope (bad!) or getting an error, depending on "strict mode" (see "Strict Mode"). Let's take a look:
+Если вы попытаетесь получить доступ к значению переменной в области действия, где она уже недоступна, вы получите `ReferenceError`. Если вы попытаетесь установить значение переменной, которая еще не объявлена, у вас либо закончится тем, что переменная создастся в самой верхней глобальной области видимости (плохо!), либо получите ошибку в зависимости от "строгого режима" (см. "Строгий режим"). Давайте взглянем:
 
 ```js
 function foo() {
-	a = 1;	// `a` not formally declared
+	a = 1;	// `a` формально не объявлена
 }
 
 foo();
-a;			// 1 -- oops, auto global variable :(
+a;			// 1 -- упс, автоматическая глобальная переменная :(
 ```
 
-This is a very bad practice. Don't do it! Always formally declare your variables.
+Это очень плохая практика. Не делайте так! Всегда явно объявляйте свои переменные.
 
-In addition to creating declarations for variables at the function level, ES6 *lets* you declare variables to belong to individual blocks (pairs of `{ .. }`), using the `let` keyword. Besides some nuanced details, the scoping rules will behave roughly the same as we just saw with functions:
+В дополнение к созданию объявлений переменных на уровне функций, ES6 *позволяет* вам объявлять переменные, принадлежащие отдельным блокам (пара `{ .. }`), используя ключевое слово `let`. Кроме некоторых едва уловимых деталей, правила области видимости будут вести себя точно также, как мы видели в функциях:
 
 ```js
 function foo() {
@@ -434,75 +434,75 @@ foo();
 // 5 7 9
 ```
 
-Because of using `let` instead of `var`, `b` will belong only to the `if` statement and thus not to the whole `foo()` function's scope. Similarly, `c` belongs only to the `while` loop. Block scoping is very useful for managing your variable scopes in a more fine-grained fashion, which can make your code much easier to maintain over time.
+Из-за использования `let` вместо `var`, `b` будет принадлежать только оператору `if` и следовательно не всей области видимости функции `foo()`. Точно также `c` принадлежит только циклу `while`. Блочная область действия очень полезна для управления областями ваших переменных более точно, что может сделать ваш код более легким в обслуживании в долгосрочной перспективе.
 
-**Note:** For more information about scope, see the *Scope & Closures* title of this series. See the *ES6 & Beyond* title of this series for more information about `let` block scoping.
+**Примечание:** Более детальная информация об области действия есть в книге *Область действия и замыкания* этой серии. См. книгу *ES6 и за ее пределами* этой серии чтобы узнать больше о блочной области действия `let`.
 
-## Conditionals
+## Условные операторы
 
-In addition to the `if` statement we introduced briefly in Chapter 1, JavaScript provides a few other conditionals mechanisms that we should take a look at.
+В дополнение к оператору `if`, который мы кратко представили в главе 1, JavaScript предоставляет несколько других механизмов условных операторов, на которые нам следует взглянуть.
 
-Sometimes you may find yourself writing a series of `if..else..if` statements like this:
+Иногда вы ловите себя на том, что пишете серию операторов `if..else..if` примерно как тут:
 
 ```js
 if (a == 2) {
-	// do something
+	// сделать что-то
 }
 else if (a == 10) {
-	// do another thing
+	// сделать что-то еще
 }
 else if (a == 42) {
-	// do yet another thing
+	// сделать еще одну вещь
 }
 else {
-	// fallback to here
+	// резервный вариант
 }
 ```
 
-This structure works, but it's a little verbose because you need to specify the `a` test for each case. Here's another option, the `switch` statement:
+Эта структура работает, но она немного слишком подробна, поскольку вам нужно указать проверку для `a` в каждом случае. Вот альтернативная возможность, оператор `switch`:
 
 ```js
 switch (a) {
 	case 2:
-		// do something
+    // сделать что-то
 		break;
 	case 10:
-		// do another thing
+    // сделать что-то еще
 		break;
 	case 42:
-		// do yet another thing
+    // сделать еще одну вещь
 		break;
 	default:
-		// fallback to here
+    // резервный вариант
 }
 ```
 
-The `break` is important if you want only the statement(s) in one `case` to run. If you omit `break` from a `case`, and that `case` matches or runs, execution will continue with the next `case`'s statements regardless of that `case` matching. This so called "fall through" is sometimes useful/desired:
+Оператор `break` важен, если вы хотите, чтобы выполнились операторы только одного `case`. Если вы опустите `break` в `case` и этот `case` подойдет или выполнится, выполнение продолжится в следующем операторе `case` независимо то того, подходит ли этот `case`. Этот так называемый "провал (fall through)" иногда полезен/желателен:
 
 ```js
 switch (a) {
 	case 2:
 	case 10:
-		// some cool stuff
+		// какие-то крутые вещи
 		break;
 	case 42:
-		// other stuff
+		// другие вещи
 		break;
 	default:
-		// fallback
+		// резерв
 }
 ```
 
-Here, if `a` is either `2` or `10`, it will execute the "some cool stuff" code statements.
+Здесь если `a` будет либо `2`, либо `10`, то выполнятся операторы "какие-то крутые вещи".
 
-Another form of conditional in JavaScript is the "conditional operator," often called the "ternary operator." It's like a more concise form of a single `if..else` statement, such as:
+Еще одна форма условного оператора в JavaScript -- это "условная операция", часто называемая "тернарная операция." Это примерно как более краткая форма отдельного оператора `if..else`, например:
 
 ```js
 var a = 42;
 
 var b = (a > 41) ? "hello" : "world";
 
-// similar to:
+// эквивалентно этому:
 
 // if (a > 41) {
 //    b = "hello";
@@ -512,68 +512,68 @@ var b = (a > 41) ? "hello" : "world";
 // }
 ```
 
-If the test expression (`a > 41` here) evaluates as `true`, the first clause (`"hello"`) results, otherwise the second clause (`"world"`) results, and whatever the result is then gets assigned to `b`.
+Если проверяемое выражение (здесь `a > 41`) вычисляется как `true`, результатом будет первая часть (`"hello"`), в противном случае результатом будет вторая часть (`"world"`) и затем независимо от результата он будет присвоен переменной `b`.
 
-The conditional operator doesn't have to be used in an assignment, but that's definitely the most common usage.
+Условная операция не обязательно должна использоваться в присвоении, но это самое распространенное ее использование.
 
-**Note:** For more information about testing conditions and other patterns for `switch` and `? :`, see the *Types & Grammar* title of this series.
+**Примечание:** Более детальная информация об условиях проверки и других шаблонах для `switch` и `? :` есть в книге *Типы и грамматика* этой серии.
 
-## Strict Mode
+## Строгий режим (Strict Mode)
 
-ES5 added a "strict mode" to the language, which tightens the rules for certain behaviors. Generally, these restrictions are seen as keeping the code to a safer and more appropriate set of guidelines. Also, adhering to strict mode makes your code generally more optimizable by the engine. Strict mode is a big win for code, and you should use it for all your programs.
+ES5 добавила "строгий режим" в язык, который ужесточил правила для определенных сценариев. В общем-то, эти ограничения выглядят как большее соответствие кода более безопасному и более подходящему набору рекомендаций. Также, тяготение к строгому режиму сделает ваш код более оптимизируемым средой исполнения. Строгий режим -- это большая победа для кода и вам следует использовать его во всех своих программах.
 
-You can opt in to strict mode for an individual function, or an entire file, depending on where you put the strict mode pragma:
+Вы можете явно указать его для отдельной функции или целого файла, в зависимости от того, где вы разместите директиву строго режима:
 
 ```js
 function foo() {
 	"use strict";
 
-	// this code is strict mode
+	// этот код в строгом режиме
 
 	function bar() {
-		// this code is strict mode
+		// этот код в строгом режиме
 	}
 }
 
-// this code is not strict mode
+// этот код в нестрогом режиме
 ```
 
-Compare that to:
+Сравните с:
 
 ```js
 "use strict";
 
 function foo() {
-	// this code is strict mode
+	// этот код в строгом режиме
 
 	function bar() {
-		// this code is strict mode
+		// этот код в строгом режиме
 	}
 }
 
-// this code is strict mode
+// этот код в строгом режиме
 ```
 
-One key difference (improvement!) with strict mode is disallowing the implicit auto-global variable declaration from omitting the `var`:
+Всего одно ключевое отличие (улучшение!) строго режима -- запрет автоматического неявного объявления глобальных переменных из-за пропуска`var`:
 
 ```js
 function foo() {
-	"use strict";	// turn on strict mode
+	"use strict";	// включить строгий режим
 	a = 1;			// `var` missing, ReferenceError
 }
 
 foo();
 ```
 
-If you turn on strict mode in your code, and you get errors, or code starts behaving buggy, your temptation might be to avoid strict mode. But that instinct would be a bad idea to indulge. If strict mode causes issues in your program, almost certainly it's a sign that you have things in your program you should fix.
+Если вы включаете строгий режим в своем коде и получаете ошибки или код начинает вести себя ошибочно, у вас может возникнуть соблазн избегать строго режима. Но этот инстинкт -- плохая идея чтобы потворствовать этому. Если строгий режим является причиной проблем в вашей программе, почти определенно это знак того, что в вашей программе есть вещи, которые надо исправить.
 
-Not only will strict mode keep your code to a safer path, and not only will it make your code more optimizable, but it also represents the future direction of the language. It'd be easier on you to get used to strict mode now than to keep putting it off -- it'll only get harder to convert later!
+Строгий режим не только способствует большей безопасности вашего кода и не только делает ваш код более оптимизируемым, но и заодно показывает будущее направление языка. Вам будет легче привыкнуть к строгому режиму сейчас, чем продолжать откладывать его в сторону -- код будет сложнее потом сконвертировать!
 
-**Note:** For more information about strict mode, see the Chapter 5 of the *Types & Grammar* title of this series.
+**Примечание:** Более детальная информация о строгом режиме есть в главе 5 книги *Типы и грамматика* этой серии.
 
-## Functions As Values
+## Функции как значения
 
-So far, we've discussed functions as the primary mechanism of *scope* in JavaScript. You recall typical `function` declaration syntax as follows:
+До сих пор, мы обсуждали функции как основной механизм *области действия* в JavaScript. Вспомните синтаксис типичного объявления `функции`, указанный ниже:
 
 ```js
 function foo() {
@@ -581,13 +581,13 @@ function foo() {
 }
 ```
 
-Though it may not seem obvious from that syntax, `foo` is basically just a variable in the outer enclosing scope that's given a reference to the `function` being declared. That is, the `function` itself is a value, just like `42` or `[1,2,3]` would be.
+Хотя это может показаться очевидным из синтаксиса, `foo` -- по сути просто переменная во внешней окружающей области действия, у которой есть ссылка на объявляемую `функцию`. То есть, `функция` сама является значением, также как  `42` или `[1,2,3]`.
 
-This may sound like a strange concept at first, so take a moment to ponder it. Not only can you pass a value (argument) *to* a function, but *a function itself can be a value* that's assigned to variables, or passed to or returned from other functions.
+Это может сперва прозвучать как странная идея, поэтому уделим время ее изучению. Вы не только можете передать значение (аргумент) *в* функцию, но и *сама функция может быть значением*, которое может быть присвоено переменным или передано, или возвращено из других функций.
 
-As such, a function value should be thought of as an expression, much like any other value or expression.
+В связи с этим, о значении-функции следует думать как о выражении, сродни любому другому значению или выражению.
 
-Consider:
+Пример:
 
 ```js
 var foo = function() {
@@ -599,17 +599,17 @@ var x = function bar(){
 };
 ```
 
-The first function expression assigned to the `foo` variable is called *anonymous* because it has no `name`.
+Первое функциональное выражение, присваиваемое переменной `foo`, называется *анонимным* поскольку у него нет `имени`.
 
-The second function expression is *named* (`bar`), even as a reference to it is also assigned to the `x` variable. *Named function expressions* are generally more preferable, though *anonymous function expressions* are still extremely common.
+Второе функциональное выражение *именованное* (`bar`), несмотря на то, что является ссылкой, также присваивается переменной `x`. *Выражения с именованными функциями* как правило более предпочтительны, хотя *выражения с анонимными функциями* все еще чрезвычайно употребительны.
 
-For more information, see the *Scope & Closures* title of this series.
+Более детальная информация есть в книге *Область действия и замыкания* этой серии.
 
-### Immediately Invoked Function Expressions (IIFEs)
+### Выражения немедленно вызываемых функций (Immediately Invoked Function Expressions (IIFEs))
 
-In the previous snippet, neither of the function expressions are executed -- we could if we had included `foo()` or `x()`, for instance.
+В предыдущем примере, ни одно из выражений с функциями не выполнялось, мы могли бы это сделать включив в код `foo()` или `x()`, например.
 
-There's another way to execute a function expression, which is typically referred to as an *immediately invoked function expression* (IIFE):
+Есть еще один путь выполнить выражение с функцией, на который обычно ссылаются как на *immediately invoked function expression* (IIFE):
 
 ```js
 (function IIFE(){
@@ -618,27 +618,27 @@ There's another way to execute a function expression, which is typically referre
 // "Hello!"
 ```
 
-The outer `( .. )` that surrounds the `(function IIFE(){ .. })` function expression is just a nuance of JS grammar needed to prevent it from being treated as a normal function declaration.
+Внешние `( .. )`, которые окружают выражение функции `(function IIFE(){ .. })`  -- это всего лишь нюанс грамматики JS, необходимый для предотвращения  того, чтобы это выражение воспринималось как объявление обычной функции.
 
-The final `()` on the end of the expression -- the `})();` line -- is what actually executes the function expression referenced immediately before it.
+Последние `()` в конце выражения, строка `})();` -- это то, что и выполняет выражение с функцией, указанное сразу перед ним.
 
-That may seem strange, but it's not as foreign as first glance. Consider the similarities between `foo` and `IIFE` here:
+Может показаться странным, но это не так уж чужеродно, как кажется на первый взгляд. Посмотрите на сходства между `foo` и `IIFE` тут:
 
 ```js
 function foo() { .. }
 
-// `foo` function reference expression,
-// then `()` executes it
+// `foo` выражение со ссылкой на функцию,
+// затем `()` выполняют ее
 foo();
 
-// `IIFE` function expression,
-// then `()` executes it
+// Выражение с функцией `IIFE`,
+// затем `()` выполняют ее
 (function IIFE(){ .. })();
 ```
 
-As you can see, listing the `(function IIFE(){ .. })` before its executing `()` is essentially the same as including `foo` before its executing `()`; in both cases, the function reference is executed with `()` immediately after it.
+Как видите, содержимое `(function IIFE(){ .. })` до ее вызова в `()`  фактически такое же, как включение `foo` до его вызова после `()`. В обоих случаях ссылка на функцию выполняется с помощью `()` сразу после них.
 
-Because an IIFE is just a function, and functions create variable *scope*, using an IIFE in this fashion is often used to declare variables that won't affect the surrounding code outside the IIFE:
+Так как IIFE -- просто функция, а функции создают *область действия* переменных, то использование IIFE таким образом обычно происходит, чтобы объявлять переменные, которые не будут влиять на код, окружающий IIFE снаружи:
 
 ```js
 var a = 42;
@@ -651,7 +651,7 @@ var a = 42;
 console.log( a );		// 42
 ```
 
-IIFEs can also have return values:
+Функции IIFE также могут возвращать значения:
 
 ```js
 var x = (function IIFE(){
@@ -661,22 +661,22 @@ var x = (function IIFE(){
 x;	// 42
 ```
 
-The `42` value gets `return`ed from the `IIFE`-named function being executed, and is then assigned to `x`.
+Значение `42` `возвращается` из выполненной `IIFE` функции, а затем присваивается в `x`.
 
-### Closure
+### Замыкание
 
-*Closure* is one of the most important, and often least understood, concepts in JavaScript. I won't cover it in deep detail here, and instead refer you to the *Scope & Closures* title of this series. But I want to say a few things about it so you understand the general concept. It will be one of the most important techniques in your JS skillset.
+*Замыкание* -- одно из самых важных и зачастую наименее понятных концепций в JavaScript. Я не буду вдаваться в подробности сейчас, а вместо этого направляю вас в книгу *Область действия и замыкания* этой серии. Но я хотел бы сказать несколько слов о них, чтобы вы понимали общую концепцию. Это будет одна из самых важных техник в вашем наборе навыков в JS.
 
-You can think of closure as a way to "remember" and continue to access a function's scope (its variables) even once the function has finished running.
+Вы можете думать о замыкании как о пути "запомнить" и продолжить работу в области действия функции (с ее переменными) даже когда функция уже закончила свою работу.
 
-Consider:
+Проиллюстрируем:
 
 ```js
 function makeAdder(x) {
-	// parameter `x` is an inner variable
+	// параметр `x` - внутренная переменная
 
-	// inner function `add()` uses `x`, so
-	// it has a "closure" over it
+	// внутренняя функция `add()` использует `x`, поэтому
+	// у нее есть "замыкание" на нее
 	function add(y) {
 		return y + x;
 	};
@@ -685,17 +685,17 @@ function makeAdder(x) {
 }
 ```
 
-The reference to the inner `add(..)` function that gets returned with each call to the outer `makeAdder(..)` is able to remember whatever `x` value was passed in to `makeAdder(..)`. Now, let's use `makeAdder(..)`:
+Ссылка на внутреннюю функцию `add(..)`, которая возвращается с каждым вызовом внешней `makeAdder(..)`, умеет запоминать какое значение `x` было передано в `makeAdder(..)`. Теперь, давайте используем `makeAdder(..)`:
 
 ```js
-// `plusOne` gets a reference to the inner `add(..)`
-// function with closure over the `x` parameter of
-// the outer `makeAdder(..)`
+// `plusOne` получает ссылку на внутреннюю функцию `add(..)`
+// с замыканием на параметре `x` 
+// внешней `makeAdder(..)`
 var plusOne = makeAdder( 1 );
 
-// `plusTen` gets a reference to the inner `add(..)`
-// function with closure over the `x` parameter of
-// the outer `makeAdder(..)`
+// `plusTen` получает ссылку на внутреннюю функцию `add(..)`
+// с замыканием на параметре `x`
+// внешней `makeAdder(..)`
 var plusTen = makeAdder( 10 );
 
 plusOne( 3 );		// 4  <-- 1 + 3
@@ -704,22 +704,22 @@ plusOne( 41 );		// 42 <-- 1 + 41
 plusTen( 13 );		// 23 <-- 10 + 13
 ```
 
-More on how this code works:
+Теперь подробней о том, как работает этот код:
 
-1. When we call `makeAdder(1)`, we get back a reference to its inner `add(..)` that remembers `x` as `1`. We call this function reference `plusOne(..)`.
-2. When we call `makeAdder(10)`, we get back another reference to its inner `add(..)` that remembers `x` as `10`. We call this function reference `plusTen(..)`.
-3. When we call `plusOne(3)`, it adds `3` (its inner `y`) to the `1` (remembered by `x`), and we get `4` as the result.
-4. When we call `plusTen(13)`, it adds `13` (its inner `y`) to the `10` (remembered by `x`), and we get `23` as the result.
+1. Когда мы вызываем `makeAdder(1)`, мы получаем обратно ссылку на ее внутреннюю `add(..)`, которая запоминает `x` как `1`. Мы назвали эту ссылку на функцию `plusOne(..)`.
+2. Когда мы вызываем `makeAdder(10)`, мы получаем обратно ссылку на ее внутреннюю `add(..)`, которая запоминает `x` как `10`. Мы назвали эту ссылку на функцию `plusTen(..)`.
+3. Когда мы вызываем `plusOne(3)`, она прибавляет `3` (свою внутреннюю `y`) к `1` (которая запомнена в `x`) и мы получаем в качестве результата `4`.
+4. Когда мы вызываем `plusTen(13)`, она прибавляет `13` (свою внутреннюю `y`) к `10` (которая запомнена в `x`), и мы получаем в качестве результата `23`.
 
-Don't worry if this seems strange and confusing at first -- it can be! It'll take lots of practice to understand it fully.
+Не волнуйтесь, если всё это кажется странным и сбивающим с толку поначалу -- это нормально! Понадобится много практики чтобы всё это полностью понять.
 
-But trust me, once you do, it's one of the most powerful and useful techniques in all of programming. It's definitely worth the effort to let your brain simmer on closures for a bit. In the next section, we'll get a little more practice with closure.
+Но поверьте мне, как только вы это освоите, это будет одной из самых мощных и полезных техник во всем программировании. Определенно стоит приложить усилия чтобы ваши мозги немного покипели над замыканиями. В следующем разделе, мы немного попрактикуемся с замыканиями.
 
-#### Modules
+#### Модули
 
-The most common usage of closure in JavaScript is the module pattern. Modules let you define private implementation details (variables, functions) that are hidden from the outside world, as well as a public API that *is* accessible from the outside.
+Самое распространенное использование замыкания в JavaScript -- это модульный шаблон. Модули позволяют определять частные детали реализации (переменные, функции), которые скрыты от внешнего мира, а также публичное API, которое *доступно* снаружи.
 
-Consider:
+Представим:
 
 ```js
 function User(){
@@ -729,7 +729,7 @@ function User(){
 		username = user;
 		password = pw;
 
-		// do the rest of the login work
+		// сделать остальную часть работы по логину
 	}
 
 	var publicAPI = {
@@ -739,41 +739,41 @@ function User(){
 	return publicAPI;
 }
 
-// create a `User` module instance
+// создать экземпляр модуля `User`
 var fred = User();
 
 fred.login( "fred", "12Battery34!" );
 ```
 
-The `User()` function serves as an outer scope that holds the variables `username` and `password`, as well as the inner `doLogin()` function; these are all private inner details of this `User` module that cannot be accessed from the outside world.
+Функция `User()` служит как внешняя область видимости, которая хранит переменные `username` и `password`, а также внутреннюю функцию `doLogin()`. Всё это частные внутренние детали этого модуля `User`, которые недоступны из внешнего мира.
 
-**Warning:** We are not calling `new User()` here, on purpose, despite the fact that probably seems more common to most readers. `User()` is just a function, not a class to be instantiated, so it's just called normally. Using `new` would be inappropriate and actually waste resources.
+**Предупреждение:** Мы не вызываем тут `new User()` намеренно, несмотря на тот факт, что это будет более естественно для большинства читателей. `User()` -- просто функция, а не класс, поэтому она вызывается обычным образом. Использование `new` было бы неуместным и еще и тратой попусту ресурсов.
 
-Executing `User()` creates an *instance* of the `User` module -- a whole new scope is created, and thus a whole new copy of each of these inner variables/functions. We assign this instance to `fred`. If we run `User()` again, we'd get a new instance entirely separate from `fred`.
+При выполнении `User()` создается *экземпляр* модуля `User` и создается целая новая область действия и также совершенно новая копия каждой из этих внутренних переменных/функций. Мы присваиваем этот экземпляр в `fred`. Если мы запустим `User()` снова, мы получим новый экземпляр, целиком отдельный от `fred`.
 
-The inner `doLogin()` function has a closure over `username` and `password`, meaning it will retain its access to them even after the `User()` function finishes running.
+У внутренней функции `doLogin()` есть замыкание на `username` и `password`, что значит, что она сохранит свой доступ к ним даже после того, как функция `User()` завершит свое выполнение.
 
-`publicAPI` is an object with one property/method on it, `login`, which is a reference to the inner `doLogin()` function. When we return `publicAPI` from `User()`, it becomes the instance we call `fred`.
+`publicAPI` -- это объект с одним свойством/методом, `login`, который является ссылкой на внутреннюю функцию `doLogin()`. Когда вы возвращаем  `publicAPI` из `User()`, он становится экземпляром, который мы назвали `fred`.
 
-At this point, the outer `User()` function has finished executing. Normally, you'd think the inner variables like `username` and `password` have gone away. But here they have not, because there's a closure in the `login()` function keeping them alive.
+На данный момент, внешняя функция `User()` закончила выполнение. Как правило, вы думаете, что внутренние переменные, такие как `username` и `password`, при этом исчезают. Но они никуда не деваются, потому что есть замыкание в функции `login()`, хранящее их.
 
-That's why we can call `fred.login(..)` -- the same as calling the inner `doLogin(..)` -- and it can still access `username` and `password` inner variables.
+Вот поэтому мы можем вызвать `fred.login(..)`, что тоже самое, что вызвать внутреннюю `doLogin(..)` и у нее все еще будет доступ ко внутренним переменным `username` и `password`.
 
-There's a good chance that with just this brief glimpse at closure and the module pattern, some of it is still a bit confusing. That's OK! It takes some work to wrap your brain around it.
+Есть большой шанс, что кратко бросив взгляд на замыкание и шаблон модуля, кое-что останется неясным. Ничего страшного! Понадобится некоторая работа, чтобы намотать всё это на ус.
 
-From here, go read the *Scope & Closures* title of this series for a much more in-depth exploration.
+Отсюда сходите почитать книгу *Область действия и замыкания* этой серии для получения более детальных объяснений.
 
-## `this` Identifier
+## Идентификатор `this`
 
-Another very commonly misunderstood concept in JavaScript is the `this` identifier. Again, there's a couple of chapters on it in the *this & Object Prototypes* title of this series, so here we'll just briefly introduce the concept.
+Еще одна очень часто неверно понимаемая концепция в JavaScript -- это идентификатор `this`. И опять таки, есть пара глав по нему в книге *this и прототипы объектов* этой серии, поэтому здесь мы только кратко его рассмотрим.
 
-While it may often seem that `this` is related to "object-oriented patterns," in JS `this` is a different mechanism.
+При том что может часто казаться, что этот `this` связан с "объектно-ориентированным шаблонами," в JS `this` -- это другой механизм.
 
-If a function has a `this` reference inside it, that `this` reference usually points to an `object`. But which `object` it points to depends on how the function was called.
+Если у функции есть внутри ссылка `this`, эта ссылка `this` обычно указывает на `объект`. Но на какой `объект` она указывает зависит от того, как эта функция была вызвана.
 
-It's important to realize that `this` *does not* refer to the function itself, as is the most common misconception.
+Важно представлять, что `this` *не* ссылается на саму функцию, учитывая, что это самое распространенное неверное представление.
 
-Here's a quick illustration:
+Вот краткая иллюстрация:
 
 ```js
 function foo() {
@@ -799,70 +799,70 @@ foo.call( obj2 );	// "obj2"
 new foo();			// undefined
 ```
 
-There are four rules for how `this` gets set, and they're shown in those last four lines of that snippet.
+Есть четыре правила того, как устанавливается `this` и они показаны в этих четырех последних строках кода.
 
-1. `foo()` ends up setting `this` to the global object in non-strict mode -- in strict mode, `this` would be `undefined` and you'd get an error in accessing the `bar` property -- so `"global"` is the value found for `this.bar`.
-2. `obj1.foo()` sets `this` to the `obj1` object.
-3. `foo.call(obj2)` sets `this` to the `obj2` object.
-4. `new foo()` sets `this` to a brand new empty object.
+1. `foo()` заканчивается установкой `this` в глобальный объект в нестрогом режиме. В строгом режиме, `this` будет `undefined` и вы получите ошибку при доступе к свойству `bar`, поэтому `"global"` -- это значение для `this.bar`.
+2. `obj1.foo()` устанавливает `this` в объект `obj1`.
+3. `foo.call(obj2)` устанавливает `this` в объект `obj2`.
+4. `new foo()` устанавливает `this` в абсолютно новый пустой объект.
 
-Bottom line: to understand what `this` points to, you have to examine how the function in question was called. It will be one of those four ways just shown, and that will then answer what `this` is.
+Резюме: чтобы понять на что указывает `this`, вы должны проверить как вызывалась на самом деле функция. Это будет один из тех четырех путей, только что показанных, и это то, что поможет потом ответить на вопрос что будет в `this`.
 
-**Note:** For more information about `this`, see Chapters 1 and 2 of the *this & Object Prototypes* title of this series.
+**Примечание:** Более детальная информация о `this` есть в главах 1 и 2 книги *this и прототипы объектов* этой серии.
 
-## Prototypes
+## Прототипы
 
-The prototype mechanism in JavaScript is quite complicated. We will only glance at it here. You will want to spend plenty of time reviewing Chapters 4-6 of the *this & Object Prototypes* title of this series for all the details.
+Механизм прототипов в JavaScript довольно сложен. Здесь мы только взглянем на него немного. Вам захочется потратить много времени изучая главы 4-6 книги *this и прототипы объектов* этой серии чтобы получить детальную информацию.
 
-When you reference a property on an object, if that property doesn't exist, JavaScript will automatically use that object's internal prototype reference to find another object to look for the property on. You could think of this almost as a fallback if the property is missing.
+Когда вы ссылаетесь на свойство объекта, то если это свойство не существует, JavaScript автоматически использует ссылку на внутренний прототип этого объекта чтобы найти другой объект, чтобы поискать свойство там. Можете думать об этом почти как о резервном варианте когда свойство отсутствует.
 
-The internal prototype reference linkage from one object to its fallback happens at the time the object is created. The simplest way to illustrate it is with a built-in utility called `Object.create(..)`.
+Связывание ссылки на внутренний прототип от объекта к его резервному варианту происходит в момент когда объект создается. Простейший путь проиллюстрировать это -- с помощью вызова встроенной функции `Object.create(..)`.
 
-Consider:
+Пример:
 
 ```js
 var foo = {
 	a: 42
 };
 
-// create `bar` and link it to `foo`
+// создаем `bar` и связываем его с `foo`
 var bar = Object.create( foo );
 
 bar.b = "hello world";
 
 bar.b;		// "hello world"
-bar.a;		// 42 <-- delegated to `foo`
+bar.a;		// 42 <-- делегируется в `foo`
 ```
 
-It may help to visualize the `foo` and `bar` objects and their relationship:
+Следующая картинка поможет визуально показать объекты `foo` и `bar` и их связь:
 
 <img src="fig6.png">
 
-The `a` property doesn't actually exist on the `bar` object, but because `bar` is prototype-linked to `foo`, JavaScript automatically falls back to looking for `a` on the `foo` object, where it's found.
+Свойство `a` в действительности не существует в объекте `bar`, но поскольку  `bar` прототипно связан с `foo`, JavaScript автоматически прибегает к поиску `a` в объекте `foo`, где оно и находится.
 
-This linkage may seem like a strange feature of the language. The most common way this feature is used -- and I would argue, abused -- is to try to emulate/fake a "class" mechanism with "inheritance."
+Такая связь может показаться странной возможностью языка. Самый распространенный способ ею пользоваться, и я бы поспорил, что неправильно -- пытаться эмулировать механизм "классов" "наследование".
 
-But a more natural way of applying prototypes is a pattern called "behavior delegation," where you intentionally design your linked objects to be able to *delegate* from one to the other for parts of the needed behavior.
+Но более естественный путь применения прототипов -- шаблон, называемый  "делегирование поведения", когда вы намеренно проектируете свои связанные объекты так, чтобы они могли *делегировать* от одного к другому части необходимого поведения.
 
-**Note:** For more information about prototypes and behavior delegation, see Chapters 4-6 of the *this & Object Prototypes* title of this series.
+**Примечание:** Более детальная информация о прототипах и делегировании поведения есть в главах 4-6 книги *this & прототипы объектов* этой серии.
 
-## Old & New
+## Старый и новый
 
-Some of the JS features we've already covered, and certainly many of the features covered in the rest of this series, are newer additions and will not necessarily be available in older browsers. In fact, some of the newest features in the specification aren't even implemented in any stable browsers yet.
+Некоторые из возможностей JS, которые мы уже рассмотрели, и конечно многие возможности, рассмотренные в оставшихся книгах серии, являются достаточно новыми дополнениями и не обязательно будут доступны в более старых браузерах. По факту, некоторые новейшие возможности в спецификации еще не реализованы ни в одной из стабильных версий браузеров.
 
-So, what do you do with the new stuff? Do you just have to wait around for years or decades for all the old browsers to fade into obscurity?
+Так что же вам делать со всеми этими новыми вещами? Нужно ли ждать годы или десятилетия чтобы все старые браузеры канули в лету?
 
-That's how many people think about the situation, but it's really not a healthy approach to JS.
+Именно так думаю многие люди об этой ситуации, но это совсем не здравый подход к JS.
 
-There are two main techniques you can use to "bring" the newer JavaScript stuff to the older browsers: polyfilling and transpiling.
+Есть две основные техники, которыми можно пользоваться чтобы "привнести" более новые возможности JavaScript в старые браузеры: полифиллинг (polyfilling) и транспиляция (transpiling).
 
-### Polyfilling
+### Полифиллинг (polyfilling)
 
-The word "polyfill" is an invented term (by Remy Sharp) (https://remysharp.com/2010/10/08/what-is-a-polyfill) used to refer to taking the definition of a newer feature and producing a piece of code that's equivalent to the behavior, but is able to run in older JS environments.
+Слово "polyfill" -- изобретенный термин (Реми Шарпом) (https://remysharp.com/2010/10/08/what-is-a-polyfill), используется для указания на взятие определения новой возможности и генерации кода, эквивалентного этому поведению, но с возможностью запуска в более старых окружениях JS.
 
-For example, ES6 defines a utility called `Number.isNaN(..)` to provide an accurate non-buggy check for `NaN` values, deprecating the original `isNaN(..)` utility. But it's easy to polyfill that utility so that you can start using it in your code regardless of whether the end user is in an ES6 browser or not.
+Например, ES6 определяет функцию, называемую `Number.isNaN(..)` для обеспечения точной безошибочной проверки на значения `NaN`, отмечая как устаревшую исходную функцию `isNaN(..)`. Но очень легко заполифиллить эту функцию, чтобы вы могли пользоваться ею в вашем коде независимо от того, поддерживает браузер ES6 или нет.
 
-Consider:
+Пример:
 
 ```js
 if (!Number.isNaN) {
@@ -872,31 +872,31 @@ if (!Number.isNaN) {
 }
 ```
 
-The `if` statement guards against applying the polyfill definition in ES6 browsers where it will already exist. If it's not already present, we define `Number.isNaN(..)`.
+Оператор `if` защищает против применения полифильного определения в браузерах с ES6, где функция уже есть. Если она еще не существует, мы определяем `Number.isNaN(..)`.
 
-**Note:** The check we do here takes advantage of a quirk with `NaN` values, which is that they're the only value in the whole language that is not equal to itself. So the `NaN` value is the only one that would make `x !== x` be `true`.
+**Примечание:** Проверка, которую мы тут выполняем, использует преимущество причудливости значения `NaN`, которое заключается в том, что оно является единственным значением во всем языке, которое не равно самому себе. Поэтому значение `NaN` -- единственное, которое может сделать условие `x !== x`  `истинным`.
 
-Not all new features are fully polyfillable. Sometimes most of the behavior can be polyfilled, but there are still small deviations. You should be really, really careful in implementing a polyfill yourself, to make sure you are adhering to the specification as strictly as possible.
+Не все новые возможностью полностью полифильны. Иногда большая часть поведения может быть сполифиллена, но еще есть пока что небольшие отступления. Вы должны быть очень, очень осторожны реализуя полифиллинг сами, следя за тем, чтобы придерживаться спецификации настолько строго, насколько возможно.
 
-Or better yet, use an already vetted set of polyfills that you can trust, such as those provided by ES5-Shim (https://github.com/es-shims/es5-shim) and ES6-Shim (https://github.com/es-shims/es6-shim).
+Или даже лучше используйте уже проверенный набор полифиллов, которому вы можете доверять, вроде тех, что предоставляются ES5-Shim (https://github.com/es-shims/es5-shim) и ES6-Shim (https://github.com/es-shims/es6-shim).
 
-### Transpiling
+### Транспиляция (Transpiling)
 
-There's no way to polyfill new syntax that has been added to the language. The new syntax would throw an error in the old JS engine as unrecognized/invalid.
+Не существует возможности полифиллить новый синтаксис, который был добавлен в язык. Новый синтаксис вызовет ошибку в старой среде исполнения JS как  нераспознанный/невалидный.
 
-So the better option is to use a tool that converts your newer code into older code equivalents. This process is commonly called "transpiling," a term for transforming + compiling.
+Поэтому лучшим выбором будет использовать утилиту, которая конвертирует ваш более новый код в эквивалент более старого. Этот процесс обычно называют "транспиляцией", как объединение терминов трансформация и компиляция (transforming + compiling).
 
-Essentially, your source code is authored in the new syntax form, but what you deploy to the browser is the transpiled code in old syntax form. You typically insert the transpiler into your build process, similar to your code linter or your minifier.
+По большому счету, ваш исходный код написан в новом синтаксисе, но то, что вы развертываете в браузере -- это транспилированный код со старым синтаксисом. Вы обычно вставляете транспилятор в ваш процесс сборки, примерно так же как linter или minifier.
 
-You might wonder why you'd go to the trouble to write new syntax only to have it transpiled away to older code -- why not just write the older code directly?
+Вы могли бы удивиться, а почему идете на неприятности, чтобы писать только в новом синтаксисе, чтобы потом транспилировать его в старый код? Почему бы просто не писать напрямую в старом синтаксисе?
 
-There are several important reasons you should care about transpiling:
+Есть несколько важных причин, чтобы вы позаботились о транспиляции:
 
-* The new syntax added to the language is designed to make your code more readable and maintainable. The older equivalents are often much more convoluted. You should prefer writing newer and cleaner syntax, not only for yourself but for all other members of the development team.
-* If you transpile only for older browsers, but serve the new syntax to the newest browsers, you get to take advantage of browser performance optimizations with the new syntax. This also lets browser makers have more real-world code to test their implementations and optimizations on.
-* Using the new syntax earlier allows it to be tested more robustly in the real world, which provides earlier feedback to the JavaScript committee (TC39). If issues are found early enough, they can be changed/fixed before those language design mistakes become permanent.
+* Новый синтаксис, добавленный в язык, разрабатывается чтобы заставить ваш код быть более читаемым и обслуживаемым. Старые эквиваленты часто намного более запутанны. Следует предпочитать писать с помощью более нового и ясного синтаксиса, не только для себя, но и для всех остальных членов команды разработки.
+* Если вы транспилируете только для старых браузеров, но используете новый синтаксис в новейших браузерах, вы получаете преимущество оптимизации производительности браузера с помощью нового синтаксиса. Это также позволяет разработчикам браузеров делать код более приближенным к жизни для проверки их реализаций и оптимизаций.
+* Использование нового синтаксиса как можно раньше позволяет ему быть протестированным более тесно в реальном мире, что обеспечивает более ранние отзывы в комитет JavaScript (TC39). Если проблемы обнаружены достаточно рано, их можно изменить/устранить до того, как эти ошибки дизайна языка станут постоянными.
 
-Here's a quick example of transpiling. ES6 adds a feature called "default parameter values." It looks like this:
+Вот быстрый пример транспиляции. ES6 добавляет возможность, называемую  "значения параметров по умолчанию". Это выглядит примерно так:
 
 ```js
 function foo(a = 2) {
@@ -907,7 +907,7 @@ foo();		// 2
 foo( 42 );	// 42
 ```
 
-Simple, right? Helpful, too! But it's new syntax that's invalid in pre-ES6 engines. So what will a transpiler do with that code to make it run in older environments?
+Просто, правда? Еще и полезно! Но это как раз новый синтаксис, который будет считаться невалидным в до-ES6 средах исполнения. Так что же транспилятор сделает с этим кодом, чтобы заставить его работать в более старых средах исполнения?
 
 ```js
 function foo() {
@@ -916,47 +916,47 @@ function foo() {
 }
 ```
 
-As you can see, it checks to see if the `arguments[0]` value is `void 0` (aka `undefined`), and if so provides the `2` default value; otherwise, it assigns whatever was passed.
+Как видите, он проверяет, что значение `arguments[0]` -- `void 0` (т.е. `undefined`) и если да, то предоставляет значение по умолчанию `2`, иначе он присваивает то, что было передано.
 
-In addition to being able to now use the nicer syntax even in older browsers, looking at the transpiled code actually explains the intended behavior more clearly.
+В дополнение к тому, что теперь можно использовать привлекательный синтаксис даже в старых браузерах, транспилированный код фактически делает заданное поведение яснее.
 
-You may not have realized just from looking at the ES6 version that `undefined` is the only value that can't get explicitly passed in for a default-value parameter, but the transpiled code makes that much more clear.
+Возможно вы даже не представляли себе просто глядя на версию ES6, что `undefined` -- единственное значение, которое не может быть явно задано значением по умолчанию для параметра, но транспилированный код показывает это гораздо лучше.
 
-The last important detail to emphasize about transpilers is that they should now be thought of as a standard part of the JS development ecosystem and process. JS is going to continue to evolve, much more quickly than before, so every few months new syntax and new features will be added.
+Последняя важная деталь, чтобы сделать акцент на транспиляторах -- то, что о них следует думать как о стандартной части экосистемы и процесса разработки на JS. JS будет продолжать эволюционировать, намного быстрее, чем прежде, поэтому каждые несколько месяцев будут добавляться новый синтаксис и новые возможности.
 
-If you use a transpiler by default, you'll always be able to make that switch to newer syntax whenever you find it useful, rather than always waiting for years for today's browsers to phase out.
+Если вы по умолчанию используете транспилятор, вы всегда сможете переключиться на новый синтаксис, когда бы ни захотели, нежели всегда ждать годы чтобы сегодняшние браузеры вышли из употребления.
 
-There are quite a few great transpilers for you to choose from. Here are some good options at the time of this writing:
+Есть довольно много отличных транспиляторов для выбора. Вот несколько из них на момент написания этого текста:
 
-* Babel (https://babeljs.io) (formerly 6to5): Transpiles ES6+ into ES5
-* Traceur (https://github.com/google/traceur-compiler): Transpiles ES6, ES7, and beyond into ES5
+* Babel (https://babeljs.io) (бывший 6to5): Транспилирует из ES6+ в ES5
+* Traceur (https://github.com/google/traceur-compiler): Транспилирует из  ES6, ES7 и далее в ES5
 
-## Non-JavaScript
+## Не-JavaScript
 
-So far, the only things we've covered are in the JS language itself. The reality is that most JS is written to run in and interact with environments like browsers. A good chunk of the stuff that you write in your code is, strictly speaking, not directly controlled by JavaScript. That probably sounds a little strange.
+На данный момент, мы рассмотрели только вещи, касающиеся самого языка JS. Реальность такова, что большая часть JS написана для запуска и взаимодействия с такими средами как браузеры. Добрая часть вещей, которые вы пишете в своем коде, строго говоря, не контролируется напрямую JavaScript. Возможно это звучит несколько странно.
 
-The most common non-JavaScript JavaScript you'll encounter is the DOM API. For example:
+Самый распространенный не-JavaScript JavaScript, с которым вы столкнетесь -- это DOM API. Например:
 
 ```js
 var el = document.getElementById( "foo" );
 ```
 
-The `document` variable exists as a global variable when your code is running in a browser. It's not provided by the JS engine, nor is it particularly controlled by the JavaScript specification. It takes the form of something that looks an awful lot like a normal JS `object`, but it's not really exactly that. It's a special `object,` often called a "host object."
+Переменная `document` существует как глобальная переменная, когда ваш код выполняется в браузере. Она не обеспечивается ни средой исполнения JS, ни особенно не контролируется спецификацией JavaScript. Она принимает форму чего-то очень ужасного похожего на обычный JS `объект`, но не является им на самом деле. Это -- специальный `объект,` часто называемый "хост-объектом."
 
-Moreover, the `getElementById(..)` method on `document` looks like a normal JS function, but it's just a thinly exposed interface to a built-in method provided by the DOM from your browser. In some (newer-generation) browsers, this layer may also be in JS, but traditionally the DOM and its behavior is implemented in something more like C/C++.
+Более того, метод `getElementById(..)` в `document` выглядит как обычная функция JS, но это всего лишь кое-как открытый интерфейс к встроенному методу, предоставляемому DOM из вашего браузера. В некоторых (нового поколения) браузерах этот слой может быть на JS, но традиционно DOM и его поведение реализовано на чем-то вроде C/C++.
 
-Another example is with input/output (I/O).
+Еще один пример с вводом/выводом (I/O).
 
-Everyone's favorite `alert(..)` pops up a message box in the user's browser window. `alert(..)` is provided to your JS program by the browser, not by the JS engine itself. The call you make sends the message to the browser internals and it handles drawing and displaying the message box.
+Всеобщее любимое всплывающее окно `alert(..)` в пользовательском окне браузера. `alert(..)` предоставляется вашей программе на JS браузером, а не самой средой исполнения JS. Вызов, который вы делаете, отправляет сообщение во внутренности браузера и они обрабатывают отрисовку и отображение окна с сообщением.
 
-The same goes with `console.log(..)`; your browser provides such mechanisms and hooks them up to the developer tools.
+То же происходит и с `console.log(..)` -- ваш браузер предоставляет такие механизмы и подключает их к средствам разработчика.
 
-This book, and this whole series, focuses on JavaScript the language. That's why you don't see any substantial coverage of these non-JavaScript JavaScript mechanisms. Nevertheless, you need to be aware of them, as they'll be in every JS program you write!
+Эта книга и вся эта серия фокусируется на языке JavaScript. Поэтому вы не увидите какого-либо подробного раскрытия деталей об этих не-JavaScript механизмах JavaScript. Как бы то ни было, вам не нужно забывать о них, поскольку они будут в каждой программе на JS, которую вы напишете!
 
-## Review
+## Обзор
 
-The first step to learning JavaScript's flavor of programming is to get a basic understanding of its core mechanisms like values, types, function closures, `this`, and prototypes.
+Первый шаг в изучении духа программирования JavaScript -- получить первичное представление о его внутренних структурах, таких как значения, типы, замыкания функций, `this` и прототипы.
 
-Of course, each of these topics deserves much greater coverage than you've seen here, but that's why they have chapters and books dedicated to them throughout the rest of this series. After you feel pretty comfortable with the concepts and code samples in this chapter, the rest of the series awaits you to really dig in and get to know the language deeply.
+Конечно, каждая из этих тем заслуживает большего раскрытия, чем вы видели здесь, но именно поэтому есть главы и книги, посвященные им, на протяжении оставшихся книг серии. После того как вы почувствуете себя более уверенно в  концепциях и примерах кода в этой главе, оставшиеся книги серии ждут вас чтобы по-настоящему погрузиться и узнать язык основательно.
 
-The final chapter of this book will briefly summarize each of the other titles in the series and the other concepts they cover besides what we've already explored.
+Последняя глава этой книги коротко подведет итоги оставшихся книг серии и других принципов, которые они раскрывают, в дополнение к тем, что мы уже изучили.
