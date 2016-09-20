@@ -1,147 +1,123 @@
-# You Don't Know JS: Scope & Closures
-# Chapter 1: What is Scope?
+# Вы не знаете JS: Область видимости и замыкания
+# Глава 1: Что такое область видимости?
 
-One of the most fundamental paradigms of nearly all programming languages is the ability to store values in variables, and later retrieve or modify those values. In fact, the ability to store values and pull values out of variables is what gives a program *state*.
+Одна из самых фундаментальных парадигм почти всех языков программирования -- возможность сохранять значения в переменных, а позже извлекать или менять эти значения. Собственно, возможность хранить значения и извлекать значения из переменных -- это то, что дает программе *состояние*.
 
-Without such a concept, a program could perform some tasks, but they would be extremely limited and not terribly interesting.
+Без такого концепта программа могла бы выполнять некоторые задачи, но они были бы весьма ограничены и не были бы очень уж интересны.
 
-But the inclusion of variables into our program begets the most interesting questions we will now address: where do those variables *live*? In other words, where are they stored? And, most importantly, how does our program find them when it needs them?
+Но включение переменных в нашу программу порождает самые интересные вопросы, которые мы теперь зададим: где эти переменные *живут*? Другими словами, где они хранятся? И, что более важно, как наша программа их находит, когда нуждается в них?
 
-These questions speak to the need for a well-defined set of rules for storing variables in some location, and for finding those variables at a later time. We'll call that set of rules: *Scope*.
+Эти вопросы говорят о необходимости хорошо определенного набора правил для хранения переменных в некоем месте и для обнаружения эти переменных позднее. Мы назовем этот набор правил -- *Область видимости*.
 
-But, where and how do these *Scope* rules get set?
+Но где и как правила этих *областей видимости* устанавливаются?
 
-## Compiler Theory
+## Теория компиляторов
 
-It may be self-evident, or it may be surprising, depending on your level of interaction with various languages, but despite the fact that JavaScript falls under the general category of "dynamic" or "interpreted" languages, it is in fact a compiled language. It is *not* compiled well in advance, as are many traditionally-compiled languages, nor are the results of compilation portable among various distributed systems.
+Это может быть самоочевидно или это может удивлять, в зависимости от вашего уровня взаимодействия с различных языками, но несмотря на тот факт, что JavaScript подпадает под общую категорию "динамических" или "интерпретируемых" языков, на самом деле он является компилируемым языком. Он *не* компилируется заранее, как многие традиционно компилируемые языки, и результаты компиляции не являются переносимыми среди различных распределенных систем.
 
-But, nevertheless, the JavaScript engine performs many of the same steps, albeit in more sophisticated ways than we may commonly be aware, of any traditional language-compiler.
+Но, тем ни менее, среда исполнения JavaScript выполняет много тех же шагов, что и любой традиционный компилятор языка, хоть и более сложными способами, чем мы обычно можем представить.
 
-In traditional compiled-language process, a chunk of source code, your program, will undergo typically three steps *before* it is executed, roughly called "compilation":
+В традиционном процессе языковой компиляции, часть кода вашей программы обычно проходит три шага *до* того, как будет выполнена, в общих чертах называемых "компиляцией":
 
-1. **Tokenizing/Lexing:** breaking up a string of characters into meaningful (to the language) chunks, called tokens. For instance, consider the program: `var a = 2;`. This program would likely be broken up into the following tokens: `var`, `a`, `=`, `2`, and `;`. Whitespace may or may not be persisted as a token, depending on whether it's meaningful or not.
+1. **Разбиение на лексемы (Tokenizing/Lexing)**: разбиение строки символов  на имеющие смысл (для языка) части, называемые лексемами. Например, представьте программу: `var a = 2;`. Эта программа, вполне вероятно, будет разбита на следующие лексемы: `var`, `a`, `=`, `2` и `;`. Пробел может быть сохранен или не сохранен как лексема в зависимости от того имеет он смысл или нет.
 
-    **Note:** The difference between tokenizing and lexing is subtle and academic, but it centers on whether or not these tokens are identified in a *stateless* or *stateful* way. Put simply, if the tokenizer were to invoke stateful parsing rules to figure out whether `a` should be considered a distinct token or just part of another token, *that* would be **lexing**.
+    **Примечание:** Разница между *tokenizing* и *lexing* -- едва различима и теоретическая, но она сосредотачивается на том, идентифицируются ли эти лексемы как *без состояния* или *с состоянием*. Проще говоря, если токенизатор используется, чтобы вызывать правила парсинга с сохранением состояния для выяснения следует ли считать `a`  отдельной лексемой или только частью другой лексемы, *это* будет **lexing**.
 
-2. **Parsing:** taking a stream (array) of tokens and turning it into a tree of nested elements, which collectively represent the grammatical structure of the program. This tree is called an "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree).
+2. **Парсинг:** берет поток (массив) лексем и превращает его в дерево вложенных элементов, которые сообща представляют грамматическую структуру программы. Это дерево называется "AST" (<b>A</b>bstract <b>S</b>yntax <b>T</b>ree, дерево абстрактного синтаксиса).
 
-    The tree for `var a = 2;` might start with a top-level node called `VariableDeclaration`, with a child node called `Identifier` (whose value is `a`), and another child called `AssignmentExpression` which itself has a child called `NumericLiteral` (whose value is `2`).
+    Такое дерево для `var a = 2;` может начинаться с узла верхнего уровня с названием `VariableDeclaration`, с дочерним узлом `Identifier` (чье значение равно `a`) и еще одним дочерним узлом `AssignmentExpression`, у которого тоже есть дочерний узел `NumericLiteral` (чье значение равно `2`).
 
-3. **Code-Generation:** the process of taking an AST and turning it into executable code. This part varies greatly depending on the language, the platform it's targeting, etc.
+3. **Генерация кода:** процесс взятия AST и превращения его в исполняемый код. Эта часть сильно зависит от языка, платформы назначения и т.п..
 
-    So, rather than get mired in details, we'll just handwave and say that there's a way to take our above described AST for `var a = 2;` and turn it into a set of machine instructions to actually *create* a variable called `a` (including reserving memory, etc.), and then store a value into `a`.
+    Итак, вместо того, чтобы увязать в деталях, мы просто опустим их и скажем, что есть способ взять наше вышеописанное AST для `var a = 2;` и превратить его в набор машинных инструкций, чтобы в действительности *создать* переменную с именем `a` (включая выделение памяти и т.д.), а затем сохранить значение в `a`.
 
-    **Note:** The details of how the engine manages system resources are deeper than we will dig, so we'll just take it for granted that the engine is able to create and store variables as needed.
+    **Примечание:** подробности того, как движок управляет системными ресурсами, глубже, чем мы будем "копать", поэтому мы всего лишь примем на веру, что движок умеет создавать и сохранять переменные, когда необходимо.
 
-The JavaScript engine is vastly more complex than *just* those three steps, as are most other language compilers. For instance, in the process of parsing and code-generation, there are certainly steps to optimize the performance of the execution, including collapsing redundant elements, etc.
+Движок JavaScript гораздо сложнее, чем *только* эти три шага, как и большинство других языковых компиляторов. Например, в процессе парсинга и генерации кода безусловно есть шаги по оптимизации быстродействия выполнения, включая удаление лишних элементов.
 
-So, I'm painting only with broad strokes here. But I think you'll see shortly why *these* details we *do* cover, even at a high level, are relevant.
+Поэтому здесь я лишь очерчиваю границы. Но я думаю, что вы скоро увидите  почему *эти* детали, которые мы *обязательно* рассмотрим, хоть и на более высоком уровне, связаны.
 
-For one thing, JavaScript engines don't get the luxury (like other language compilers) of having plenty of time to optimize, because JavaScript compilation doesn't happen in a build step ahead of time, as with other languages.
+Для начала, движки JavaScript не балуют роскошью (как другие языковые компиляторы) затрат массы времени на оптимизацию, так как компиляция JavaScript не происходит на шаге сборки заранее, как в других языках.
 
-For JavaScript, the compilation that occurs happens, in many cases, mere microseconds (or less!) before the code is executed. To ensure the fastest performance, JS engines use all kinds of tricks (like JITs, which lazy compile and even hot re-compile, etc.) which are well beyond the "scope" of our discussion here.
+Для JavaScript, компиляция во многих случаях происходит за всего лишь микросекунды (или меньше!) перед выполнением кода. Чтобы гарантировать высочайшее быстродействие, движки JS используют все виды уловок (такие как JIT, который компилирует лениво и даже перекомпилирует на ходу), которые вне "области" нашего обсуждения тут.
 
-Let's just say, for simplicity's sake, that any snippet of JavaScript has to be compiled before (usually *right* before!) it's executed. So, the JS compiler will take the program `var a = 2;` and compile it *first*, and then be ready to execute it, usually right away.
+Давайте скажем, простоты ради, что любой код JavaScript должен быть скомпилирован до (обычно *прямо* перед!) его выполнения. Поэтому, компилятор JS возьмет программу `var a = 2;` и *сперва* скомпилирует ее, а потом будет готов выполнить ее, обычно сразу же.
 
-## Understanding Scope
+## Понимание области видимости
 
-The way we will approach learning about scope is to think of the process in terms of a conversation. But, *who* is having the conversation?
+Путь, которым мы будем приближаться к обучению области видимости, это думать о процессе в терминах диалога. Но, *кто* ведет этот диалог?
 
-### The Cast
+### Действующие лица
 
-Let's meet the cast of characters that interact to process the program `var a = 2;`, so we understand their conversations that we'll listen in on shortly:
+Встречайте действующих лиц, которые взаимодействуют, чтобы обработать программу `var a = 2;`. Чтобы мы могли понять о чем их диалоги мы немного подслушаем их:
 
-1. *Engine*: responsible for start-to-finish compilation and execution of our JavaScript program.
+1. *Движок*: отвечает за компиляцию от начала до конца и выполнение нашей JavaScript программы.
 
-2. *Compiler*: one of *Engine*'s friends; handles all the dirty work of parsing and code-generation (see previous section).
+2. *Компилятор*: один из друзей *Движка*, выполняет всю грязную работу по парсингу и генерации кода (см. предыдущий раздел).
 
-3. *Scope*: another friend of *Engine*; collects and maintains a look-up list of all the declared identifiers (variables), and enforces a strict set of rules as to how these are accessible to currently executing code.
+3. *Область видимости*: еще один друг *Движка*; собирает и обслуживает список поиска всех объявленных идентификаторов (переменных), и следит за исполнением строгого набора правил о том, как эти идентификаторы доступны для кода, выполняемого в текущий момент.
 
-For you to *fully understand* how JavaScript works, you need to begin to *think* like *Engine* (and friends) think, ask the questions they ask, and answer those questions the same.
+Для *полного понимания* как работает JavaScript, вам необходимо начать  *думать* как *Движок* (и его друзья), задавать вопросы, которые задают они и отвечать на них также.
 
-### Back & Forth
+### Туда и обратно
 
-When you see the program `var a = 2;`, you most likely think of that as one statement. But that's not how our new friend *Engine* sees it. In fact, *Engine* sees two distinct statements, one which *Compiler* will handle during compilation, and one which *Engine* will handle during execution.
+Когда вы видите программу `var a = 2;`, вы вероятнее всего подумаете о ней как об одном операторе. Но наш новый друг *Движок* видит это не так. На самом деле, *Движок* видит два отдельных оператора, один, который *Компилятор* обработает во время компиляции, а другой, который *Движок* обработает во время выполнения.
 
-So, let's break down how *Engine* and friends will approach the program `var a = 2;`.
+Так давайте же разберем по полочкам как *Движок* и его друзья поступят с программой `var a = 2;`.
 
-The first thing *Compiler* will do with this program is perform lexing to break it down into tokens, which it will then parse into a tree. But when *Compiler* gets to code-generation, it will treat this program somewhat differently than perhaps assumed.
+Первая вещь, которую сделает *Компилятор* с этой программой, выполнит разбиение на лексемы, которые он затем распарсит в дерево. Но когда *Компилятор* доберется до генерации кода, он будет интерпретировать программу  несколько по-другому нежели предполагалось.
 
-A reasonable assumption would be that *Compiler* will produce code that could be summed up by this pseudo-code: "Allocate memory for a variable, label it `a`, then stick the value `2` into that variable." Unfortunately, that's not quite accurate.
+Обоснованным предположением будет то, что *Компилятор* породит код, который можно кратко представить следующим псевдо-кодом: "Выделить память для переменной, пометить ее как `a`, затем поместить значение `2` в эту переменную." К сожалению, это не совсем точно.
 
-*Compiler* will instead proceed as:
+*Компилятор* вместо этого сделает следующее:
 
-1. Encountering `var a`, *Compiler* asks *Scope* to see if a variable `a` already exists for that particular scope collection. If so, *Compiler* ignores this declaration and moves on. Otherwise, *Compiler* asks *Scope* to declare a new variable called `a` for that scope collection.
+1. Встретив `var a`, *Компилятор* просит *Область видимости* посмотреть существует ли уже переменная `a` в коллекции указанной области видимости. Если да, то *Компилятор* игнорирует это объявление переменной и двигается дальше. В противном случае, *Компилятор* просит *Область видимости* объявить новую переменную `a` в коллекции указанной области видимости.
 
-2. *Compiler* then produces code for *Engine* to later execute, to handle the `a = 2` assignment. The code *Engine* runs will first ask *Scope* if there is a variable called `a` accessible in the current scope collection. If so, *Engine* uses that variable. If not, *Engine* looks *elsewhere* (see nested *Scope* section below).
+2. Затем *Компилятор* генерирует код для *Движка* для последующего выполнения, чтобы обработать присваивание `a = 2`. Код, который *Движок* запускает, сначала спрашивает *Область видимости* есть ли переменная с именем `a`, доступная в коллекции текущей области видимости. Если да, то *Движок* использует эту переменную. Если нет, то *Движок* ищет *в другом месте* (см. раздел *Вложенная область видимости* ниже).
 
-If *Engine* eventually finds a variable, it assigns the value `2` to it. If not, *Engine* will raise its hand and yell out an error!
+Если *Движок* в итоге находит переменную, он присваивает ей значение `2`. Если нет, то *Движок* вскинет руки и выкрикнет "ошибка!"!
 
-To summarize: two distinct actions are taken for a variable assignment: First, *Compiler* declares a variable (if not previously declared in the current scope), and second, when executing, *Engine* looks up the variable in *Scope* and assigns to it, if found.
+Подводя итоги: для присваивания значения переменной выполняется два отдельных действия: первое, *Компилятор* объявляет переменную (если не была объявлена до этого в текущей области видимости), и второе, когда выполняет код, *Движок* ищет эту переменную в *Области видимости* и присваивает ей значение, если находит.
 
-### Compiler Speak
+### Компилятор расскажет
 
-We need a little bit more compiler terminology to proceed further with understanding.
+Нам нужно еще немного компиляторной терминологии, чтобы двинуться дальше.
 
-When *Engine* executes the code that *Compiler* produced for step (2), it has to look-up the variable `a` to see if it has been declared, and this look-up is consulting *Scope*. But the type of look-up *Engine* performs affects the outcome of the look-up.
+Когда *Движок* выполняет код, который *Компилятор* генерирует на шаге (2), он должен поискать переменную `a`, чтобы увидеть была ли она объявлена и этот поиск принимает во внимание *Область видимости*. Но тип поиска, который выполняет *Движок*, влияет на результат поиска.
 
-In our case, it is said that *Engine* would be performing an "LHS" look-up for the variable `a`. The other type of look-up is called "RHS".
+В нашем случае, он говорит, что *Движок* выполнит "LHS"-поиск переменной `a`. Другой тип поиска называется "RHS".
 
-I bet you can guess what the "L" and "R" mean. These terms stand for "Left-hand Side" and "Right-hand Side".
+Держу пари, что вы можете угадать что значат "L" и "R". Эти термины означают "Left-hand Side" (левая сторона) и "Right-hand Side" (правая сторона).
 
-Side... of what? **Of an assignment operation.**
+Сторона... чего? **Операции присваивания.**
 
-In other words, an LHS look-up is done when a variable appears on the left-hand side of an assignment operation, and an RHS look-up is done when a variable appears on the right-hand side of an assignment operation.
+Иными словами, LHS-поиск выполняется, когда переменная появляется с левой стороны операции присваивания, а RHS-поиск выполняется, когда переменная появляется с правой стороны операции присваивания.
 
-Actually, let's be a little more precise. An RHS look-up is indistinguishable, for our purposes, from simply a look-up of the value of some variable, whereas the LHS look-up is trying to find the variable container itself, so that it can assign. In this way, RHS doesn't *really* mean "right-hand side of an assignment" per se, it just, more accurately, means "not left-hand side".
+На самом деле, давайте будем более точны. RHS-поиск неотличим, для наших целей, от простого поиска значения некоторой переменной, тогда как LHS-поиск пытается найти сам контейнер переменной, чтобы он мог присвоить значение. Таким образом, RHS не *обязательно* означает "правая сторона присваивания" по существу, он просто более точно означает "не левая сторона".
 
-Being slightly glib for a moment, you could also think "RHS" instead means "retrieve his/her source (value)", implying that RHS means "go get the value of...".
+Прикинувшись немного поверхностным на минуту, вы можете подумать, что "RHS" вместо этого значит "retrieve his/her source (value)" (получить его/ее исходное значение), представляя, что RHS означает "иди и возьми значение из...".
 
-Let's dig into that deeper.
+Давайте копнем немного глубже в этом направлении.
 
-When I say:
+Когда я говорю:
 
 ```js
 console.log( a );
 ```
 
-The reference to `a` is an RHS reference, because nothing is being assigned to `a` here. Instead, we're looking-up to retrieve the value of `a`, so that the value can be passed to `console.log(..)`.
+Ссылка на `a` -- это RHS-ссылка, потому что здесь ничего не присваивается в  `a`. Напротив, мы выполняем поиск, чтобы извлечь значение `a`, для того, чтобы передать значение в `console.log(..)`.
 
-By contrast:
+Для сравнения:
 
 ```js
 a = 2;
 ```
 
-The reference to `a` here is an LHS reference, because we don't actually care what the current value is, we simply want to find the variable as a target for the `= 2` assignment operation.
+Ссылка на `a` здесь -- это LHS-ссылка, так как мы не заботимся здесь о том, каково текущее значение, мы просто хотим найти эту переменную  как цель для операции присваивания `= 2`.
 
-**Note:** LHS and RHS meaning "left/right-hand side of an assignment" doesn't necessarily literally mean "left/right side of the `=` assignment operator". There are several other ways that assignments happen, and so it's better to conceptually think about it as: "who's the target of the assignment (LHS)" and "who's the source of the assignment (RHS)".
+**Примечание:** LHS и RHS, означающие "левая/правая сторона присваивания", не обязательно буквально означают "левая/правая сторона операции присваивания `=`". Есть еще несколько способов, которыми производится присваивание, и поэтому лучше концептуально думать о нем как: "кто является целью присваивания (LHS)" и "кто источник присваивания (RHS)".
 
-Consider this program, which has both LHS and RHS references:
-
-```js
-function foo(a) {
-	console.log( a ); // 2
-}
-
-foo( 2 );
-```
-
-The last line that invokes `foo(..)` as a function call requires an RHS reference to `foo`, meaning, "go look-up the value of `foo`, and give it to me." Moreover, `(..)` means the value of `foo` should be executed, so it'd better actually be a function!
-
-There's a subtle but important assignment here. **Did you spot it?**
-
-You may have missed the implied `a = 2` in this code snippet. It happens when the value `2` is passed as an argument to the `foo(..)` function, in which case the `2` value is **assigned** to the parameter `a`. To (implicitly) assign to parameter `a`, an LHS look-up is performed.
-
-There's also an RHS reference for the value of `a`, and that resulting value is passed to `console.log(..)`. `console.log(..)` needs a reference to execute. It's an RHS look-up for the `console` object, then a property-resolution occurs to see if it has a method called `log`.
-
-Finally, we can conceptualize that there's an LHS/RHS exchange of passing the value `2` (by way of variable `a`'s RHS look-up) into `log(..)`. Inside of the native implementation of `log(..)`, we can assume it has parameters, the first of which (perhaps called `arg1`) has an LHS reference look-up, before assigning `2` to it.
-
-**Note:** You might be tempted to conceptualize the function declaration `function foo(a) {...` as a normal variable declaration and assignment, such as `var foo` and `foo = function(a){...`. In so doing, it would be tempting to think of this function declaration as involving an LHS look-up.
-
-However, the subtle but important difference is that *Compiler* handles both the declaration and the value definition during code-generation, such that when *Engine* is executing code, there's no processing necessary to "assign" a function value to `foo`. Thus, it's not really appropriate to think of a function declaration as an LHS look-up assignment in the way we're discussing them here.
-
-### Engine/Scope Conversation
+Представьте такую программу, в которой есть обе ссылки LHS и RHS:
 
 ```js
 function foo(a) {
@@ -151,37 +127,61 @@ function foo(a) {
 foo( 2 );
 ```
 
-Let's imagine the above exchange (which processes this code snippet) as a conversation. The conversation would go a little something like this:
+Последняя строка, которая активизирует `foo(..)` как вызов функции, требует RHS-ссылку на `foo`, что значит, "сходи и найди значение `foo` и дай его мне". Более того, `(..)` означает, что значение `foo` должно быть выполнено, поэтому это скорее всего функция!
 
-> ***Engine***: Hey *Scope*, I have an RHS reference for `foo`. Ever heard of it?
+Здесь есть едва уловимое, но важное присваивание. **Вы обнаружили его?**
 
-> ***Scope***: Why yes, I have. *Compiler* declared it just a second ago. He's a function. Here you go.
+Вы наверное упустили неявное `a = 2` в этом коде. Это происходит, когда значение `2` передается как аргумент в функцию `foo(..)`, в этом случае значение `2` **присваивается** параметру `a`. Чтобы (неявно) присвоить значение параметру `a`, выполняется LHS-поиск.
 
-> ***Engine***: Great, thanks! OK, I'm executing `foo`.
+Также есть и RHS-ссылка на значение `a` и это результирующее значение передается в `console.log(..)`. `console.log(..)` нужна ссылка для выполнения. Для объекта `console` это RHS-поиск, затем происходит разрешение имени свойства чтобы убедиться существует ли метод, называемый `log`.
 
-> ***Engine***: Hey, *Scope*, I've got an LHS reference for `a`, ever heard of it?
+Наконец, мы можем осмыслить, что есть LHS/RHS-обмен передаваемым значением `2` (путем RHS-поиска переменной `a`) в `log(..)`. Внутри родной реализации  `log(..)`, мы можем предположить, что у нее есть параметры, у первого из которых (возможно называющегося `arg1`) есть поиск LHS-ссылки, до присваивания ему `2`.
 
-> ***Scope***: Why yes, I have. *Compiler* declared it as a formal parameter to `foo` just recently. Here you go.
+**Примечание:** У вас может появиться соблазн представлять объявление функции `function foo(a) {...` как обычное объявление переменной и присваивание, такое как `var foo` и `foo = function(a){...`. Делая так, будет соблазн думать об объявлении этой функции как подразумевающей LHS-поиск.
 
-> ***Engine***: Helpful as always, *Scope*. Thanks again. Now, time to assign `2` to `a`.
+Однако, едва заметая, но важная разница есть в том, что *Компилятор* обрабатывает как объявление, так и определение значения во время генерации кода, благодаря чему, когда *Движок* выполняет код, не требуется никакой обработки чтобы "присвоить" значение функции в `foo`. Следовательно, неуместно думать об объявлении функции как о присваивании с помощью LHS-поиска тем способом, который мы здесь обсуждаем.
 
-> ***Engine***: Hey, *Scope*, sorry to bother you again. I need an RHS look-up for `console`. Ever heard of it?
+### Беседа Движка и Области видимости
 
-> ***Scope***: No problem, *Engine*, this is what I do all day. Yes, I've got `console`. He's built-in. Here ya go.
+```js
+function foo(a) {
+	console.log( a ); // 2
+}
 
-> ***Engine***: Perfect. Looking up `log(..)`. OK, great, it's a function.
+foo( 2 );
+```
 
-> ***Engine***: Yo, *Scope*. Can you help me out with an RHS reference to `a`. I think I remember it, but just want to double-check.
+Давайте представим вышеуказанный обмен между ними (который обрабатывает этот код) как беседу. Беседа может пойти примерно так:
 
-> ***Scope***: You're right, *Engine*. Same guy, hasn't changed. Here ya go.
+> ***Движок***: Эй, *Область видимости*, у меня есть RHS-ссылка на `foo`. Когда-нибудь слышала о такой?
 
-> ***Engine***: Cool. Passing the value of `a`, which is `2`, into `log(..)`.
+> ***Область видимости***: Ну разумеется, слышала. *Компилятор* объявил ее всего секунду назад. Это функция. Пожалуйста!
+
+> ***Движок***: Отлично, спасибо! Хорошо, я выполняю `foo`.
+
+> ***Движок***: Эй, *Область видимости*, у меня есть LHS-ссылка на `a`, слышала что-нибудь о ней?
+
+> ***Область видимости***: Ну разумеется, слышала. *Компилятор* объявил ее как формальный параметр в `foo` только что. Пожалуйста!
+
+> ***Движок***: Отзывчива как всегда, *Область видимости*. Снова спасибо. А теперь присвоим `2` в `a`.
+
+> ***Движок***: Эй, *Область видимости*, извини, что беспокою тебя снова. Мне нужен RHS-поиск `console`. Когда-нибудь слышала о таком имени?
+
+> ***Область видимости***: Нет проблем, *Движок*, это то, чем я весь день и занимаюсь. Да, у меня есть `console`. Она встроенная. Пожалуйста!
+
+> ***Движок***: Идеально. Ищу `log(..)`. Превосходно, это функция.
+
+> ***Движок***: Эй, *Область видимости*. Можешь помочь мне с RHS-ссылкой на `a`? Думаю, я ее помню, но просто хочу лишний раз проверить.
+
+> ***Область видимости***: Ты прав, *Движок*. Та же ссылка, не изменилась. Пожалуйста!
+
+> ***Движок***: Круто! Передаю значение `a`, которое равно `2`, в `log(..)`.
 
 > ...
 
-### Quiz
+### Тест
 
-Check your understanding so far. Make sure to play the part of *Engine* and have a "conversation" with the *Scope*:
+Проверьте ваше понимание на настоящий момент. Обязательно сыграйте роль *Движка* и поучаствуйте в "беседе" с *Областью видимости*:
 
 ```js
 function foo(a) {
@@ -192,19 +192,19 @@ function foo(a) {
 var c = foo( 2 );
 ```
 
-1. Identify all the LHS look-ups (there are 3!).
+1. Определите все LHS-поиски (их 3!).
 
-2. Identify all the RHS look-ups (there are 4!).
+2. Определите все RHS-поиски (их 4!).
 
-**Note:** See the chapter review for the quiz answers!
+**Примечание:** См. обзор этой главы, чтобы узнать ответы на тест!
 
-## Nested Scope
+## Вложенная область видимости
 
-We said that *Scope* is a set of rules for looking up variables by their identifier name. There's usually more than one *Scope* to consider, however.
+Мы говорили, что *Область видимости* -- это набор правил поиска переменных по их идентификатору. Однако, обычно бывает более одной *Области видимости*.
 
-Just as a block or function is nested inside another block or function, scopes are nested inside other scopes. So, if a variable cannot be found in the immediate scope, *Engine* consults the next outer containing scope, continuing until found or until the outermost (aka, global) scope has been reached.
+Также как блок или функция вкладывается внутрь другого блока или функции, области видимости вкладываются внутрь других областей. Поэтому, если переменную не найти в ближайшей области видимости, *Движок* заглядывает в следующую внешнюю по отношению к этой область видимости, продолжая так до тех пор, пока не найдет или пока не достигнет самой внешней (т.е. глобальной) области.
 
-Consider:
+Пример:
 
 ```js
 function foo(a) {
@@ -216,37 +216,37 @@ var b = 2;
 foo( 2 ); // 4
 ```
 
-The RHS reference for `b` cannot be resolved inside the function `foo`, but it can be resolved in the *Scope* surrounding it (in this case, the global).
+RHS-ссылка на `b` не может быть разрешена внутри функции `foo`, но она может быть разрешена в *Области видимости*, окружающей ее (в этом случае, глобальной).
 
-So, revisiting the conversations between *Engine* and *Scope*, we'd overhear:
+Поэтому, еще раз пересмотрев беседы между *Движком* и *Областью видимости*, мы возможно услышим:
 
-> ***Engine***: "Hey, *Scope* of `foo`, ever heard of `b`? Got an RHS reference for it."
+> ***Движок***: "Эй, *Область видимости* `foo`, что-нибудь слышала о `b`? У меня есть RHS-ссылка на нее".
 
-> ***Scope***: "Nope, never heard of it. Go fish."
+> ***Область видимости***: "Не-а, никогда не слышала о такой. Недобор! Бери еще одну карту."
 
-> ***Engine***: "Hey, *Scope* outside of `foo`, oh you're the global *Scope*, ok cool. Ever heard of `b`? Got an RHS reference for it."
+> ***Движок***: "Эй, *Область видимости* снаружи `foo`! О, ты еще и глобальная *Область видимости*, круто. Когда-нибудь слышала о `b`? У меня есть RHS-ссылка на нее."
 
-> ***Scope***: "Yep, sure have. Here ya go."
+> ***Область видимости***: "Да-да, конечно есть. Пожалуйста!"
 
-The simple rules for traversing nested *Scope*: *Engine* starts at the currently executing *Scope*, looks for the variable there, then if not found, keeps going up one level, and so on. If the outermost global scope is reached, the search stops, whether it finds the variable or not.
+Простые правила просмотра вложенных *Областей видимости*: *Движок* начинает в текущей выполняемой *Области видимости*, ищет в ней переменную, затем если не находит, продолжает поиск уровнем выше и так далее. Если достигнута самая внешняя глобальная область видимости, поиск останавливается, независимо от того, нашел он переменную или нет.
 
-### Building on Metaphors
+### Берем за основу метафоры
 
-To visualize the process of nested *Scope* resolution, I want you to think of this tall building.
+Для визуализации процесса разрешения во вложенных *Областях видимости*, я хочу, чтобы вы подумали об этом высоком здании.
 
 <img src="fig1.png" width="250">
 
-The building represents our program's nested *Scope* rule set. The first floor of the building represents your currently executing *Scope*, wherever you are. The top level of the building is the global *Scope*.
+Здание символизирует набор правил вложенных *Областей видимости* нашей программы. Первый этаж здания представляет вашу текущую выполняемую *Область видимости*, где бы вы ни были. Верхний уровень здания -- это глобальная *Область видимости*.
 
-You resolve LHS and RHS references by looking on your current floor, and if you don't find it, taking the elevator to the next floor, looking there, then the next, and so on. Once you get to the top floor (the global *Scope*), you either find what you're looking for, or you don't. But you have to stop regardless.
+Вы разрешаете LHS- и RHS-ссылки ища на вашем текущем этаже, а если вы не нашли что искали, поднимаетесь на лифте на следующий этаж, ища там, затем на следующий и так далее. Как только вы попадаете на верхний этаж(глобальная *Область видимости*), вы либо находите то, что искали, либо не находите. Но в любом случае вы должны остановиться.
 
-## Errors
+## Ошибки
 
-Why does it matter whether we call it LHS or RHS?
+Почему имеет значение называть поиск LHS или RHS?
 
-Because these two types of look-ups behave differently in the circumstance where the variable has not yet been declared (is not found in any consulted *Scope*).
+Потому что эти два типа поиска ведут себя по-разному в обстановке, когда переменная еще не была объявлена (не была найдена ни в одной просмотренной *Области видимости*).
 
-Consider:
+Представьте:
 
 ```js
 function foo(a) {
@@ -257,37 +257,37 @@ function foo(a) {
 foo( 2 );
 ```
 
-When the RHS look-up occurs for `b` the first time, it will not be found. This is said to be an "undeclared" variable, because it is not found in the scope.
+Когда происходит RHS-поиск `b` первый раз, она не будет найдена. Это как бы  "необъявленная" переменная, так как она не была найдена в этой области видимости.
 
-If an RHS look-up fails to ever find a variable, anywhere in the nested *Scope*s, this results in a `ReferenceError` being thrown by the *Engine*. It's important to note that the error is of the type `ReferenceError`.
+Если RHS-поиск не сможет когда-либо найти переменную, в любой из вложенных *Областей видимости*, это приведет к возврату *Движком* ошибки `ReferenceError`. Важно отметить, что эта ошибка имеет тип `ReferenceError`.
 
-By contrast, if the *Engine* is performing an LHS look-up and arrives at the top floor (global *Scope*) without finding it, and if the program is not running in "Strict Mode" [^note-strictmode], then the global *Scope* will create a new variable of that name **in the global scope**, and hand it back to *Engine*.
+Напротив, если *Движок* выполняет LHS-поиск и достигает верхнего этажа (глобальной *Области видимости*) и не находит ничего, и если программа не запущена в "строгом режиме", то затем глобальная *Область видимости* создаст новую переменную с таким именем **в глобальной области видимости** и передаст ее обратно *Движку*.
 
-*"No, there wasn't one before, but I was helpful and created one for you."*
+*"Нет, до этого не было ни одной и я любезно создала ее для тебя."*
 
-"Strict Mode" [^note-strictmode], which was added in ES5, has a number of different behaviors from normal/relaxed/lazy mode. One such behavior is that it disallows the automatic/implicit global variable creation. In that case, there would be no global *Scope*'d variable to hand back from an LHS look-up, and *Engine* would throw a `ReferenceError` similarly to the RHS case.
+"Строгий режим", который был добавлен в ES5, имеет ряд разных отличий от обычного/нестрогого/ленивого режима. Одно такое отличие -- это то, что он запрещает автоматическое/неявное создание глобальных переменных. В этом случае, не было бы никакой переменной в глобальной *Области видимости*, чтобы передать обратно от LHS-поиска, и *Движок* выбросит `ReferenceError` аналогично случаю с RHS.
 
-Now, if a variable is found for an RHS look-up, but you try to do something with its value that is impossible, such as trying to execute-as-function a non-function value, or reference a property on a `null` or `undefined` value, then *Engine* throws a different kind of error, called a `TypeError`.
+Теперь, если переменная найдена в ходе RHS-поиска, но вы пытаетесь сделать что-то с ее значением, что невозможно, например, пытаетесь выполнить как функцию не-функциональное значение или ссылаетесь на свойство значения `null` или `undefined`, то *Движок* выдаст другой вид ошибки, называемый `TypeError`.
 
-`ReferenceError` is *Scope* resolution-failure related, whereas `TypeError` implies that *Scope* resolution was successful, but that there was an illegal/impossible action attempted against the result.
+`ReferenceError` -- это сбой разрешения имени, связанный с *Областью видимости*, тогда как `TypeError` подразумевает, что разрешение имени в *Области видимости* было успешным, но была попытка выполнения нелегального/невозможного действия с результатом.
 
-## Review (TL;DR)
+## Обзор
 
-Scope is the set of rules that determines where and how a variable (identifier) can be looked-up. This look-up may be for the purposes of assigning to the variable, which is an LHS (left-hand-side) reference, or it may be for the purposes of retrieving its value, which is an RHS (right-hand-side) reference.
+Область видимости -- это набор правил, которые определяют где и как переменная (идентификатор) могут быть найдены. Этот поиск может осуществляться для целей присваивания значения переменной, которая является LHS (left-hand-side) ссылкой, или может осуществляться для целей извлечения ее значения, которое является RHS (right-hand-side) ссылкой.
 
-LHS references result from assignment operations. *Scope*-related assignments can occur either with the `=` operator or by passing arguments to (assign to) function parameters.
+LHS-ссылки являются результатом операции присваивания. Присваивания, связанные с *Областью видимости*, могут происходить либо с помощью операции `=`, либо передачей аргументов (присваиванием) параметрам функции.
 
-The JavaScript *Engine* first compiles code before it executes, and in so doing, it splits up statements like `var a = 2;` into two separate steps:
+JavaScript *Движок* перед выполнением сначала компилирует код, и пока он это делает, он разбивает операторы, подобные `var a = 2;` на два отдельных шага:
 
-1. First, `var a` to declare it in that *Scope*. This is performed at the beginning, before code execution.
+1. Первый, `var a`, чтобы объявить ее в *Область видимости*. Это выполняется в самом начале, до исполнения кода.
 
-2. Later, `a = 2` to look up the variable (LHS reference) and assign to it if found.
+2. Позже, `a = 2` ищет переменную (LHS-ссылку) и присваивает ей значение, если находит.
 
-Both LHS and RHS reference look-ups start at the currently executing *Scope*, and if need be (that is, they don't find what they're looking for there), they work their way up the nested *Scope*, one scope (floor) at a time, looking for the identifier, until they get to the global (top floor) and stop, and either find it, or don't.
+Оба поиска ссылок LHS и RHS начинаются в текущей выполняющейся *Области видимости* и если нужно (т.е. они не нашли что искали в ней), они работают с их более высокими вложенными *Областями видимости*, с одной областью (этажом) за раз, ища идентификатор, пока не доберутся до глобальной (верхний этаж) и не остановятся, вне зависимости от результата поиска.
 
-Unfulfilled RHS references result in `ReferenceError`s being thrown. Unfulfilled LHS references result in an automatic, implicitly-created global of that name (if not in "Strict Mode" [^note-strictmode]), or a `ReferenceError` (if in "Strict Mode" [^note-strictmode]).
+Невыполненные RHS-ссылки приводят к выбросу `ReferenceError`. Невыполненные LHS-ссылки приводят к автоматической, неявносозданной переменной с таким именем (если не включен "Строгий режим"), либо к `ReferenceError` (если включен "Строгий режим").
 
-### Quiz Answers
+### Ответы к тесту
 
 ```js
 function foo(a) {
@@ -298,13 +298,13 @@ function foo(a) {
 var c = foo( 2 );
 ```
 
-1. Identify all the LHS look-ups (there are 3!).
+1. Определите все LHS-поиски (их 3!).
 
-	**`c = ..`, `a = 2` (implicit param assignment) and `b = ..`**
+	**`c = ..`, `a = 2` (неявное присваивание параметру) и `b = ..`**
 
-2. Identify all the RHS look-ups (there are 4!).
+2. Определите все RHS-поиски (их 4!).
 
-    **`foo(2..`, `= a;`, `a + ..` and `.. + b`**
+    **`foo(2..`, `= a;`, `a + ..` и `.. + b`**
 
 
-[^note-strictmode]: MDN: [Strict Mode](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode)
+Про "Строгий режим" [см. здесь](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions_and_function_scope/Strict_mode)
