@@ -1,23 +1,23 @@
-# You Don't Know JS: Scope & Closures
-# Chapter 2: Lexical Scope
+# Вы не знаете JS: Область видимости и замыкания
+# Глава 2: Лексическая область видимости
 
-In Chapter 1, we defined "scope" as the set of rules that govern how the *Engine* can look up a variable by its identifier name and find it, either in the current *Scope*, or in any of the *Nested Scopes* it's contained within.
+В главе 1, мы определили "область видимости" как набор правил, которые регулируют как *Движок* может искать переменную по ее имени идентификатора и найти ее либо в текущей *Области видимости*, либо в любой из *вложенных Областей видимости*, в которой она содержится.
 
-There are two predominant models for how scope works. The first of these is by far the most common, used by the vast majority of programming languages. It's called **Lexical Scope**, and we will examine it in-depth. The other model, which is still used by some languages (such as Bash scripting, some modes in Perl, etc.) is called **Dynamic Scope**.
+Есть две преобладающих модели того, как работает область видимости. Первая из них, безусловно самая распространенная, используется необъятным большинством языков программирования. Она называется **Лексическая область видимости** и мы изучим ее в деталях. Другая модель, которая все еще используется некоторыми языками (такими как скриптовый Bash, некоторые режимы в Perl и т.д.), называется **Динамическая область видимости**.
 
-Dynamic Scope is covered in Appendix A. I mention it here only to provide a contrast with Lexical Scope, which is the scope model that JavaScript employs.
+Динамическая область видимости рассматривается в приложении A. Я упоминаю ее здесь только чтобы показать контраст с лексической областью действия, которая является моделью области видимости, используемой в JavaScript.
 
-## Lex-time
+## Время разбора на лексемы
 
-As we discussed in Chapter 1, the first traditional phase of a standard language compiler is called lexing (aka, tokenizing). If you recall, the lexing process examines a string of source code characters and assigns semantic meaning to the tokens as a result of some stateful parsing.
+Как мы уже обсудили в главе 1, первая традиционная фаза работы стандартного компилятора языка называется разбиение на лексемы (lexing или tokenizing). Если вы припомните, то процесс разбиения на лексемы анализирует символы строки исходного кода и дает семантическое значение лексемам как результат некоторого парсинга с состоянием.
 
-It is this concept which provides the foundation to understand what lexical scope is and where the name comes from.
+Это и есть та концепция, которая предоставляет основу понимания что такое лексическая область видимости и откуда происходит ее название.
 
-To define it somewhat circularly, lexical scope is scope that is defined at lexing time. In other words, lexical scope is based on where variables and blocks of scope are authored, by you, at write time, and thus is (mostly) set in stone by the time the lexer processes your code.
+Определяя ее отчасти через саму себя, лексическая область видимости -- это область видимости, которая определена во время разбора на лексемы. Иными словами, лексическая область видимости основана на том, где переменные и блоки области видимости были созданы вами во время написания и таким образом (в основном) навечно зафиксированы на момент, когда лексический анализатор обрабатывал ваш код.
 
-**Note:** We will see in a little bit there are some ways to cheat lexical scope, thereby modifying it after the lexer has passed by, but these are frowned upon. It is considered best practice to treat lexical scope as, in fact, lexical-only, and thus entirely author-time in nature.
+**Примечание:** Совсем скоро мы увидим, что есть некоторые способы обмануть лексическую область действия, тем самым меняя ее после того, как лексический анализатор уже прошелся по ней, но к ним относятся неодобрительно. Считается лучшей практикой обращаться с лексической областью видимости как, по сути дела с чисто лексической и следовательно полностью относящейся к моменту написания кода по своей природе.
 
-Let's consider this block of code:
+Давайте рассмотрим этот код:
 
 ```js
 function foo(a) {
@@ -34,65 +34,65 @@ function foo(a) {
 foo( 2 ); // 2 4 12
 ```
 
-There are three nested scopes inherent in this code example. It may be helpful to think about these scopes as bubbles inside of each other.
+В этом примере кода есть три вложенных области видимости. Удобно представлять эти области видимости как зоны одна внутри другой.
 
 <img src="fig2.png" width="500">
 
-**Bubble 1** encompasses the global scope, and has just one identifier in it: `foo`.
+**Зона 1** заключает в себе глобальную область видимости, у которой есть всего один идентификатор: `foo`.
 
-**Bubble 2** encompasses the scope of `foo`, which includes the three identifiers: `a`, `bar` and `b`.
+**Зона 2** заключает в себе область видимости `foo`, которая включает в себя три идентификатора: `a`, `bar` и `b`.
 
-**Bubble 3** encompasses the scope of `bar`, and it includes just one identifier: `c`.
+**Зона 3** заключает в себе область видимости `bar` и она включает в себя всего один идентификатор: `c`.
 
-Scope bubbles are defined by where the blocks of scope are written, which one is nested inside the other, etc. In the next chapter, we'll discuss different units of scope, but for now, let's just assume that each function creates a new bubble of scope.
+Зоны областей видимости определяются тем, где написаны блоки области видимости, которые последовательно вложены друг в друга. В следующей главе, мы обсудим различные единицы области видимости, а сейчас давайте просто допустим, что каждая функция создает новую зону области видимости.
 
-The bubble for `bar` is entirely contained within the bubble for `foo`, because (and only because) that's where we chose to define the function `bar`.
+Зона для `bar` полностью содержится в зоне для `foo`, потому что (и только поэтому) это то место, которое мы выбрали для создания функции `bar`.
 
-Notice that these nested bubbles are strictly nested. We're not talking about Venn diagrams where the bubbles can cross boundaries. In other words, no bubble for some function can simultaneously exist (partially) inside two other outer scope bubbles, just as no function can partially be inside each of two parent functions.
+Заметьте, что эти вложенные зоны вложены однозначно и четко. Мы не говорим сейчас о круговых диаграммах Эйлера—Венна, где зоны могут пересекать границы. Иными словами, ни одна зона для функции не может одновременно существовать (частично) внутри двух других зон внешних областей видимости, как и ни одна функция не может частично быть внутри каждой из двух родительских функциях.
 
-### Look-ups
+### Поиски
 
-The structure and relative placement of these scope bubbles fully explains to the *Engine* all the places it needs to look to find an identifier.
+Структура и относительное положение этих зон областей видимости полностью объясняет *Движку* все места, в которые ему нужно заглянуть, чтобы найти идентификатор.
 
-In the above code snippet, the *Engine* executes the `console.log(..)` statement and goes looking for the three referenced variables `a`, `b`, and `c`. It first starts with the innermost scope bubble, the scope of the `bar(..)` function. It won't find `a` there, so it goes up one level, out to the next nearest scope bubble, the scope of `foo(..)`. It finds `a` there, and so it uses that `a`. Same thing for `b`. But `c`, it does find inside of `bar(..)`.
+В вышеприведенном коде, *Движок* выполняет оператор `console.log(..)` и идет искать три переменных `a`, `b`, и `c`, на которые есть ссылки. Сначала он начинает с самой внутренней зоны области видимости, области видимости функции `bar(..)`. Он не найдет там `a`, поэтому пойдет на уровень выше, наружу к следующей ближайшей зоне области видимости, области видимости `foo(..)`. Там он наконец найдет `a`, и поэтому использует эту `a`. То же самое и для `b`. А вот `c` он найдет внутри `bar(..)`.
 
-Had there been a `c` both inside of `bar(..)` and inside of `foo(..)`, the `console.log(..)` statement would have found and used the one in `bar(..)`, never getting to the one in `foo(..)`.
+Если бы `c` была и внутри `bar(..)`, и внутри `foo(..)`, то оператор `console.log(..)` нашел и использовал ту, что в `bar(..)`, никогда не трогая такую же из `foo(..)`.
 
-**Scope look-up stops once it finds the first match**. The same identifier name can be specified at multiple layers of nested scope, which is called "shadowing" (the inner identifier "shadows" the outer identifier). Regardless of shadowing, scope look-up always starts at the innermost scope being executed at the time, and works its way outward/upward until the first match, and stops.
+**Поиск в области видимости прекращается как только он находит первое совпадение**. Одно и то же имя идентификатора может быть указано в нескольких слоях вложенных областей видимости, что называется "затенение (shadowing)" (внутренний идентификатор "затеняет (shadows)" внешний). Независимо от затенения, поиск в области видимости всегда начинается с самой внутренней области видимости, исполняющейся в данный момент и работает таким путем по направлению наружу/вверх пока не найдется первое совпадение и тогда останавливается.
 
-**Note:** Global variables are also automatically properties of the global object (`window` in browsers, etc.), so it *is* possible to reference a global variable not directly by its lexical name, but instead indirectly as a property reference of the global object.
+**Примечание:** Глобальные переменные также автоматически являются свойствами глобального объекта (`window` в браузерах и т.п.), поэтому *можно* ссылаться на глобальную переменную не прямо по ее лексическому имени, а вместо этого  косвенно использовать ссылку на свойство глобального объекта.
 
 ```js
 window.a
 ```
 
-This technique gives access to a global variable which would otherwise be inaccessible due to it being shadowed. However, non-global shadowed variables cannot be accessed.
+Эта техника дает доступ к глобальной переменной, которая в противном случае была бы недоступна из-за затенения. Однако, неглобальные затененные переменные не могут быть доступны.
 
-No matter *where* a function is invoked from, or even *how* it is invoked, its lexical scope is **only** defined by where the function was declared.
+Не важно *откуда* вызывается функция или даже *как* она вызывается, ее лексическая область видимости определена **только** тем, где функция была объявлена.
 
-The lexical scope look-up process *only* applies to first-class identifiers, such as the `a`, `b`, and `c`. If you had a reference to `foo.bar.baz` in a piece of code, the lexical scope look-up would apply to finding the `foo` identifier, but once it locates that variable, object property-access rules take over to resolve the `bar` and `baz` properties, respectively.
+Процесс поиска в лексической области видимости применяется *только* к идентификаторам первого уровня, таким как `a`, `b` и `c`. Если у вас есть ссылка на `foo.bar.baz` в строке кода, поиск в лексической области будет применен чтобы найти идентификатор `foo`, но как только он находит эту переменную, ему на смену приходят правила доступа к свойствам объекта, чтобы разрешить имена свойств `bar` и `baz`, соответственно.
 
-## Cheating Lexical
+## Обманываем лексическую область видимости
 
-If lexical scope is defined only by where a function is declared, which is entirely an author-time decision, how could there possibly be a way to "modify" (aka, cheat) lexical scope at run-time?
+Если лексическая область видимости определяется только тем, где объявлена функция, что целиком во власти момента написания кода, какой может быть возможный путь "изменить" (т.е. обмануть) лексическую область во время выполнения?
 
-JavaScript has two such mechanisms. Both of them are equally frowned-upon in the wider community as bad practices to use in your code. But the typical arguments against them are often missing the most important point: **cheating lexical scope leads to poorer performance.**
+В JavaScript ест два таких механизма. К ним обоим одинаково неодобрительно относятся в широком сообществе как к плохим практикам использования кода. Но типичные аргументы против них обычно не видят самого главного: **обман лексической области видимости ведет к более худшей производительности.**
 
-Before I explain the performance issue, though, let's look at how these two mechanisms work.
+Перед тем как я объясню проблему с производительностью, всё же, давайте взглянем на то, как работают эти два механизма.
 
 ### `eval`
 
-The `eval(..)` function in JavaScript takes a string as an argument, and treats the contents of the string as if it had actually been authored code at that point in the program. In other words, you can programmatically generate code inside of your authored code, and run the generated code as if it had been there at author time.
+Функция `eval(..)` в JavaScript берет строку как аргумент и интерпретирует содержимое строки как если бы это был код, написанный в этой точке программы. Другими словами, вы можете программно генерировать код внутри вашего собственного кода и запускать сгенерированный код как если бы он был там в время написания кода.
 
-Evaluating `eval(..)` (pun intended) in that light, it should be clear how `eval(..)` allows you to modify the lexical scope environment by cheating and pretending that author-time (aka, lexical) code was there all along.
+При вычислении `eval(..)` в таком свете, должно быть ясно как `eval(..)` позволяет модифицировать окружение лексической области видимости обманывая и притворяясь, что этот код был тут всё время.
 
-On subsequent lines of code after an `eval(..)` has executed, the *Engine* will not "know" or "care" that the previous code in question was dynamically interpreted and thus modified the lexical scope environment. The *Engine* will simply perform its lexical scope look-ups as it always does.
+На последующих строках кода после того, как выполнена `eval(..)`, *Движок* не "узнает" или не "позаботится" о том, что предыдущий код, о котором идет речь,  был динамически интерпретирован и таким образом изменил окружение лексической области видимости. *Движок* просто выполнит свои поиски по лексической области видимости как он обычно это делает.
 
-Consider the following code:
+Представьте следующий код:
 
 ```js
 function foo(str, a) {
-	eval( str ); // cheating!
+	eval( str ); // обман!
 	console.log( a, b );
 }
 
@@ -101,15 +101,15 @@ var b = 2;
 foo( "var b = 3;", 1 ); // 1, 3
 ```
 
-The string `"var b = 3;"` is treated, at the point of the `eval(..)` call, as code that was there all along. Because that code happens to declare a new variable `b`, it modifies the existing lexical scope of `foo(..)`. In fact, as mentioned above, this code actually creates variable `b` inside of `foo(..)` that shadows the `b` that was declared in the outer (global) scope.
+Строка `"var b = 3;"` интерпретируется в точке вызова `eval(..)`, как будто этот код был тут всегда. Поскольку этот код объявляет новую переменную `b`, он изменяет существующую лексическую область `foo(..)`. Фактически, как было указано выше, этот код на самом деле создает переменную `b` внутри `foo(..)`, которая затеняет `b`, которая была объявлена во внешней (глобальной) области видимости.
 
-When the `console.log(..)` call occurs, it finds both `a` and `b` in the scope of `foo(..)`, and never finds the outer `b`. Thus, we print out "1, 3" instead of "1, 2" as would have normally been the case.
+Когда происходит вызов `console.log(..)`, он находит и `a`, и`b` в области видимости `foo(..)`, но никогда не найдет внешнюю `b`. По этой причине, мы напечатаем "1, 3" вместо "1, 2" как это было бы в обычном случае.
 
-**Note:** In this example, for simplicity's sake, the string of "code" we pass in was a fixed literal. But it could easily have been programmatically created by adding characters together based on your program's logic. `eval(..)` is usually used to execute dynamically created code, as dynamically evaluating essentially static code from a string literal would provide no real benefit to just authoring the code directly.
+**Примечание:** В этом примере для простоты строка "кода", которую мы передали, была фиксированным литералом. Но она легко может быть создана программно соединением символов вместе на основе логики вашей программы. `eval(..)` обычно используется для динамически созданного кода, поскольку динамическое вычисление по существу статического кода из строкового литерала не дает никакого реального преимущества перед простым написанием этого кода напрямую.
 
-By default, if a string of code that `eval(..)` executes contains one or more declarations (either variables or functions), this action modifies the existing lexical scope in which the `eval(..)` resides. Technically, `eval(..)` can be invoked "indirectly", through various tricks (beyond our discussion here), which causes it to instead execute in the context of the global scope, thus modifying it. But in either case, `eval(..)` can at runtime modify an author-time lexical scope.
+По умолчанию, если строка кода, которую выполняет `eval(..)`, содержит одно или более объявлений (переменных или функций), тогда это действие меняет существующую лексическую область видимости, в которой располагается `eval(..)`. Технически, `eval(..)` может быть вызвана "неявно", путем различных трюков (вне нашего обсуждения здесь), которые приводят к тому, что она вместо этого запускается в контексте глобальной области видимости, таким образом меняя ее. Но в любом случае, `eval(..)` может в время исполнения менять лексическую область видимости, определенную на момент написания кода.
 
-**Note:** `eval(..)` when used in a strict-mode program operates in its own lexical scope, which means declarations made inside of the `eval()` do not actually modify the enclosing scope.
+**Примечание:** Когда `eval(..)` используется в программе, работающей в строгом режиме, она работает со своей собственной лексической областью видимости, что означает, что объявления, сделанные внутри `eval()`, не поменяют окружающую область видимости.
 
 ```js
 function foo(str) {
@@ -121,19 +121,19 @@ function foo(str) {
 foo( "var a = 2" );
 ```
 
-There are other facilities in JavaScript which amount to a very similar effect to `eval(..)`. `setTimeout(..)` and `setInterval(..)` *can* take a string for their respective first argument, the contents of which are `eval`uated as the code of a dynamically-generated function. This is old, legacy behavior and long-since deprecated. Don't do it!
+Есть другие средства в JavaScript, которые почти равносильны по эффекту вызовам `eval(..)`. `setTimeout(..)` и `setInterval(..)`, которые *могут* принимать строку как свой первый аргумент, содержимое которой `вычисляется` как код динамически сгенерированной функции. Это старая, унаследованная функциональность и давным-давно устаревшая. Не делайте так!
 
-The `new Function(..)` function constructor similarly takes a string of code in its **last** argument to turn into a dynamically-generated function (the first argument(s), if any, are the named parameters for the new function). This function-constructor syntax is slightly safer than `eval(..)`, but it should still be avoided in your code.
+Конструктор функции `new Function(..)` аналогично принимает строку кода  в своем **последнем** аргументе, чтобы превратить ее в динамически сгенерированную функцию (первые аргументы, если указаны, являются именованными параметрами для новой функции). Такой синтаксис конструктора функции немного безопаснее, чем `eval(..)`, но его также следует избегать в вашем коде.
 
-The use-cases for dynamically generating code inside your program are incredibly rare, as the performance degradations are almost never worth the capability.
+Варианты использования динамически сгенерированного кода внутри вашей программы крайне редки, поскольку снижение производительности почти никогда не стоит такой возможности.
 
 ### `with`
 
-The other frowned-upon (and now deprecated!) feature in JavaScript which cheats lexical scope is the `with` keyword. There are multiple valid ways that `with` can be explained, but I will choose here to explain it from the perspective of how it interacts with and affects lexical scope.
+Еще одна возможность в JavaScript, к которой неодобрительно относятся (и которая сейчас устарела!), которая обманывает лексическую область видимости, это ключевое слово `with`. Есть много подходящих путей, чтобы объяснить что такое `with`, но я выберу объяснение с точки зрения того, как оно взаимодействует и влияет на лексическую область видимости.
 
-`with` is typically explained as a short-hand for making multiple property references against an object *without* repeating the object reference itself each time.
+`with` обычно описывают как сокращение для выполнения множественных ссылок на свойства объекта *без* повторения каждый раз ссылки на сам объект.
 
-For example:
+Например:
 
 ```js
 var obj = {
@@ -142,12 +142,12 @@ var obj = {
 	c: 3
 };
 
-// more "tedious" to repeat "obj"
+// более "скучно" повторять "obj"
 obj.a = 2;
 obj.b = 3;
 obj.c = 4;
 
-// "easier" short-hand
+// "легкое" сокращение
 with (obj) {
 	a = 3;
 	b = 4;
@@ -155,7 +155,7 @@ with (obj) {
 }
 ```
 
-However, there's much more going on here than just a convenient short-hand for object property access. Consider:
+Однако, здесь происходит нечто большее, чем просто удобное сокращение для доступа к свойствам объекта. Представьте:
 
 ```js
 function foo(obj) {
@@ -177,47 +177,47 @@ console.log( o1.a ); // 2
 
 foo( o2 );
 console.log( o2.a ); // undefined
-console.log( a ); // 2 -- Oops, leaked global!
+console.log( a ); // 2 -- Упс, утекшая глобальная переменная!
 ```
 
-In this code example, two objects `o1` and `o2` are created. One has an `a` property, and the other does not. The `foo(..)` function takes an object reference `obj` as an argument, and calls `with (obj) { .. }` on the reference. Inside the `with` block, we make what appears to be a normal lexical reference to a variable `a`, an LHS reference in fact (see Chapter 1), to assign to it the value of `2`.
+В этом примере кода, создаются два объекта `o1` и `o2`. У одного есть свойство `a`, а у другого -- нет. Функция `foo(..)` берет ссылку на объект `obj` как аргумент, а затем вызывает `with (obj) { .. }` с этой ссылкой. Внутри блока `with` мы делаем, как нам представляется, обычную лексическую ссылку на `a`, на самом деле LHS-ссылку (см. главу 1), чтобы присвоить ей значение `2`.
 
-When we pass in `o1`, the `a = 2` assignment finds the property `o1.a` and assigns it the value `2`, as reflected in the subsequent `console.log(o1.a)` statement. However, when we pass in `o2`, since it does not have an `a` property, no such property is created, and `o2.a` remains `undefined`.
+Когда мы передаем `o1`, присвоение `a = 2` находит свойство `o1.a` и присваивает ему значение `2`, что нашло свое отражение в последующем операторе `console.log(o1.a)`. Однако, когда мы передаем `o2`, поскольку у него нет свойства `a`, это свойство не создается, а `o2.a` остается `undefined`.
 
-But then we note a peculiar side-effect, the fact that a global variable `a` was created by the `a = 2` assignment. How can this be?
+Но затем мы замечаем своеобразный побочный эффект, факт того, что присвоение `a = 2` создало глобальную переменную `a`. Как такое может быть?
 
-The `with` statement takes an object, one which has zero or more properties, and **treats that object as if *it* is a wholly separate lexical scope**, and thus the object's properties are treated as lexically defined identifiers in that "scope".
+Оператор `with` берет объект, у которого есть ноль или более свойств, и **трактует этот объект как если бы *он* являлся целиком отдельной лексической областью видимости**, и таким образом свойства объекта воспринимаются как лексически определенные идентификаторы в этой "области видимости".
 
-**Note:** Even though a `with` block treats an object like a lexical scope, a normal `var` declaration inside that `with` block will not be scoped to that `with` block, but instead the containing function scope.
+**Примечание:** Даже если блок `with` трактует объект как лексическую область видимости, обычное объявление `var` внутри этого блока `with` не будет входить в область этого блока `with`, а вместо этого будет в области видимости функции, содержащей этот блок.
 
-While the `eval(..)` function can modify existing lexical scope if it takes a string of code with one or more declarations in it, the `with` statement actually creates a **whole new lexical scope** out of thin air, from the object you pass to it.
+В том время как функция `eval(..)` может менять существующую лексическую область видимости, если она принимает строку кода с одним или более объявлениями в ней, то оператор `with` на самом деле создает **полностью новую лексическую область действия** на ровном месте из объекта, который вы ему передаете.
 
-Understood in this way, the "scope" declared by the `with` statement when we passed in `o1` was `o1`, and that "scope" had an "identifier" in it which corresponds to the `o1.a` property. But when we used `o2` as the "scope", it had no such `a` "identifier" in it, and so the normal rules of LHS identifier look-up (see Chapter 1) occurred.
+Таким образом мы поняли, что "область видимости", объявленная оператором `with`  когда мы передали `o1`, была `o1` и что у этой "области видимости" есть "идентификатор", который соответствует свойству `o1.a`. Но когда мы  использовали `o2` как "область видимости", у нее не было такого "идентификатора" `a` и поэтому сработали обычные правила поиска LHS-идентификатора (см. главу 1).
 
-Neither the "scope" of `o2`, nor the scope of `foo(..)`, nor the global scope even, has an `a` identifier to be found, so when `a = 2` is executed, it results in the automatic-global being created (since we're in non-strict mode).
+Ни "область видимости" `o2`, ни область видимости `foo(..)`, ни даже глобальная область видимости не нашли у себя идентификатор `a`, поэтому когда выполняется `a = 2`, это приводит к созданию автоматической глобальной переменной (поскольку мы в нестрогом режиме).
 
-It is a strange sort of mind-bending thought to see `with` turning, at runtime, an object and its properties into a "scope" *with* "identifiers". But that is the clearest explanation I can give for the results we see.
+Это незнакомая и отчасти ошеломляющая мысль увидеть как `with` превращает, во время выполнения, объект и его свойства в "область видимости" *с* "идентификаторами". Но это -- самое понятное объяснение, которое я могу дать результатам, которые мы видели.
 
-**Note:** In addition to being a bad idea to use, both `eval(..)` and `with` are affected (restricted) by Strict Mode. `with` is outright disallowed, whereas various forms of indirect or unsafe `eval(..)` are disallowed while retaining the core functionality.
+**Примечание:** В дополнение к тому, что является плохой идеей их использовать, как `eval(..)`, так и `with` подвергаются воздействию (ограничиваются) строгим режимом. `with` полностью запрещено, в то время как различные формы скрытых или небезопасных `eval(..)` запрещены при сохранении базовой функциональности.
 
-### Performance
+### Быстродействие
 
-Both `eval(..)` and `with` cheat the otherwise author-time defined lexical scope by modifying or creating new lexical scope at runtime.
+Оба `eval(..)` и `with` обманывают в той или иной форме лексическую область видимости, определенную на этапе кодирования, изменением или созданием новой лексической области видимости во время выполнения.
 
-So, what's the big deal, you ask? If they offer more sophisticated functionality and coding flexibility, aren't these *good* features? **No.**
+Итак, что тут такого, спросите вы? Если они предлагают улучшенную функциональность и гибкость кодирования, разве это не *хорошие* возможности? **Нет.**
 
-The JavaScript *Engine* has a number of performance optimizations that it performs during the compilation phase. Some of these boil down to being able to essentially statically analyze the code as it lexes, and pre-determine where all the variable and function declarations are, so that it takes less effort to resolve identifiers during execution.
+В  *Движке* JavaScript есть много оптимизаций быстродействия, которые он выполняет во время фазы компиляции. Некоторые из этих оптимизаций сводятся к возможности по сути статически анализировать код, как только он разбирается на лексемы, и заранее определять где находятся все переменные и функции, для того чтобы понадобилось меньше усилий для разрешения имен идентификаторов во время выполнения.
 
-But if the *Engine* finds an `eval(..)` or `with` in the code, it essentially has to *assume* that all its awareness of identifier location may be invalid, because it cannot know at lexing time exactly what code you may pass to `eval(..)` to modify the lexical scope, or the contents of the object you may pass to `with` to create a new lexical scope to be consulted.
+Но если *Движок* находит в коде `eval(..)` или `with`, он фактически должен *предположить*, что все его знание о местонахождении идентификаторов может быть неправильным, потому что он не знает точно во время написания кода какой код вы можете передать в `eval(..)`, чтобы поменять лексическую область видимости или какое содержимое объекта вы можете передать в `with`, чтобы создать новую лексическую область видимости, чтобы быть в курсе.
 
-In other words, in the pessimistic sense, most of those optimizations it *would* make are pointless if `eval(..)` or `with` are present, so it simply doesn't perform the optimizations *at all*.
+Иными словами, с точки зрения пессимистического здравого смысла, большинство таких оптимизаций, которые он *мог бы* сделать, бессмысленны, если есть `eval(..)` или `with`, поэтому он просто не выполняет *никаких* оптимизаций.
 
-Your code will almost certainly tend to run slower simply by the fact that you include an `eval(..)` or `with` anywhere in the code. No matter how smart the *Engine* may be about trying to limit the side-effects of these pessimistic assumptions, **there's no getting around the fact that without the optimizations, code runs slower.**
+Ваш код почти определенно будет стремиться работать медленнее просто из-за того факта, что вы включили `eval(..)` или `with` где-либо в вашем коде. Не важно насколько умным может быть *Движок* пытаясь ограничить побочные эффекты этих пессимистических предположений, но **нельзя обойти тот факт, что без оптимизаций код работает медленнее.**
 
-## Review (TL;DR)
+## Обзор
 
-Lexical scope means that scope is defined by author-time decisions of where functions are declared. The lexing phase of compilation is essentially able to know where and how all identifiers are declared, and thus predict how they will be looked-up during execution.
+Лексическая область видимости означает, что область видимости определена решениями о том, где объявляются функции на стадии написания кода. Фаза разбиения на лексемы при компиляции фактически способна узнать где и как объявлены все идентификаторы, и таким образом предсказать как их будут искать во время выполнения.
 
-Two mechanisms in JavaScript can "cheat" lexical scope: `eval(..)` and `with`. The former can modify existing lexical scope (at runtime) by evaluating a string of "code" which has one or more declarations in it. The latter essentially creates a whole new lexical scope (again, at runtime) by treating an object reference *as* a "scope" and that object's properties as scoped identifiers.
+Два механизма в JavaScript могут "обмануть" лексическую область видимости: `eval(..)` и `with`. Первый может менять существующую лексическую область видимости (во время выполнения) исполняя строку "кода", в которой есть одно или несколько объявлений. Второй по сути создает целую новую лексическую область видимости (снова во время выполнения) интерпретируя ссылку на объект *как* "область видимости", а свойства этого объекта как идентификаторы этой области.
 
-The downside to these mechanisms is that it defeats the *Engine*'s ability to perform compile-time optimizations regarding scope look-up, because the *Engine* has to assume pessimistically that such optimizations will be invalid. Code *will* run slower as a result of using either feature. **Don't use them.**
+Недостаток этих механизмов в том, что они лишают смысла возможность *Движка*  выполнять оптимизации во время компиляции, принимающие во внимание поиск в области видимости, так как *Движок* должен пессимистически предположить, что такие оптимизации будут неправильными. Код *будет* выполняться медленнее в результате использования любой из этих возможностей. **Не используйте их!**
