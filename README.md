@@ -30,7 +30,7 @@
 
 Если же вы хотите поддержать данную работу финансово, но не хотите покупать книги, вы можете это сделать через сервис [Patreon](https://www.patreon.com/getify), я буду глубоко признателен вам за вашу щедрость.
 
-<a href="https://www.patreon.com/getify"><img src="http://blog.getify.com/wp-content/uploads/patreon.png"></a>
+<a href="https://www.patreon.com/getify">[![patreon.png](https://s11.postimg.org/axpzguh77/patreon.png)](https://www.patreon.com/getify)</a>
 
 ## Очное обучение
 
