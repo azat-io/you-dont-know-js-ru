@@ -1,15 +1,15 @@
-# You Don't Know JS: Scope & Closures
-# Chapter 4: Hoisting
+# Вы не знаете JS: Область видимости и замыкания
+# Глава 4: Поднятие переменных (Hoisting)
 
-By now, you should be fairly comfortable with the idea of scope, and how variables are attached to different levels of scope depending on where and how they are declared. Both function scope and block scope behave by the same rules in this regard: any variable declared within a scope is attached to that scope.
+Теперь вы должно быть вполне уверенно разбираетесь в идее области видимости, и в том, как переменные присоединяются к различным уровням области видимости в зависимости от того, где и как они объявлены. Обе области видимости, как функции, так и блока работают по одинаковым правилам в таком виде: любая переменная, объявленная в области видимости, присоединяется к этой области видимости.
 
-But there's a subtle detail of how scope attachment works with declarations that appear in various locations within a scope, and that detail is what we will examine here.
+Но есть маленький нюанс в том, как работает присоединение к области видимости с объявлениями, которые появляются в различных местах области видимости, и это именно тот нюанс, который мы тут и исследуем.
 
-## Chicken Or The Egg?
+## Курица или яйцо?
 
-There's a temptation to think that all of the code you see in a JavaScript program is interpreted line-by-line, top-down in order, as the program executes. While that is substantially true, there's one part of that assumption which can lead to incorrect thinking about your program.
+Есть искушение подумать, что весь код, который вы видите в программе на JavaScript, интерпретируется строка за строкой. Несмотря на то, что по сути это правда, есть одна часть этого предположения, которая может привести к  некорректному пониманию вашей программы.
 
-Consider this code:
+Представьте такой код:
 
 ```js
 a = 2;
@@ -19,11 +19,11 @@ var a;
 console.log( a );
 ```
 
-What do you expect to be printed in the `console.log(..)` statement?
+Что вы ожидаете увидеть в выводе оператора `console.log(..)`?
 
-Many developers would expect `undefined`, since the `var a` statement comes after the `a = 2`, and it would seem natural to assume that the variable is re-defined, and thus assigned the default `undefined`. However, the output will be `2`.
+Многие разработчики ожидают увидеть `undefined`, поскольку оператор `var a` идет после `a = 2`, и было бы естественным предположить, что переменная переопределена и потому ей присвоено значение по умолчанию `undefined`. Однако, результат будет `2`.
 
-Consider another piece of code:
+Представьте еще один код:
 
 ```js
 console.log( a );
@@ -31,21 +31,21 @@ console.log( a );
 var a = 2;
 ```
 
-You might be tempted to assume that, since the previous snippet exhibited some less-than-top-down looking behavior, perhaps in this snippet, `2` will also be printed. Others may think that since the `a` variable is used before it is declared, this must result in a `ReferenceError` being thrown.
+Вы можете склониться к предположению, что поскольку в предыдущем показанном коде есть некоторое поведение в стиле "немного с ног на голову", то возможно в этом коде также будет выведено `2`. Другие могут подумать, что поскольку переменная `a` используется раньше, чем объявлена, то это приведет к выбросу `ReferenceError`.
 
-Unfortunately, both guesses are incorrect. `undefined` is the output.
+К сожалению, оба предположения неверны. Будет выведено `undefined`.
 
-**So, what's going on here?** It would appear we have a chicken-and-the-egg question. Which comes first, the declaration ("egg"), or the assignment ("chicken")?
+**Так что же здесь происходит?** Похоже тут вопрос сродни "что раньше: курица или яйцо?". Что идет первым: объявление ("яйцо") или присваивание ("курица")?
 
-## The Compiler Strikes Again
+## Компилятор снова наносит удар
 
-To answer this question, we need to refer back to Chapter 1, and our discussion of compilers. Recall that the *Engine* actually will compile your JavaScript code before it interprets it. Part of the compilation phase was to find and associate all declarations with their appropriate scopes. Chapter 2 showed us that this is the heart of Lexical Scope.
+Чтобы ответить на этот вопрос, нам нужно вернуться в главу 1 и нашу дискуссию о компиляторах. Вспомните, что *Движок* на самом деле скомпилирует ваш код JavaScript до того, как начнет интерпретировать его. Частью фазы компиляции является нахождение и ассоциация всех объявлений с их соответствующими областями видимости. Глава 2 показала нам, что это и есть сердце лексической области видимости.
 
-So, the best way to think about things is that all declarations, both variables and functions, are processed first, before any part of your code is executed.
+Поэтому, лучший путь думать об этих вещах — что все объявления как переменных, так и функций, обрабатываются в первую очередь, до того как будет выполнена любая часть вашего кода.
 
-When you see `var a = 2;`, you probably think of that as one statement. But JavaScript actually thinks of it as two statements: `var a;` and `a = 2;`. The first statement, the declaration, is processed during the compilation phase. The second statement, the assignment, is left **in place** for the execution phase.
+Когда видите `var a = 2;`, вы наверное думаете о нем как об одном операторе. Но JavaScript на самом деле думает о нем как о двух операторах: `var a;` и `a = 2;`. Первый оператор, объявление, обрабатывается во время фазы компиляции. Второй оператор, присваивание, остается **на своем месте** в фазе исполнения.
 
-Our first snippet then should be thought of as being handled like this:
+Следовательно о нашем первом коде следует думать как об обрабатываемом следующим образом:
 
 ```js
 var a;
@@ -56,9 +56,9 @@ a = 2;
 console.log( a );
 ```
 
-...where the first part is the compilation and the second part is the execution.
+...где первая часть — компиляция, а вторая — выполнение.
 
-Similarly, our second snippet is actually processed as:
+Аналогично, наш второй код в действительности будет обработан так:
 
 ```js
 var a;
@@ -69,11 +69,11 @@ console.log( a );
 a = 2;
 ```
 
-So, one way of thinking, sort of metaphorically, about this process, is that variable and function declarations are "moved" from where they appear in the flow of the code to the top of the code. This gives rise to the name "Hoisting".
+Получается, один из путей представить это, в какой-то степени образно, что эти объявления переменной и функции "переехали" с того места, где они появились в коде в начало кода. Это дало начало названию "Поднятие (Hoisting)".
 
-In other words, **the egg (declaration) comes before the chicken (assignment)**.
+Другими словами, **яйцо (объявление) появилось до курицы (присваивания)**.
 
-**Note:** Only the declarations themselves are hoisted, while any assignments or other executable logic are left *in place*. If hoisting were to re-arrange the executable logic of our code, that could wreak havoc.
+**Примечание:** Поднимаются только сами объявления, тогда как любые присваивания или другая логика выполнения остается *на месте*. Если поднятие намеренно используется, чтобы перестроить логику выполнения вашего кода, то это может вызвать хаос.
 
 ```js
 foo();
@@ -85,9 +85,9 @@ function foo() {
 }
 ```
 
-The function `foo`'s declaration (which in this case *includes* the implied value of it as an actual function) is hoisted, such that the call on the first line is able to execute.
+Объявление функции `foo` (которое в этом случае *включает в себя* соответствующее значение как актуальную функцию) поднимается, благодаря чему ее вызов в первой строке может быть выполнен.
 
-It's also important to note that hoisting is **per-scope**. So while our previous snippets were simplified in that they only included global scope, the `foo(..)` function we are now examining itself exhibits that `var a` is hoisted to the top of `foo(..)` (not, obviously, to the top of the program). So the program can perhaps be more accurately interpreted like this:
+Также важно отметить, что каждое поднятие соотносится **с областью видимости**. Поэтому несмотря на то, что наши предыдущие примеры кода были упрощенными в том, что были включены только в глобальную область видимости, функция `foo(..)`, которую мы сейчас изучаем, показывает, что `var a` поднимается наверх `foo(..)` (а не, очевидно, наверх всей программы). Так что программу можно было бы прочесть более точно как:
 
 ```js
 function foo() {
@@ -101,19 +101,19 @@ function foo() {
 foo();
 ```
 
-Function declarations are hoisted, as we just saw. But function expressions are not.
+Объявления функций поднимаются, как мы только что видели. А функциональные выражения — нет.
 
 ```js
-foo(); // not ReferenceError, but TypeError!
+foo(); // не ReferenceError, но TypeError!
 
 var foo = function bar() {
 	// ...
 };
 ```
 
-The variable identifier `foo` is hoisted and attached to the enclosing scope (global) of this program, so `foo()` doesn't fail as a `ReferenceError`. But `foo` has no value yet (as it would if it had been a true function declaration instead of expression). So, `foo()` is attempting to invoke the `undefined` value, which is a `TypeError` illegal operation.
+Идентификатор переменной `foo` поднимается и присоединяется к включающей его области видимости (глобальной) этой программы, поэтому `foo()` не вызовет ошибки `ReferenceError`. Но в `foo` пока еще нет значения (как если бы это было объявление обычной функции вместо выражения). Поэтому, `foo()` пытается вызвать значение `undefined`, которое является неправильной операцией с вызовом ошибки `TypeError`.
 
-Also recall that even though it's a named function expression, the name identifier is not available in the enclosing scope:
+Также помните, что даже если это именованное функциональное выражение, идентификатор имени недоступен в окружающей области видимости:
 
 ```js
 foo(); // TypeError
@@ -124,7 +124,7 @@ var foo = function bar() {
 };
 ```
 
-This snippet is more accurately interpreted (with hoisting) as:
+Этот код более точно интерпретируется (с учетом поднятия) как:
 
 ```js
 var foo;
@@ -138,11 +138,11 @@ foo = function() {
 }
 ```
 
-## Functions First
+## Сначала функции
 
-Both function declarations and variable declarations are hoisted. But a subtle detail (that *can* show up in code with multiple "duplicate" declarations) is that functions are hoisted first, and then variables.
+Как объявления функций, так и переменных поднимаются. Но тонкость (которая *поможет* объяснить множественные объявления "дубликатов" в коде) в том, что сперва поднимаются функции, а затем уже переменные.
 
-Consider:
+Представим:
 
 ```js
 foo(); // 1
@@ -158,7 +158,7 @@ foo = function() {
 };
 ```
 
-`1` is printed instead of `2`! This snippet is interpreted by the *Engine* as:
+`1` выводится вместо `2`! Этот код интерпретируется *Движком* так:
 
 ```js
 function foo() {
@@ -172,9 +172,9 @@ foo = function() {
 };
 ```
 
-Notice that `var foo` was the duplicate (and thus ignored) declaration, even though it came before the `function foo()...` declaration, because function declarations are hoisted before normal variables.
+Обратите внимание, что `var foo` является дублем объявления (и поэтому игнорируется), даже несмотря на то, что идет до объявления `function foo()...`, потому что объявления функций поднимаются до обычных переменных.
 
-While multiple/duplicate `var` declarations are effectively ignored, subsequent function declarations *do* override previous ones.
+В то время как множественные/дублирующие объявления `var` фактически игнорируются, последовательные объявления функции *перекрывают* предыдущие.
 
 ```js
 foo(); // 3
@@ -192,9 +192,9 @@ function foo() {
 }
 ```
 
-While this all may sound like nothing more than interesting academic trivia, it highlights the fact that duplicate definitions in the same scope are a really bad idea and will often lead to confusing results.
+Несмотря на то, что всё это может прозвучать как не более чем любопытный академический факт, это привлекает тем, что дубли определений в одной и той же области видимости — в самом деле плохая идея и часто приводит к странным результатам.
 
-Function declarations that appear inside of normal blocks typically hoist to the enclosing scope, rather than being conditional as this code implies:
+Объявления функций, которые появляются внутри обычных блоков, обычно поднимаются в окружающей области видимости, вместо того чтобы быть условными как показывает код ниже:
 
 ```js
 foo(); // "b"
@@ -208,14 +208,14 @@ else {
 }
 ```
 
-However, it's important to note that this behavior is not reliable and is subject to change in future versions of JavaScript, so it's probably best to avoid declaring functions in blocks.
+Однако, важно отметить, что такое поведение небезопасно и может измениться в будущих версиях JavaScript, поэтому лучше избегать объявления функций в блоках.
 
-## Review (TL;DR)
+## Обзор
 
-We can be tempted to look at `var a = 2;` as one statement, but the JavaScript *Engine* does not see it that way. It sees `var a` and `a = 2` as two separate statements, the first one a compiler-phase task, and the second one an execution-phase task.
+У нас есть соблазн смотреть на `var a = 2;` как на один оператор, но  *Движок* JavaScript видит это по-другому. Он видит `var a` и `a = 2` как два отдельных оператора, первый — как задачу фазы компиляции, а второй — как задачу фазы выполнения.
 
-What this leads to is that all declarations in a scope, regardless of where they appear, are processed *first* before the code itself is executed. You can visualize this as declarations (variables and functions) being "moved" to the top of their respective scopes, which we call "hoisting".
+Это приводит к тому, что все объявления в области видимости, независимо от того где они появляются, обрабатываются *первыми*, до того, как сам код будет выполнен. Можно мысленно представить себе это как объявления (переменных и функций), "переезжающие" в начало их соответствующих областей видимости, что мы называем "поднятие (hoisting)".
 
-Declarations themselves are hoisted, but assignments, even assignments of function expressions, are *not* hoisted.
+Сами объявления поднимаются, а присваивания, даже присваивания функциональных выражений, *не* поднимаются.
 
-Be careful about duplicate declarations, especially mixed between normal var declarations and function declarations -- peril awaits if you do!
+Остерегайтесь дублей объявлений, особенно смешанных обычных объявлений var и объявлений функций — вас будут поджидать неприятности!

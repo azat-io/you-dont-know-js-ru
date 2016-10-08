@@ -1,65 +1,65 @@
-# You Don't Know JS: Scope & Closures
-# Chapter 3: Function vs. Block Scope
+# Вы не знаете JS: Область видимости и замыкания
+# Глава 3: Область видимости: функции против блоков
 
-As we explored in Chapter 2, scope consists of a series of "bubbles" that each act as a container or bucket, in which identifiers (variables, functions) are declared. These bubbles nest neatly inside each other, and this nesting is defined at author-time.
+Как мы уже исследовали в главе 2, область видимости состоит из серии "зон", каждая из которых действует как контейнер или корзина, в которой объявляются идентификаторы (переменные, функции). Эти зоны четко вкладываются друг в друга и это вложение определяется во время написания кода.
 
-But what exactly makes a new bubble? Is it only the function? Can other structures in JavaScript create bubbles of scope?
+Но что именно конкретно создает новую зону? Только функция? Могут ли другие структуры в JavaScript создавать зоны областей видимости?
 
-## Scope From Functions
+## Область видимости из функций
 
-The most common answer to those questions is that JavaScript has function-based scope. That is, each function you declare creates a bubble for itself, but no other structures create their own scope bubbles. As we'll see in just a little bit, this is not quite true.
+Самый общий ответ на эти вопросы такой — в JavaScript есть области видимости в функциях. То есть, каждая функция, которую вы объявляете, создает зону для себя, но больше ни одна структура не создает свою собственную зону области видимости. Как мы скоро увидим, это не совсем правда.
 
-But first, let's explore function scope and its implications.
+Но сначала, давайте исследуем область видимости функции и ее применения.
 
-Consider this code:
+Представьте такой код:
 
 ```js
 function foo(a) {
 	var b = 2;
 
-	// some code
+	// некоторый код
 
 	function bar() {
 		// ...
 	}
 
-	// more code
+	// еще код
 
 	var c = 3;
 }
 ```
 
-In this snippet, the scope bubble for `foo(..)` includes identifiers `a`, `b`, `c` and `bar`. **It doesn't matter** *where* in the scope a declaration appears, the variable or function belongs to the containing scope bubble, regardless. We'll explore how exactly *that* works in the next chapter.
+В этом коде зона области видимости для `foo(..)` включает в себя идентификаторы `a`, `b`, `c` и `bar`. **Не важно** *где* в области видимости появится объявление, переменная или функция принадлежит к содержащей их зоне области видимости, вне зависимости от места объявления. Мы исследуем в следующей главе как *это* в точности работает.
 
-`bar(..)` has its own scope bubble. So does the global scope, which has just one identifier attached to it: `foo`.
+У `bar(..)` есть своя собственная зона области видимости. Также и у глобальной области видимости, у которой есть всего один идентификатор: `foo`.
 
-Because `a`, `b`, `c`, and `bar` all belong to the scope bubble of `foo(..)`, they are not accessible outside of `foo(..)`. That is, the following code would all result in `ReferenceError` errors, as the identifiers are not available to the global scope:
+Так как `a`, `b`, `c` и `bar` все принадлежат к зоне области видимости `foo(..)`, они недоступны вне `foo(..)`. То есть, нижеприведенный код весь целиком приведет к ошибкам `ReferenceError`, так как идентификаторы недоступны в глобальной области видимости:
 
 ```js
-bar(); // fails
+bar(); // ошибка
 
-console.log( a, b, c ); // all 3 fail
+console.log( a, b, c ); // все 3 вызовут ошибку
 ```
 
-However, all these identifiers (`a`, `b`, `c`, `foo`, and `bar`) are accessible *inside* of `foo(..)`, and indeed also available inside of `bar(..)` (assuming there are no shadow identifier declarations inside `bar(..)`).
+Однако, все эти идентификаторы (`a`, `b`, `c`, `foo` и `bar`) доступны *внутри* `foo(..)` и конечно также доступны внутри `bar(..)` (предполагаем, что нет ни одного объявления затеняющих идентификаторов внутри `bar(..)`).
 
-Function scope encourages the idea that all variables belong to the function, and can be used and reused throughout the entirety of the function (and indeed, accessible even to nested scopes). This design approach can be quite useful, and certainly can make full use of the "dynamic" nature of JavaScript variables to take on values of different types as needed.
+Область видимости функции поощряет идею, что все переменные принадлежат функции и могут быть использованы и переиспользованы на всем протяжении функции (и более того, доступны даже во вложенных областях видимости). Этот подход к дизайну может быть довольно полезен и несомненно может использовать в полном объеме "динамическую" природу переменных JavaScript, чтобы иметь дело со значениями разных типов при необходимости.
 
-On the other hand, if you don't take careful precautions, variables existing across the entirety of a scope can lead to some unexpected pitfalls.
+С другой стороны, если вы не принимаете меры предосторожности, переменные, существующие на всей протяженности области видимости, могут привести к неожиданным ошибкам.
 
-## Hiding In Plain Scope
+## Прячемся на виду у всей области видимости
 
-The traditional way of thinking about functions is that you declare a function, and then add code inside it. But the inverse thinking is equally powerful and useful: take any arbitrary section of code you've written, and wrap a function declaration around it, which in effect "hides" the code.
+Традиционный путь рассуждений о функциях таков: вы определяете функцию, а затем добавляете код внутрь нее. Но обратное рассуждение столь же обоснованно и удобно: взять любую произвольную часть кода, которую вы написали, и обернуть ее в объявление функции, что в сущности "прячет" код.
 
-The practical result is to create a scope bubble around the code in question, which means that any declarations (variable or function) in that code will now be tied to the scope of the new wrapping function, rather than the previously enclosing scope. In other words, you can "hide" variables and functions by enclosing them in the scope of a function.
+Практическим результатом является создание зоны области видимости вокруг кода, о котором идет речь, а это значит, что любые объявления (переменной или функции) в этом коде будут ограничены областью видимости новой оборачивающей код функции, вместо ранее охватывающей области видимости. Иными словами, вы можете "спрятать" переменные и функции заключив их в область видимости функции.
 
-Why would "hiding" variables and functions be a useful technique?
+Почему же "прятать" переменные и функции — полезная техника?
 
-There's a variety of reasons motivating this scope-based hiding. They tend to arise from the software design principle "Principle of Least Privilege" [^note-leastprivilege], also sometimes called "Least Authority" or "Least Exposure". This principle states that in the design of software, such as the API for a module/object, you should expose only what is minimally necessary, and "hide" everything else.
+Есть множество причин, мотивирующих на это сокрытие, основанное на области видимости. Они имеют тенденцию проистекать из принципа дизайна ПО "Принцип наименьших привилегий", также иногда называемый "Наименьшие полномочия" или "Наименьшая открытость". Этот принцип заявляет, что в дизайне ПО, таком как API для модуля/объекта, вам следует выставлять наружу только то, что минимально необходимо и "прятать" всё остальное.
 
-This principle extends to the choice of which scope to contain variables and functions. If all variables and functions were in the global scope, they would of course be accessible to any nested scope. But this would violate the "Least..." principle in that you are (likely) exposing many variables or functions which you should otherwise keep private, as proper use of the code would discourage access to those variables/functions.
+Этот принцип распространяется и на выбор того, какая область видимости будет содержать переменные и функции. Если все переменные и функции были бы в глобальной области видимости, они были бы, конечно, доступны любой вложенной области видимости. Но это нарушает принцип "Наименьшей..." в том, что вы  (видимо) открываете многие переменные или функции, которые вам следовало в противном случае держать приватными, коль скоро правильное использование кода будет препятствовать доступу к этим переменным/функциям.
 
-For example:
+Например:
 
 ```js
 function doSomething(a) {
@@ -77,9 +77,9 @@ var b;
 doSomething( 2 ); // 15
 ```
 
-In this snippet, the `b` variable and the `doSomethingElse(..)` function are likely "private" details of how `doSomething(..)` does its job. Giving the enclosing scope "access" to `b` and `doSomethingElse(..)` is not only unnecessary but also possibly "dangerous", in that they may be used in unexpected ways, intentionally or not, and this may violate pre-condition assumptions of `doSomething(..)`.
+В этом коде, переменная `b` и функция `doSomethingElse(..)` — похоже "частные" детали того, как `doSomething(..)` выполняет свою работу. Предоставление  окружающей области видимости "доступа" к `b` и `doSomethingElse(..)` не только не необходимо, но также возможно и "опасно" тем, что их могут нечаянно использовать, намеренно или нет, и это может нарушить предварительные соглашения в `doSomething(..)`.
 
-A more "proper" design would hide these private details inside the scope of `doSomething(..)`, such as:
+Более "правильный" дизайн скрыл бы эти частные детали внутри области видимости `doSomething(..)`, например как тут:
 
 ```js
 function doSomething(a) {
@@ -97,40 +97,40 @@ function doSomething(a) {
 doSomething( 2 ); // 15
 ```
 
-Now, `b` and `doSomethingElse(..)` are not accessible to any outside influence, instead controlled only by `doSomething(..)`. The functionality and end-result has not been affected, but the design keeps private details private, which is usually considered better software.
+Теперь, `b` и `doSomethingElse(..)` недоступны для любого внешнего воздействия, а взамен управляются только в `doSomething(..)`. Функциональность и конечный результат оказались не затронуты, а дизайн хранит частные детали частными, что обычно считается лучшим ПО.
 
-### Collision Avoidance
+### Предотвращение коллизий
 
-Another benefit of "hiding" variables and functions inside a scope is to avoid unintended collision between two different identifiers with the same name but different intended usages. Collision results often in unexpected overwriting of values.
+Еще одно преимущество "скрытия" переменных и функций внутри области действия — чтобы избежать неумышленных коллизий между двумя идентификаторами с одним и тем же именем, но с разным целевым использованием. Коллизии часто приводят к неумышленной перезаписи значений.
 
-For example:
+Например:
 
 ```js
 function foo() {
 	function bar(a) {
-		i = 3; // changing the `i` in the enclosing scope's for-loop
+		i = 3; // меняем `i` в окружающей области видимости цикла for-loop
 		console.log( a + i );
 	}
 
 	for (var i=0; i<10; i++) {
-		bar( i * 2 ); // oops, infinite loop ahead!
+		bar( i * 2 ); // упс, впереди бесконечный цикл!
 	}
 }
 
 foo();
 ```
 
-The `i = 3` assignment inside of `bar(..)` overwrites, unexpectedly, the `i` that was declared in `foo(..)` at the for-loop. In this case, it will result in an infinite loop, because `i` is set to a fixed value of `3` and that will forever remain `< 10`.
+Присваивание `i = 3` внутри `bar(..)` неожиданно перезаписывает `i`, которая была объявлена в `foo(..)` внутри цикла for-loop. В этом случае, это приведет к бесконечному циклу, так как `i` установлена в фиксированное значение `3` и она всегда будет оставаться `< 10`.
 
-The assignment inside `bar(..)` needs to declare a local variable to use, regardless of what identifier name is chosen. `var i = 3;` would fix the problem (and would create the previously mentioned "shadowed variable" declaration for `i`). An *additional*, not alternate, option is to pick another identifier name entirely, such as `var j = 3;`. But your software design may naturally call for the same identifier name, so utilizing scope to "hide" your inner declaration is your best/only option in that case.
+Присваиванию внутри `bar(..)` нужно объявить локальную переменную для своих нужд, независимо от того, какое имя идентификатора выбрано. `var i = 3;` исправило бы эту проблему (и создало бы ранее упоминавшееся объявление "затененной переменной" `i`). *Дополнительная*, не альтернативная возможность — выбрать совсем другое имя идентификатора, такое как `var j = 3;`. Но дизайн вашего ПО естественно может подразумевать использование одного и того же имени идентификатора, поэтому использование области видимости, чтобы "скрыть" ваше внутреннее объявление — это ваша лучшая/единственная возможность в этом случае.
 
-#### Global "Namespaces"
+#### Глобальные "Пространства имен"
 
-A particularly strong example of (likely) variable collision occurs in the global scope. Multiple libraries loaded into your program can quite easily collide with each other if they don't properly hide their internal/private functions and variables.
+Особенно яркий пример (наверное) коллизии переменных возникает в глобальной области видимости. Многие библиотеки, загружаемые в вашу программу, могут без всякого труда вступить в коллизию друг с другом, если они не спрячут должным образом свои внутренние/приватные функции и переменные.
 
-Such libraries typically will create a single variable declaration, often an object, with a sufficiently unique name, in the global scope. This object is then used as a "namespace" for that library, where all specific exposures of functionality are made as properties off that object (namespace), rather than as top-level lexically scoped identifiers themselves.
+Такие библиотеки, как правило, создают единственное объявление переменной, часто объекта, с достаточно уникальным именем в глобальной области видимости. Этот объект затем используется как "пространство имен" для этой библиотеки, где вся открываемая характерная функциональность делается как свойства этого объекта (пространства имен), вместо того, чтобы выставлять свои идентификаторы в области видимости на самом верхнем уровне.
 
-For example:
+Например:
 
 ```js
 var MyReallyCoolLibrary = {
@@ -144,68 +144,68 @@ var MyReallyCoolLibrary = {
 };
 ```
 
-#### Module Management
+#### Управление модулями
 
-Another option for collision avoidance is the more modern "module" approach, using any of various dependency managers. Using these tools, no libraries ever add any identifiers to the global scope, but are instead required to have their identifier(s) be explicitly imported into another specific scope through usage of the dependency manager's various mechanisms.
+Еще одна возможность избежать коллизии — более современный "модульный" подход, используя любой из множества диспетчеров внедрения зависимостей. Используя эти инструменты, ни одна библиотека никогда не добавит ни одного идентификатора в глобальную область видимости, но взамен требуется явно импортировать их идентификатор в другую особую область видимости используя различные механизмы диспетчера внедрения зависимостей.
 
-It should be observed that these tools do not possess "magic" functionality that is exempt from lexical scoping rules. They simply use the rules of scoping as explained here to enforce that no identifiers are injected into any shared scope, and are instead kept in private, non-collision-susceptible scopes, which prevents any accidental scope collisions.
+Следует отметить, что эти инструменты не обладают "волшебной" функциональностью, которая свободна от правил лексической области видимости. Они просто используют правила области видимости, о которых уже рассказывалось здесь, чтобы управлять тем, что ни один идентификатор не будет пущен ни в одну общую область видимости, а взамен идентификаторы будут храниться в приватных, не подверженных коллизиям областях видимости, которые предотвратят любые случайные коллизии областей видимости.
 
-As such, you can code defensively and achieve the same results as the dependency managers do without actually needing to use them, if you so choose. See the Chapter 5 for more information about the module pattern.
+Собственно, вы можете кодировать осторожно и добиться таких же результатов как диспетчеры внедрения зависимостей без реальной необходимости их использования, если таков будет ваш выбор. Детальная информация о модульном шаблоне есть в главе 5.
 
-## Functions As Scopes
+## Функции как области видимости
 
-We've seen that we can take any snippet of code and wrap a function around it, and that effectively "hides" any enclosed variable or function declarations from the outside scope inside that function's inner scope.
+Мы уже видели, что можно взять любой кусок кода и обернуть его в функцию, и это эффективно "скроет" любые вложенные определения переменных или функций от внешней области видимости во внутренней области видимости этой функции.
 
-For example:
-
-```js
-var a = 2;
-
-function foo() { // <-- insert this
-
-	var a = 3;
-	console.log( a ); // 3
-
-} // <-- and this
-foo(); // <-- and this
-
-console.log( a ); // 2
-```
-
-While this technique "works", it is not necessarily very ideal. There are a few problems it introduces. The first is that we have to declare a named-function `foo()`, which means that the identifier name `foo` itself "pollutes" the enclosing scope (global, in this case). We also have to explicitly call the function by name (`foo()`) so that the wrapped code actually executes.
-
-It would be more ideal if the function didn't need a name (or, rather, the name didn't pollute the enclosing scope), and if the function could automatically be executed.
-
-Fortunately, JavaScript offers a solution to both problems.
+Например:
 
 ```js
 var a = 2;
 
-(function foo(){ // <-- insert this
+function foo() { // <-- вставляем это
 
 	var a = 3;
 	console.log( a ); // 3
 
-})(); // <-- and this
+} // <-- и это
+foo(); // <-- и это
 
 console.log( a ); // 2
 ```
 
-Let's break down what's happening here.
+Несмотря на то, что эта техника "работает", она не обязательно очень идеальна. Она привносит некоторые проблемы. Первая, это то, что мы должны объявить именованную функцию `foo()`, которая означает, что само имя идентификатора `foo` "засоряет" окружающую область видимости (в данном случае глобальную). Мы также должны явно вызвать функцию по имени (`foo()`) для того ,чтобы обернутый код выполнился на самом деле.
 
-First, notice that the wrapping function statement starts with `(function...` as opposed to just `function...`. While this may seem like a minor detail, it's actually a major change. Instead of treating the function as a standard declaration, the function is treated as a function-expression.
+Было бы идеально, если бы функции не было нужно имя (или точнее, чтобы это имя не загрязняло окружающую область видимости) и если бы функция могла бы автоматически выполняться.
 
-**Note:** The easiest way to distinguish declaration vs. expression is the position of the word "function" in the statement (not just a line, but a distinct statement). If "function" is the very first thing in the statement, then it's a function declaration. Otherwise, it's a function expression.
+К счастью, JavaScript предлагает решение обеих проблем.
 
-The key difference we can observe here between a function declaration and a function expression relates to where its name is bound as an identifier.
+```js
+var a = 2;
 
-Compare the previous two snippets. In the first snippet, the name `foo` is bound in the enclosing scope, and we call it directly with `foo()`. In the second snippet, the name `foo` is not bound in the enclosing scope, but instead is bound only inside of its own function.
+(function foo(){ // <-- вставляем это
 
-In other words, `(function foo(){ .. })` as an expression means the identifier `foo` is found *only* in the scope where the `..` indicates, not in the outer scope. Hiding the name `foo` inside itself means it does not pollute the enclosing scope unnecessarily.
+	var a = 3;
+	console.log( a ); // 3
 
-### Anonymous vs. Named
+})(); // <-- и это
 
-You are probably most familiar with function expressions as callback parameters, such as:
+console.log( a ); // 2
+```
+
+Давайте разберем в деталях что же тут происходит.
+
+Сперва, заметьте, что оператор окружающей функции начинается с `(function...` в противоположность простому `function...`. Хоть это и может показаться несущественной деталью, это на самом деле огромное изменение. Вместо того, чтобы трактовать функцию как стандартное объявление, функция трактуется как функциональное выражение.
+
+**Примечание:** Самый легкий путь отличить объявление от выражения — позиция слова "function" в операторе (не только строка, но и отдельный оператор). Если "function" — самое первое, что стоит в операторе, то это объявление функции. Иначе, это функциональное выражение.
+
+Ключевое отличие между объявлением функции и функциональным выражением, которое мы можем заметить тут, связано с тем, где его имя связывается с идентификатором.
+
+Сравните два предыдущих кода. В первом, имя `foo` связано с окружающей областью видимости и мы вызываем его напрямую через `foo()`. Во втором коде, имя `foo` не связано с окружающей областью видимости, а взамен связано только со своей собственной функцией.
+
+Иными словами, `(function foo(){ .. })` как выражение означает, что идентификатор `foo` может быть найден *только* в области видимости, которая обозначена `..`, но не во внешней области видимости. Скрывание имени `foo` внутри себя означает, что оно не будет неоправданно загрязнять окружающую область видимости.
+
+### Анонимный против названного
+
+Возможно, вы лучше всех знакомы с функциональных выражениями как параметрами функций обратного вызова, например:
 
 ```js
 setTimeout( function(){
@@ -213,25 +213,25 @@ setTimeout( function(){
 }, 1000 );
 ```
 
-This is called an "anonymous function expression", because `function()...` has no name identifier on it. Function expressions can be anonymous, but function declarations cannot omit the name -- that would be illegal JS grammar.
+Это называется "анонимное функциональное выражение", так как у `function()...` нет именованного идентификатора. Функциональные выражения могут быть анонимными, но объявления функций не могут опускать имя — это было бы невалидным синтаксисом JS.
 
-Anonymous function expressions are quick and easy to type, and many libraries and tools tend to encourage this idiomatic style of code. However, they have several draw-backs to consider:
+Анонимные функциональные выражения быстро и легко вводить и многие библиотеки и утилиты проявляют тенденцию к поощрению этого идиоматического стиля кода. Однако, у них есть несколько недостатков о которы нужно упомянуть:
 
-1. Anonymous functions have no useful name to display in stack traces, which can make debugging more difficult.
+1. У анонимные функций нет удобного имени для отображения в стектрейсах, что может затруднить отладку.
 
-2. Without a name, if the function needs to refer to itself, for recursion, etc., the **deprecated** `arguments.callee` reference is unfortunately required. Another example of needing to self-reference is when an event handler function wants to unbind itself after it fires.
+2. Если функции без имени будет нужно сослаться на себя же, для рекурсии или чего-то подобного, к сожалению требуется **устаревшая** ссылка `arguments.callee`. Еще один пример необходимости в ссылке на себя, когда функция обработчика события хочет отписать себя от события после выполнения.
 
-3. Anonymous functions omit a name that is often helpful in providing more readable/understandable code. A descriptive name helps self-document the code in question.
+3. Анонимные функции опускают имя, что часто удобно для обеспечения большей читаемости/понятности кода. Наглядное же имя помогает самодокументировать рассматриваемый код.
 
-**Inline function expressions** are powerful and useful -- the question of anonymous vs. named doesn't detract from that. Providing a name for your function expression quite effectively addresses all these draw-backs, but has no tangible downsides. The best practice is to always name your function expressions:
+**Встраиваемые функциональные выражения** — мощные и полезные инструменты, выбор между анонимными и именованными не умаляет их достоинств. Именование вашего функционального выражения достаточно эффективно решает все перечисленные недостатки, и при этом не имеет ощутимых минусов. Лучшая практика — это всегда именовать ваши функциональные выражения:
 
 ```js
-setTimeout( function timeoutHandler(){ // <-- Look, I have a name!
+setTimeout( function timeoutHandler(){ // <-- Смотри, у меня есть имя!
 	console.log( "I waited 1 second!" );
 }, 1000 );
 ```
 
-### Invoking Function Expressions Immediately
+### Вызов функциональных выражений по месту
 
 ```js
 var a = 2;
@@ -246,11 +246,11 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-Now that we have a function as an expression by virtue of wrapping it in a `( )` pair, we can execute that function by adding another `()` on the end, like `(function foo(){ .. })()`. The first enclosing `( )` pair makes the function an expression, and the second `()` executes the function.
+Теперь, когда у нас есть функция как выражение благодаря обертыванию ее в пару `( )`, мы можем вызвать эту функцию добавив еще одни `()` в конце, как тут `(function foo(){ .. })()`. Первая окружающая пара `( )` делает функцию выражением, а вторая `()` выполняет функцию.
 
-This pattern is so common, a few years ago the community agreed on a term for it: **IIFE**, which stands for **I**mmediately **I**nvoked **F**unction **E**xpression.
+Этот шаблон настолько в ходу, что несколько лет назад сообщество условилось о термине для него: **IIFE**, что означает **I**mmediately (немедленно) **I**nvoked (вызываемое) **F**unction (функциональное) **E**xpression (выражение).
 
-Of course, IIFE's don't need names, necessarily -- the most common form of IIFE is to use an anonymous function expression. While certainly less common, naming an IIFE has all the aforementioned benefits over anonymous function expressions, so it's a good practice to adopt.
+Конечно, IIFE не обязательно нужны имена, самая распространенная форма IIFE — использование анонимного функционального выражения. Несмотря на то, что определенно менее используемое, именование IIFE имеет все вышеперечисленные преимущества над анонимными функциональными выражениями, поэтому взять его на вооружение — хорошая практика.
 
 ```js
 var a = 2;
@@ -265,13 +265,13 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-There's a slight variation on the traditional IIFE form, which some prefer: `(function(){ .. }())`. Look closely to see the difference. In the first form, the function expression is wrapped in `( )`, and then the invoking `()` pair is on the outside right after it. In the second form, the invoking `()` pair is moved to the inside of the outer `( )` wrapping pair.
+Есть легкая вариация формы традиционной IIFE, которую предпочитают некоторые: `(function(){ .. }())`. Посмотрим ближе, чтобы увидеть разницу. В первой форме функциональное выражение обернуто в `( )`, а затем пара вызывающих ее `()` снаружи прямо за ними. Во второй форме, вызывающая пара `()` переместилась внутрь внешней окружающей пары `( )`.
 
-These two forms are identical in functionality. **It's purely a stylistic choice which you prefer.**
+Эти две формы идентичны по функциональности. **Какую из них предпочесть — всего лишь ваш стилистический выбор**.
 
-Another variation on IIFE's which is quite common is to use the fact that they are, in fact, just function calls, and pass in argument(s).
+Еще одна вариация IIFE, которая широко распространена, это использование того факта, что они, на самом деле, просто вызовы функций, и передача им аргумента(ов).
 
-For instance:
+Например:
 
 ```js
 var a = 2;
@@ -287,12 +287,12 @@ var a = 2;
 console.log( a ); // 2
 ```
 
-We pass in the `window` object reference, but we name the parameter `global`, so that we have a clear stylistic delineation for global vs. non-global references. Of course, you can pass in anything from an enclosing scope you want, and you can name the parameter(s) anything that suits you. This is mostly just stylistic choice.
+Мы передаем ссылку на объект `window`, но параметр мы назвали `global`, так что у нас есть ясное стилистическое разграничение для глобальных и неглобальных ссылок. Конечно, вы можете передать внутрь что-то из окружающей области видимости, если хотите, и можете назвать параметр(ы) так, как удобно вам. Это в основном всего лишь стилистический выбор.
 
-Another application of this pattern addresses the (minor niche) concern that the default `undefined` identifier might have its value incorrectly overwritten, causing unexpected results. By naming a parameter `undefined`, but not passing any value for that argument, we can guarantee that the `undefined` identifier is in fact the undefined value in a block of code:
+Еще одно применение этого шаблона решает (узкоспециализированную) проблему, что значение идентификатора по умолчанию `undefined` может быть некорректно перезаписано, приведя к неожиданным результатам. Давая параметру имя `undefined`, но не передавая никакого значения для этого аргумента, мы можем гарантировать, что идентификатор `undefined` фактически имеет незаданное значение в этом блоке кода:
 
 ```js
-undefined = true; // setting a land-mine for other code! avoid!
+undefined = true; // устанавливаем мину для другого кода! остерегайтесь!
 
 (function IIFE( undefined ){
 
@@ -304,7 +304,7 @@ undefined = true; // setting a land-mine for other code! avoid!
 })();
 ```
 
-Still another variation of the IIFE inverts the order of things, where the function to execute is given second, *after* the invocation and parameters to pass to it. This pattern is used in the UMD (Universal Module Definition) project. Some people find it a little cleaner to understand, though it is slightly more verbose.
+Еще одна вариация IIFE меняет порядок вещей на обратный, где вызываемая функция идет второй, *после* вызова и параметров, которые в нее передаются. Этот шаблон используется в проекте UMD (Universal Module Definition). Некоторые люди находят его более ясным для понимания, хотя он немного более многословный.
 
 ```js
 var a = 2;
@@ -320,15 +320,15 @@ var a = 2;
 });
 ```
 
-The `def` function expression is defined in the second-half of the snippet, and then passed as a parameter (also called `def`) to the `IIFE` function defined in the first half of the snippet. Finally, the parameter `def` (the function) is invoked, passing `window` in as the `global` parameter.
+Функциональное выражение `def` определяется во второй половине кода, а затем передается как параметр (также названный `def`) в функцию `IIFE`, определенную в первой половине кода. Наконец, параметр `def` (функция) вызывается, передавая `window` в нее как параметр `global`.
 
-## Blocks As Scopes
+## Блоки как области видимости
 
-While functions are the most common unit of scope, and certainly the most wide-spread of the design approaches in the majority of JS in circulation, other units of scope are possible, and the usage of these other scope units can lead to even better, cleaner to maintain code.
+В том время как функции являются самыми распространенными единицами области видимости и определенно самые распространенные подходы к разработке в большей части JS, есть и другие единицы области видимости, и использование этих единиц области видимости может привести к даже более лучшему, более чистому управлению кодом.
 
-Many languages other than JavaScript support Block Scope, and so developers from those languages are accustomed to the mindset, whereas those who've primarily only worked in JavaScript may find the concept slightly foreign.
+Многие языки, отличные от JavaScript, поддерживают блочную область видимости и поэтому разработчики из этих языков привыкли к такому мышлению, в свою очередь те, кто изначально работали в JavaScript могут найти эту концепцию немного чуждой.
 
-But even if you've never written a single line of code in block-scoped fashion, you are still probably familiar with this extremely common idiom in JavaScript:
+Но даже если вы никогда не писали ни строчки кода в стиле блочной области видимости, вы возможно все-таки знакомы с этой чрезвычайно общей идиомой в JavaScript:
 
 ```js
 for (var i=0; i<10; i++) {
@@ -336,9 +336,9 @@ for (var i=0; i<10; i++) {
 }
 ```
 
-We declare the variable `i` directly inside the for-loop head, most likely because our *intent* is to use `i` only within the context of that for-loop, and essentially ignore the fact that the variable actually scopes itself to the enclosing scope (function or global).
+Мы объявляем переменную `i` прямов внутри заголовка цикла for-loop, скорее всего потому, что наше *намерение* — использовать `i` только в контексте этого цикла for-loop и в основном игнорировать факт того, что переменная на самом деле заключает себя в окружающую область видимости (функции или глобальную).
 
-That's what block-scoping is all about. Declaring variables as close as possible, as local as possible, to where they will be used. Another example:
+Вот это и есть самое важное в блочной области видимости. Объявление переменных как можно ближе и как можно локальней к тому месту, где они будут использоваться. Еще один пример:
 
 ```js
 var foo = true;
@@ -350,11 +350,11 @@ if (foo) {
 }
 ```
 
-We are using a `bar` variable only in the context of the if-statement, so it makes a kind of sense that we would declare it inside the if-block. However, where we declare variables is not relevant when using `var`, because they will always belong to the enclosing scope. This snippet is essentially "fake" block-scoping, for stylistic reasons, and relying on self-enforcement not to accidentally use `bar` in another place in that scope.
+Мы используем переменную `bar` только в контексте оператора if, поэтому вполне разумно, что мы объявили ее внутри блока if. Однако, место, где мы объявляем переменные не имеет значения при использовании `var`, так как они всегда принадлежат окружающей области видимости. Этот код по существу "поддельная" блочная область видимости, только для целей стилистики, и полагается на самообязательство не использовать случайно `bar` в другом месте этой области видимости.
 
-Block scope is a tool to extend the earlier "Principle of Least ~~Privilege~~ Exposure" [^note-leastprivilege] from hiding information in functions to hiding information in blocks of our code.
+Блочная область видимости — это инструмент для расширения ранее упоминаемого "Принципа наименьш~~их~~ей ~~привилегий~~ открытости" с сокрытия информации в функциях на сокрытие информации в блоках вашего кода.
 
-Consider the for-loop example again:
+Давайте еще раз посмотрим пример с for-loop:
 
 ```js
 for (var i=0; i<10; i++) {
@@ -362,50 +362,50 @@ for (var i=0; i<10; i++) {
 }
 ```
 
-Why pollute the entire scope of a function with the `i` variable that is only going to be (or only *should be*, at least) used for the for-loop?
+Зачем загрязнять всю область видимости функции переменной `i`, которая будет использоваться (или только *следует*, по меньшей мере) в цикле for-loop?
 
-But more importantly, developers may prefer to *check* themselves against accidentally (re)using variables outside of their intended purpose, such as being issued an error about an unknown variable if you try to use it in the wrong place. Block-scoping (if it were possible) for the `i` variable would make `i` available only for the for-loop, causing an error if `i` is accessed elsewhere in the function. This helps ensure variables are not re-used in confusing or hard-to-maintain ways.
+Но более важно, что разработчики могут предпочесть *проверить* себя на предмет случайного (пере)использования переменных снаружи от их предполагаемой области действия, как например получить ошибку о неизвестной переменной, если вы пытаетесь использовать ее не в том месте. Блочная область видимости (если бы она была возможна) для переменной `i` сделала бы `i` доступной только для цикла for-loop, приводя к ошибке, если к `i` осуществляется доступ в другом месте функции. Это помогает убедиться, что переменные не будут переиспользованы в нечетких или труднообслуживаемых сценариях.
 
-But, the sad reality is that, on the surface, JavaScript has no facility for block scope.
+Но, печальная реальность состоит в том, что, на первый взгляд, в JavaScript нет возможности блочной области видимости.
 
-That is, until you dig a little further.
+Или, если точнее, пока вы не копнете немного глубже.
 
 ### `with`
 
-We learned about `with` in Chapter 2. While it is a frowned upon construct, it *is* an example of (a form of) block scope, in that the scope that is created from the object only exists for the lifetime of that `with` statement, and not in the enclosing scope.
+Мы изучали `with` в главе 2. Несмотря на то, к нему относятся с неодобрением с момента его появления, оно *является* примером (формой) блочной области видимости, поскольку область видимости, которая создается из объекта, существует только в течение жизненного цикла этого оператора `with`, а не окружающей области видимости.
 
 ### `try/catch`
 
-It's a *very* little known fact that JavaScript in ES3 specified the variable declaration in the `catch` clause of a `try/catch` to be block-scoped to the `catch` block.
+*Очень* малоизвестным фактом является то, что JavaScript в ES3 специфицирует объявление переменной в блоке `catch` оператора `try/catch` как принадлежащее блочной области видимости блока `catch`.
 
-For instance:
+Например:
 
 ```js
 try {
-	undefined(); // illegal operation to force an exception!
+	undefined(); // нелегальная операция, чтобы вызвать исключение!
 }
 catch (err) {
-	console.log( err ); // works!
+	console.log( err ); // работает!
 }
 
 console.log( err ); // ReferenceError: `err` not found
 ```
 
-As you can see, `err` exists only in the `catch` clause, and throws an error when you try to reference it elsewhere.
+Как видите, `err` существует только в блоке `catch` и выбрасывает ошибку когда вы пытаетесь сослаться на нее где-либо в другом месте.
 
-**Note:** While this behavior has been specified and true of practically all standard JS environments (except perhaps old IE), many linters seem to still complain if you have two or more `catch` clauses in the same scope which each declare their error variable with the same identifier name. This is not actually a re-definition, since the variables are safely block-scoped, but the linters still seem to, annoyingly, complain about this fact.
+**Примечание:** Несмотря на то, что такое поведение было определено и истинно практически во всех стандартных средах JS (за исключением разве что старого IE), многие линтеры (средства контроля качества кода) похоже до сих пор  жалуются, если у вас есть два или более блоков `catch` в одной и той же области видимости, каждый из которых объявляет свою переменную ошибки с одинаковым именем идентификатора. В действительности это не переопределение, поскольку переменные безопасно обернуты в блочные области видимости, но линтеры похоже до сих пор раздражающе жалуются на этот факт.
 
-To avoid these unnecessary warnings, some devs will name their `catch` variables `err1`, `err2`, etc. Other devs will simply turn off the linting check for duplicate variable names.
+Чтобы избежать таких ненужных предупреждений, некоторые разработчики именуют свои переменные в `catch` как `err1`, `err2` и т.д.. Другие разработчики просто выключают проверку линтера на повторяющиеся имена переменных.
 
-The block-scoping nature of `catch` may seem like a useless academic fact, but see Appendix B for more information on just how useful it might be.
+Природа блочной области видимости `catch` может казаться бесполезным академическим фактом, но лучше загляните в приложение B, чтобы получить детальную информацию о том насколько полезна она может быть.
 
 ### `let`
 
-Thus far, we've seen that JavaScript only has some strange niche behaviors which expose block scope functionality. If that were all we had, and *it was* for many, many years, then block scoping would not be terribly useful to the JavaScript developer.
+До сих пор мы видели, что в JavaScript есть только несколько странных нишевых возможностей, которые предлагают функциональность блочной области видимости. Если бы это было всё, что у нас есть, а так и *было* на протяжении многих, многие лет, то блочная область видимости не была бы столь полезна для разработчика на JavaScript.
 
-Fortunately, ES6 changes that, and introduces a new keyword `let` which sits alongside `var` as another way to declare variables.
+К счастью, ES6 поменял ситуацию и представляет новое ключевое слово `let`, которое соседствует с `var` как еще один путь объявления переменных.
 
-The `let` keyword attaches the variable declaration to the scope of whatever block (commonly a `{ .. }` pair) it's contained in. In other words, `let` implicitly hijacks any block's scope for its variable declaration.
+Ключевое слово `let` присоединяет объявление переменной к области видимости того блока (обычно пара `{ .. }`), в котором оно содержится. Иными словами, `let` неявно похищает у любой блочной области видимости ее объявления переменных.
 
 ```js
 var foo = true;
@@ -419,15 +419,15 @@ if (foo) {
 console.log( bar ); // ReferenceError
 ```
 
-Using `let` to attach a variable to an existing block is somewhat implicit. It can confuse if you're not paying close attention to which blocks have variables scoped to them, and are in the habit of moving blocks around, wrapping them in other blocks, etc., as you develop and evolve code.
+Использование `let` для присоединения переменной к существующему блоку в некоторой степени неявно. Оно может ввести в заблуждение, если вы не оказываете пристальное внимание на то, в каких блоках есть переменные, принадлежащие к их области видимости, и на привычку перемещать блоки, оборачивать их в другие блоки, и т.п., по мере того, как вы разрабатываете и развиваете код.
 
-Creating explicit blocks for block-scoping can address some of these concerns, making it more obvious where variables are attached and not. Usually, explicit code is preferable over implicit or subtle code. This explicit block-scoping style is easy to achieve, and fits more naturally with how block-scoping works in other languages:
+Создание явных блоков для блочной области видимости может решить некоторые из этих вопросов, делая более очевидным то, куда присоединены переменные, а куда — нет. Обычно, явный код предпочтительней неявного или едва заметного. Такой явный стиль блочной области видимости легко получить и он более естественно походит на то, как в других языках работает блочная область видимости:
 
 ```js
 var foo = true;
 
 if (foo) {
-	{ // <-- explicit block
+	{ // <-- явный блок
 		let bar = foo * 2;
 		bar = something( bar );
 		console.log( bar );
@@ -437,13 +437,13 @@ if (foo) {
 console.log( bar ); // ReferenceError
 ```
 
-We can create an arbitrary block for `let` to bind to by simply including a `{ .. }` pair anywhere a statement is valid grammar. In this case, we've made an explicit block *inside* the if-statement, which may be easier as a whole block to move around later in refactoring, without affecting the position and semantics of the enclosing if-statement.
+Можно создать обычный блок для использования `let` просто включая пару `{ .. }` в любом месте, где этот оператор является валидным синтаксисом. В этом случае, мы сделали явный блок *внутри*  оператора if, который потом будет легче перемещать как целый блок при рефакторинге, без изменения позиции и семантики окружающего оператора if.
 
-**Note:** For another way to express explicit block scopes, see Appendix B.
+**Примечание:** Еще один путь объявить явные блочные области видимости есть в приложении B.
 
-In Chapter 4, we will address hoisting, which talks about declarations being taken as existing for the entire scope in which they occur.
+В главе 4 мы рассмотрим поднятие переменных (hoisting), которая расскажет об объявлениях, которые воспринимаются как существующие для всей области видимости, в которой они появляются.
 
-However, declarations made with `let` will *not* hoist to the entire scope of the block they appear in. Such declarations will not observably "exist" in the block until the declaration statement.
+Однако, объявления, сделанные с помощью `let`, *не* поднимаются во всей области видимости блока, в котором они появляются. Такие объявления очевидно не будут "существовать" в блоке до оператора объявления.
 
 ```js
 {
@@ -452,15 +452,15 @@ However, declarations made with `let` will *not* hoist to the entire scope of th
 }
 ```
 
-#### Garbage Collection
+#### Сборка мусора
 
-Another reason block-scoping is useful relates to closures and garbage collection to reclaim memory. We'll briefly illustrate here, but the closure mechanism is explained in detail in Chapter 5.
+Еще одна причина полезности блочной области видимости связана с замыканиями и сборкой мусора, чтобы освободить память. Мы кратко проиллюстрируем это здесь, но детально механизм замыканий будет рассматриваться в главе 5.
 
-Consider:
+Пример:
 
 ```js
 function process(data) {
-	// do something interesting
+	// делаем что-то интересное
 }
 
 var someReallyBigData = { .. };
@@ -474,16 +474,16 @@ btn.addEventListener( "click", function click(evt){
 }, /*capturingPhase=*/false );
 ```
 
-The `click` function click handler callback doesn't *need* the `someReallyBigData` variable at all. That means, theoretically, after `process(..)` runs, the big memory-heavy data structure could be garbage collected. However, it's quite likely (though implementation dependent) that the JS engine will still have to keep the structure around, since the `click` function has a closure over the entire scope.
+Обратный вызов обработчика щелчка `click` совсем не *требует* переменную `someReallyBigData`. Это значит, теоретически, что после выполнения `process(..)`, большая памятезатратная структура данных может быть собрана сборщиком мусора. Однако, весьма вероятно (хотя зависит от реализации), что движок JS все еще должен будет оставить структуру в памяти, поскольку у функции `click` есть замыкание, действующее во всей области видимости.
 
-Block-scoping can address this concern, making it clearer to the engine that it does not need to keep `someReallyBigData` around:
+Блочная область видимости может устранить этот недостаток, делая более явным для движка то, что ему не нужна `someReallyBigData`:
 
 ```js
 function process(data) {
-	// do something interesting
+	// делаем что-то интересное
 }
 
-// anything declared inside this block can go away after!
+// всё, что объявлено внутри этого блока, может исчезнуть после него!
 {
 	let someReallyBigData = { .. };
 
@@ -497,11 +497,11 @@ btn.addEventListener( "click", function click(evt){
 }, /*capturingPhase=*/false );
 ```
 
-Declaring explicit blocks for variables to locally bind to is a powerful tool that you can add to your code toolbox.
+Объявление явных блоков для переменных, чтобы локально привязать их к блокам   — мощный инструмент, который вы можете добавить в свой арсенал.
 
-#### `let` Loops
+#### `let` в циклах
 
-A particular case where `let` shines is in the for-loop case as we discussed previously.
+Особый случай, в котором `let` показывает себя с лучшей стороны — в случае с циклом for, как мы уже обсуждали ранее.
 
 ```js
 for (let i=0; i<10; i++) {
@@ -511,25 +511,25 @@ for (let i=0; i<10; i++) {
 console.log( i ); // ReferenceError
 ```
 
-Not only does `let` in the for-loop header bind the `i` to the for-loop body, but in fact, it **re-binds it** to each *iteration* of the loop, making sure to re-assign it the value from the end of the previous loop iteration.
+`let` в заголовке цикла for не только привязывает `i` к телу цикла, но фактически, он **перепривязывает ее** в каждой *итерации* цикла, обязательно  переприсваивая ей значение с окончания предыдущей итерации.
 
-Here's another way of illustrating the per-iteration binding behavior that occurs:
+Вот еще один способ показать режим пред-итеративной привязки:
 
 ```js
 {
 	let j;
 	for (j=0; j<10; j++) {
-		let i = j; // re-bound for each iteration!
+		let i = j; // перепривязка в каждлй итерации!
 		console.log( i );
 	}
 }
 ```
 
-The reason why this per-iteration binding is interesting will become clear in Chapter 5 when we discuss closures.
+Причина, по которой эта пред-итеративная привязка интересна, станет ясна в главе 5, когда мы обсудим замыкания.
 
-Because `let` declarations attach to arbitrary blocks rather than to the enclosing function's scope (or global), there can be gotchas where existing code has a hidden reliance on function-scoped `var` declarations, and replacing the `var` with `let` may require additional care when refactoring code.
+Так как объявления `let` присоединяются к обычным блокам вместо присоединения к окружающей области видимости функции (или глобальной), могут быть ошибки в программе, когда у существующего кода есть скрытая надежда на объявления `var`, действующие в рамках области видимости функции, и замена `var` на `let` может потребовать дополнительного внимания при рефакторинге кода.
 
-Consider:
+Пример:
 
 ```js
 var foo = true, baz = 10;
@@ -545,7 +545,7 @@ if (foo) {
 }
 ```
 
-This code is fairly easily re-factored as:
+Этот код довольно легко отрефакторить в такой:
 
 ```js
 var foo = true, baz = 10;
@@ -561,7 +561,7 @@ if (baz > bar) {
 }
 ```
 
-But, be careful of such changes when using block-scoped variables:
+Но, остерегайтесь таких изменений, когда используете переменные блочной области видимости:
 
 ```js
 var foo = true, baz = 10;
@@ -569,43 +569,43 @@ var foo = true, baz = 10;
 if (foo) {
 	let bar = 3;
 
-	if (baz > bar) { // <-- don't forget `bar` when moving!
+	if (baz > bar) { // <-- не забудьте про `bar`, если будете перемещать этот блок!
 		console.log( baz );
 	}
 }
 ```
 
-See Appendix B for an alternate (more explicit) style of block-scoping which may provide easier to maintain/refactor code that's more robust to these scenarios.
+См. приложение B, чтобы узнать об альтернативном (более явном) стиле организации блочной области видимости, который может дать более простое обслуживание/рефакторинг кода, что более разумно для этих сценариев.
 
 ### `const`
 
-In addition to `let`, ES6 introduces `const`, which also creates a block-scoped variable, but whose value is fixed (constant). Any attempt to change that value at a later time results in an error.
+В дополнение к `let`, ES6 представляет ключевое слово `const`, которое также создает переменную блочной области видимости, но чье значение фиксированно (константа). Любая попытка изменить это значение позже приведет к ошибке.
 
 ```js
 var foo = true;
 
 if (foo) {
 	var a = 2;
-	const b = 3; // block-scoped to the containing `if`
+	const b = 3; // в блочной области видимости сорержащего ее `if`
 
-	a = 3; // just fine!
-	b = 4; // error!
+	a = 3; // просто отлично!
+	b = 4; // ошибка!
 }
 
 console.log( a ); // 3
 console.log( b ); // ReferenceError!
 ```
 
-## Review (TL;DR)
+## Обзор
 
-Functions are the most common unit of scope in JavaScript. Variables and functions that are declared inside another function are essentially "hidden" from any of the enclosing "scopes", which is an intentional design principle of good software.
+Функции — самые распространенные единицы области видимости в JavaScript. Переменные и функции, которые объявляются внутри другой функции, по существу "скрыты" от любой из окружающих "областей видимости", что является намеренным принципом разработки хорошего ПО.
 
-But functions are by no means the only unit of scope. Block-scope refers to the idea that variables and functions can belong to an arbitrary block (generally, any `{ .. }` pair) of code, rather than only to the enclosing function.
+Но функции — отнюдь не только единицы области видимости. Блочная область видимости ссылается на идею, что переменные и функции могут принадлежать произвольному блоку (обычно, любой паре `{ .. }`) кода, нежели только окружающей функции.
 
-Starting with ES3, the `try/catch` structure has block-scope in the `catch` clause.
+Начиная с ES3, в структуре `try/catch` есть блочная область видимости в выражении `catch`.
 
-In ES6, the `let` keyword (a cousin to the `var` keyword) is introduced to allow declarations of variables in any arbitrary block of code. `if (..) { let a = 2; }` will declare a variable `a` that essentially hijacks the scope of the `if`'s `{ .. }` block and attaches itself there.
+В ES6 представлено ключевое слово `let` (родственница ключевого слова `var`), чтобы позволить объявления переменных в любом произвольном блоке кода. `if (..) { let a = 2; }` объявит переменную `a`, которая фактически похитит область видимости блока `{ .. }` в `if` и присоединит себя к ней.
 
-Though some seem to believe so, block scope should not be taken as an outright replacement of `var` function scope. Both functionalities co-exist, and developers can and should use both function-scope and block-scope techniques where respectively appropriate to produce better, more readable/maintainable code.
+Хоть некоторые похоже и верят в это, но блочную область видимости не следует использовать как полную замену функциональной области видимости `var`. Обе функциональности сосуществуют вместе, а разработчики могут и должны использовать обе техники области видимости: функциональную и блочную, в соответствующих местах, чтобы создавать лучший, более читаемый/обслуживаемый код.
 
-[^note-leastprivilege]: [Principle of Least Privilege](http://en.wikipedia.org/wiki/Principle_of_least_privilege)
+[Принцип наименьших привилегий](http://en.wikipedia.org/wiki/Principle_of_least_privilege)
