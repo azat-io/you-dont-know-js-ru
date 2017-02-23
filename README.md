@@ -20,7 +20,7 @@
 * Читать онлайн (бесплатно!): ["This и Прототипы Объектов"](this & object prototypes/README.md#you-dont-know-js-this--object-prototypes), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033738.do)
 * Читать онлайн (бесплатно!): ["Типы и Синтаксис"](types & grammar/README.md#you-dont-know-js-types--grammar), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033745.do)
 * Читать онлайн (бесплатно!): ["Асинхронность и Производительность"](async & performance/README.md#you-dont-know-js-async--performance), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033752.do)
-* Читать онлайн (бесплатно!): ["ES6 и за его Пределами"](es6 & beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033769.do)
+* Читать онлайн (бесплатно!): ["ES6 и за его Пределами"](es6 & beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](https://www.ozon.ru/context/detail/id/137473815/)
 
 ## Издательство
 
