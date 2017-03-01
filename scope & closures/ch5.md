@@ -1,33 +1,34 @@
-# You Don't Know JS: Scope & Closures
-# Chapter 5: Scope Closure
+# Вы не знаете JS: Область видимости и замыкания
+# Глава 5: Замыкание области видимости
 
-We arrive at this point with hopefully a very healthy, solid understanding of how scope works.
+Мы добрались до этого места, как я надеюсь, с очень здравым, цельным пониманием того, как работает область видимости.
 
-We turn our attention to an incredibly important, but persistently elusive, *almost mythological*, part of the language: **closure**. If you have followed our discussion of lexical scope thus far, the payoff is that closure is going to be, largely, anticlimactic, almost self-obvious. *There's a man behind the wizard's curtain, and we're about to see him*. No, his name is not Crockford!
+Мы сосредоточимся на крайне важной, но постоянно ускользающей, *почти мифологичной* части языка: **замыканиях**. Если вы следили за нашей дискуссией о лексической области видимости до этого момента, ее развязка заключается в том, что замыкание будет чрезвычайно, разочаровывающе, практически самоочевидным. *За ширмой фокусника есть человек и мы вот-вот его увидим*. Нет, его зовут не Крокфорд (Crockford) (прим. переводчика: постоянный участник развития языка JavaScript, создатель текстового формата обмена данными JSON)!
 
-If however you have nagging questions about lexical scope, now would be a good time to go back and review Chapter 2 before proceeding.
+Если у вас всё еще есть изводящие вас вопросы о лексической области видимости, то тогда самое время вернуться и просмотреть еще раз главу 2 перед тем как продолжить читать далее.
 
-## Enlightenment
+## Прозрение
 
-For those who are somewhat experienced in JavaScript, but have perhaps never fully grasped the concept of closures, *understanding closure* can seem like a special nirvana that one must strive and sacrifice to attain.
+Для тех, кто уже мало-мальски получил опыт в JavaScript, но кто, пожалуй, никогда не ухватывал суть замыканий, *понимание замыкания* может выглядеть как особая нирвана и чтобы достичь ее он должен бороться и идти на жертвы.
 
-I recall years back when I had a firm grasp on JavaScript, but had no idea what closure was. The hint that there was *this other side* to the language, one which promised even more capability than I already possessed, teased and taunted me. I remember reading through the source code of early frameworks trying to understand how it actually worked. I remember the first time something of the "module pattern" began to emerge in my mind. I remember the *a-ha!* moments quite vividly.
+Я помню, что несколько лет назад у меня были навыки владения JavaScript, но не было представления о том, что такое замыкания. Подсказка о том, что была *та самая другая сторона* языка, та, которая обещала даже больше возможностей чем те, которыми я обладал, дразнила и манила меня. Я помню как читал исходный код ранних фреймворков пытаясь понять как именно они работают. Я помню тот первый раз, когда что-то подобное "шаблону модуля" начало возникать в моих мыслях. Я очень живо помню эти "*ага!*".
 
-What I didn't know back then, what took me years to understand, and what I hope to impart to you presently, is this secret: **closure is all around you in JavaScript, you just have to recognize and embrace it.** Closures are not a special opt-in tool that you must learn new syntax and patterns for. No, closures are not even a weapon that you must learn to wield and master as Luke trained in The Force.
+Чего я не знал в те времена и что потребовало от меня годы, чтобы понять, и что я надеюсь передать вам теперь — это вот этот секрет: **замыкание повсюду окружает вас в JavaScript, вы всего лишь должны распознать его и воспользоваться им.** Замыкания — это не особый инструмент, для которого вы должны изучить новый синтаксис и шаблоны. Нет, замыкания — это даже не оружие, которые вы должны изучить, чтобы уметь обращаться и подчинять его себе как Люк обучался Силе.
 
-Closures happen as a result of writing code that relies on lexical scope. They just happen. You do not even really have to intentionally create closures to take advantage of them. Closures are created and used for you all over your code. What you are *missing* is the proper mental context to recognize, embrace, and leverage closures for your own will.
+Замыкания получаются в результате написания кода, который исходит из лексической области видимости. Они просто возникают. Вам и в самом деле не нужно намеренно создавать замыкания, чтобы получить их преимущества. Замыкания создаются и используются вами на протяжении всего вашего кода.
+ Что вы *упускаете*, так это то, что должен быть подходящий мысленный контекст, чтобы распознавать, пользоваться и получать выигрыш от замыканий по вашему собственному желанию.
 
-The enlightenment moment should be: **oh, closures are already occurring all over my code, I can finally *see* them now.** Understanding closures is like when Neo sees the Matrix for the first time.
+Момент просветления будет выглядеть примерно так: **О, замыкания уже встречаются везде в моем коде, теперь я их наконец-то *вижу*.** Понимание замыкания похоже на то, когда Нео впервые увидел Матрицу.
 
-## Nitty Gritty
+## Суть дела
 
-OK, enough hyperbole and shameless movie references.
+Хорошо, достаточно гипербол и бесстыдных ссылок на кино.
 
-Here's a down-n-dirty definition of what you need to know to understand and recognize closures:
+Вот откровенное определение того, что вам нужно знать, чтобы понимать и распознавать замыкания:
 
-> Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
+> Замыкание — это когда функция умеет запоминать и имеет доступ к лексической области видимости даже тогда, когда эта функция выполняется вне своей лексической области видимости.
 
-Let's jump into some code to illustrate that definition.
+Давайте рассмотрим небольшой код, чтобы проиллюстрировать это определение.
 
 ```js
 function foo() {
@@ -43,17 +44,17 @@ function foo() {
 foo();
 ```
 
-This code should look familiar from our discussions of Nested Scope. Function `bar()` has *access* to the variable `a` in the outer enclosing scope because of lexical scope look-up rules (in this case, it's an RHS reference look-up).
+Этот код выглядит знакомым, напоминая о наших обсуждениях вложенных областей видимости. У функции `bar()` есть *доступ* к переменной `a` во внешней окружающей области видимости на основании правил поиска лексической области видимости (в этом случае это поиск ссылок RHS).
 
-Is this "closure"?
+Это "замыкание"?
 
-Well, technically... *perhaps*. But by our what-you-need-to-know definition above... *not exactly*. I think the most accurate way to explain `bar()` referencing `a` is via lexical scope look-up rules, and those rules are *only* (an important!) **part** of what closure is.
+Ну, технически... *возможно*. Но согласно нашему же определению "что вам нужно знать о замыканиях" выше... *не совсем так*. Думаю, что самым точным образом объяснить ссылку в `bar()` на `a` будет с помощью правил поиска в лексической области видимости и эти правила — *единственная* (важная!) **часть** того, что такое замыкание.
 
-From a purely academic perspective, what is said of the above snippet is that the function `bar()` has a *closure* over the scope of `foo()` (and indeed, even over the rest of the scopes it has access to, such as the global scope in our case). Put slightly differently, it's said that `bar()` closes over the scope of `foo()`. Why? Because `bar()` appears nested inside of `foo()`. Plain and simple.
+С чисто академической точки зрения, про вышеуказанный код можно сказать, что у функции `bar()` есть *замыкание* на область `foo()` (и разумеется, даже на остальные области видимости, к которым у нее есть доступ, такие как глобальная область видимости в нашем случае). Немного другими словами, говорят, что `bar()` перекрывает область видимости `foo()`. Почему? Потому что `bar()` вложен внутри `foo()`. Ясно и просто.
 
-But, closure defined in this way is not directly *observable*, nor do we see closure *exercised* in that snippet. We clearly see lexical scope, but closure remains sort of a mysterious shifting shadow behind the code.
+Но, замыкание, определенное подобным путем, не является ни совсем уж *характерным*, ни выглядящим *проверяемым* в этом коде. Мы ясно видим лексическую область видимости, но замыкание остается какой-то мистической двигающейся тенью за кодом.
 
-Let us then consider code which brings closure into full light:
+Тогда давайте посмотрим на код, который представит замыкание во всей красе:
 
 ```js
 function foo() {
@@ -68,28 +69,28 @@ function foo() {
 
 var baz = foo();
 
-baz(); // 2 -- Whoa, closure was just observed, man.
+baz(); // 2 -- Ого, замыкание только что было раскрыто, мужики!
 ```
 
-The function `bar()` has lexical scope access to the inner scope of `foo()`. But then, we take `bar()`, the function itself, and pass it *as* a value. In this case, we `return` the function object itself that `bar` references.
+У функции `bar()` есть доступ в лексической области видимости к внутренней области видимости `foo()`. Но в то же время, мы берем `bar()`, саму функцию, и передаем ее *как* значение. В этом случае мы `возвращаем` сам объект функции, на который ссылается `bar`.
 
-After we execute `foo()`, we assign the value it returned (our inner `bar()` function) to a variable called `baz`, and then we actually invoke `baz()`, which of course is invoking our inner function `bar()`, just by a different identifier reference.
+После выполнения `foo()` мы присвоим значение, которая она возвращает (нашу внутренную функцию `bar()`) в переменную `baz`, а  затем мы фактически  вызовем `baz()`, который конечно вызовет нашу внутренную функцию `bar()`, просто с помощью другой ссылки в идентификаторе.
 
-`bar()` is executed, for sure. But in this case, it's executed *outside* of its declared lexical scope.
+Естественно `bar()` выполнится. Но в этом случае, она выполняется *снаружи* относительно своей объявленной лексической области видимости.
 
-After `foo()` executed, normally we would expect that the entirety of the inner scope of `foo()` would go away, because we know that the *Engine* employs a *Garbage Collector* that comes along and frees up memory once it's no longer in use. Since it would appear that the contents of `foo()` are no longer in use, it would seem natural that they should be considered *gone*.
+После выполнения `foo()`, обычно мы ожидаем, что вся внутренная область видимости `foo()` целиком будет удалена, поскольку мы знаем что *Движок* использует *сборщик мусора*, который исследует и освобождает память, которая больше не используется. Поскольку видно, что содержимое `foo()` больше не используется, кажется естественным, что оно должно быть *удалено* сборщиком.
 
-But the "magic" of closures does not let this happen. That inner scope is in fact *still* "in use", and thus does not go away. Who's using it? **The function `bar()` itself**.
+Но "магия" замыканий не даст этому произойти. Эта внутренняя область видимости на самом деле *все еще* "используется", а потому не будет удалена. Кто ее использует? **Сама функция `bar()`**.
 
-By virtue of where it was declared, `bar()` has a lexical scope closure over that inner scope of `foo()`, which keeps that scope alive for `bar()` to reference at any later time.
+Благодаря тому, где она была объявлена, у `bar()` есть замыкание лексической области видимости на внутренную область видимости `foo()`, которая удерживает область видимости для `bar()`, чтобы ссылаться на нее позднее.
 
-**`bar()` still has a reference to that scope, and that reference is called closure.**
+**`bar()` все еще содержит ссылку на эту область видимости и эта ссылка называется замыканием.**
 
-So, a few microseconds later, when the variable `baz` is invoked (invoking the inner function we initially labeled `bar`), it duly has *access* to author-time lexical scope, so it can access the variable `a` just as we'd expect.
+Таким образом, несколькими микросекундами позже, когда переменная `baz` вызывается (вызывая внутреннюю функцию, которую мы изначально пометили как `bar`), у нее как и полагается есть *доступ* к лексической области видимости, определенной на этапе разработки, поэтому у нее есть доступ к переменной `a` как мы и ожидали.
 
-The function is being invoked well outside of its author-time lexical scope. **Closure** lets the function continue to access the lexical scope it was defined in at author-time.
+Функция вызывается корректно вне ее лексической области видимости, определенной на этапе разработки. **Замыкание** дает функции возможность продлить доступ к лексической области видимости, которая была определена на этапе разработки.
 
-Of course, any of the various ways that functions can be *passed around* as values, and indeed invoked in other locations, are all examples of observing/exercising closure.
+Конечно, любой из различных путей, которыми можно эти функции *передавать* как значения, а следовательно вызывать в других местах, является примером контролирующего замыкания.
 
 ```js
 function foo() {
@@ -103,13 +104,13 @@ function foo() {
 }
 
 function bar(fn) {
-	fn(); // look ma, I saw closure!
+	fn(); // смотри мам, я видел замыкание!
 }
 ```
 
-We pass the inner function `baz` over to `bar`, and call that inner function (labeled `fn` now), and when we do, its closure over the inner scope of `foo()` is observed, by accessing `a`.
+Мы передаем внутреннюю функцию `baz` в `bar` и вызываем ее (теперь как `fn`), и когда мы это делаем, ее замыкание на внутренню область видимости `foo()` соблюдается посредством доступа к `a`.
 
-These passings-around of functions can be indirect, too.
+Такие передачи функций могут быть также и непрямыми.
 
 ```js
 var fn;
@@ -121,11 +122,11 @@ function foo() {
 		console.log( a );
 	}
 
-	fn = baz; // assign `baz` to global variable
+	fn = baz; // присваиваем `baz` глобальной переменной
 }
 
 function bar() {
-	fn(); // look ma, I saw closure!
+	fn(); // смотри мам, я видел замыкание!
 }
 
 foo();
@@ -133,11 +134,11 @@ foo();
 bar(); // 2
 ```
 
-Whatever facility we use to *transport* an inner function outside of its lexical scope, it will maintain a scope reference to where it was originally declared, and wherever we execute it, that closure will be exercised.
+Какую бы возможность мы ни использовали, чтобы *передать* внутреннюю функцию вне ее лексической области видимости, эта возможность будет помогать удерживать ссылку на область видимости там, где она была объявлена изначально и когда бы мы ни выполняли ее это замыкание будет соблюдаться.
 
-## Now I Can See
+## Теперь я вижу
 
-The previous code snippets are somewhat academic and artificially constructed to illustrate *using closure*. But I promised you something more than just a cool new toy. I promised that closure was something all around you in your existing code. Let us now *see* that truth.
+Ранее приводимые части кода были немного академичны и искусственно сконструированы, чтобы проиллюстрировать *использование замыкания*. Но я обещал вам что-то большее, нежели просто новую крутую игрушку. Я обещал, что замыкание будет чем-то, что окружает вас повсюду в вашем коде. Давайте теперь  *взглянем* на эту правду.
 
 ```js
 function wait(message) {
@@ -148,23 +149,23 @@ function wait(message) {
 
 }
 
-wait( "Hello, closure!" );
+wait( "Привет, замыкание!" );
 ```
 
-We take an inner function (named `timer`) and pass it to `setTimeout(..)`. But `timer` has a scope closure over the scope of `wait(..)`, indeed keeping and using a reference to the variable `message`.
+Мы берем внутреннюю функцию (с именем `timer`) и передаем ее в `setTimeout(..)`. Но у `timer` есть замыкание области видимости на область `wait(..)`, разумеется с хранением и использованием ссылки на переменную `message`.
 
-A thousand milliseconds after we have executed `wait(..)`, and its inner scope should otherwise be long gone, that inner function `timer` still has closure over that scope.
+Через тысячу миллисекунд после того, как мы выполнили `wait(..)` и ее внутренняя область видимости, которой в ином случае следовало исчезнуть, у внутренней функции `timer` все еще есть замыкание на ту область видимости.
 
-Deep down in the guts of the *Engine*, the built-in utility `setTimeout(..)` has reference to some parameter, probably called `fn` or `func` or something like that. *Engine* goes to invoke that function, which is invoking our inner `timer` function, and the lexical scope reference is still intact.
+Глубоко во внутренностях *Движка*, встроенная функция `setTimeout(..)` держит ссылку на некоторый параметр, возможно названный `fn` или `func`, или как-то похоже. *Движок* выполняет эту функцию, которая вызывает нашу внутреннюю функцию `timer`, а ссылка на лексическую область видимости все еще остается целой.
 
-**Closure.**
+**Замыкание.**
 
-Or, if you're of the jQuery persuasion (or any JS framework, for that matter):
+Или если вы из лагеря jQuery (или любого другого похожего JS фреймворка):
 
 ```js
 function setupBot(name,selector) {
 	$( selector ).click( function activator(){
-		console.log( "Activating: " + name );
+		console.log( "Активирую: " + name );
 	} );
 }
 
@@ -172,11 +173,11 @@ setupBot( "Closure Bot 1", "#bot_1" );
 setupBot( "Closure Bot 2", "#bot_2" );
 ```
 
-I am not sure what kind of code you write, but I regularly write code which is responsible for controlling an entire global drone army of closure bots, so this is totally realistic!
+Я не знаю какой код пишете вы, но я регулярно пишу код, который ответственен за управление всей глобальной армией ботов замыканий, так что это абсолютно правдоподобно!
 
-(Some) joking aside, essentially *whenever* and *wherever* you treat functions (which access their own respective lexical scopes) as first-class values and pass them around, you are likely to see those functions exercising closure. Be that timers, event handlers, Ajax requests, cross-window messaging, web workers, or any of the other asynchronous (or synchronous!) tasks, when you pass in a *callback function*, get ready to sling some closure around!
+Если серьезно, фактически *когда бы* и *где бы* вы ни обращались с функциями  (у который есть доступ к их собственным лексическим областям видимости) как с важными значениями и ни передавали их повсюду, вы скорее всего увидите, что эти функции образуют замыкание. Будь это таймеры, обработчики событий, Ajax-запросы, кросс-оконные сообщения, вэб-воркеры или любые другие асинхронные (или синхронные!) задачи, когда вы передаете *колбэк-функцию*, приготовьтесь разбрасывать вокруг замыкания!
 
-**Note:** Chapter 3 introduced the IIFE pattern. While it is often said that IIFE (alone) is an example of observed closure, I would somewhat disagree, by our definition above.
+**Примечание:** Глава 3 рассказывала о шаблоне IIFE. Несмотря на то, что часто говорят, что IIFE (отдельно) — пример явного замыкания, я немного не соглашусь, исходя из нашего определения, данного выше.
 
 ```js
 var a = 2;
@@ -186,21 +187,21 @@ var a = 2;
 })();
 ```
 
-This code "works", but it's not strictly an observation of closure. Why? Because the function (which we named "IIFE" here) is not executed outside its lexical scope. It's still invoked right there in the same scope as it was declared (the enclosing/global scope that also holds `a`). `a` is found via normal lexical scope look-up, not really via closure.
+Этот код "работает", но не выглядит как точная демонстрация замыкания. Почему? Потому что функция (которую мы назвали тут "IIFE") — не выполняется вне своей лексической области видимости. Она все еще вызывается прямо в той же области видимости, в которой была объявлена (окружающая/глобальная область видимости, которая хранит `a`). `a` обнаруживается через обычный поиск в лесической области видимости, а не через замыкание.
 
-While closure might technically be happening at declaration time, it is *not* strictly observable, and so, as they say, *it's a tree falling in the forest with no one around to hear it.*
+Несмотря на то, что замыкание может технически получаться во время объявления переменных, оно *не* обязательно наблюдаемо явно, а потому, как говорят, *это как опадающее дерево в лесу, которое никто не видит.*
 
-Though an IIFE is not *itself* an example of closure, it absolutely creates scope, and it's one of the most common tools we use to create scope which can be closed over. So IIFEs are indeed heavily related to closure, even if not exercising closure themselves.
+Хотя IIFE *сама по себе* не является примером замыкания, она несомненно создает область видимости, и это один из самых распространенных инструментов,   который мы используем для создания области видимости, которая может быть замкнута. Таким образом, IIFE, разумеется, тесно связана с замыканием, даже несмотря на то, что не производит самих замыканий.
 
-Put this book down right now, dear reader. I have a task for you. Go open up some of your recent JavaScript code. Look for your functions-as-values and identify where you are already using closure and maybe didn't even know it before.
+Отложи сейчас эту книгу, дорогой читатель. У меня есть для тебя задача. Открой какой-нибудь свой недавний JavaScript-код. Поищи функции как значения и определи где ты уже используешь замыкания, где ты возможно их раньше не замечал.
 
-I'll wait.
+Я подожду.
 
-Now... you see!
+Теперь... ты видишь!
 
-## Loops + Closure
+## Циклы + замыкание
 
-The most common canonical example used to illustrate closure involves the humble for-loop.
+Самый распространенный канонический пример, используемый для иллюстрации замыкания, приводят с использованием скромного цикла for.
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -210,29 +211,29 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-**Note:** Linters often complain when you put functions inside of loops, because the mistakes of not understanding closure are **so common among developers**. We explain how to do so properly here, leveraging the full power of closure. But that subtlety is often lost on linters and they will complain regardless, assuming you don't *actually* know what you're doing.
+**Примечание:** Линтеры частенько ругаются на то, что вы помещаете функции внутрь циклов, так как ошибки непонимания замыкания — **настолько типичны среди разработчиков**. Мы объясним, как в данном случае сделать правильно, раскрыв всю мощь замыкания. Но эта тонкость часто ускользает от линтеров и они ругаются в любом случае, предполагая что вы *на самом деле* не знаете, что делаете.
 
-The spirit of this code snippet is that we would normally *expect* for the behavior to be that the numbers "1", "2", .. "5" would be printed out, one at a time, one per second, respectively.
+Сущность этого кусочка кода в том, что мы обычно *ожидаем* такого поведения, что в итоге будут распечатаны числа "1", "2", .. "5", по одному за раз, по одному в секунду соответственно.
 
-In fact, if you run this code, you get "6" printed out 5 times, at the one-second intervals.
+На самом деле, если вы запустите этот код, вы получите вывод числа "6" 5 раз подряд, через односекундные интервалы.
 
-**Huh?**
+**Да?**
 
-Firstly, let's explain where `6` comes from. The terminating condition of the loop is when `i` is *not* `<=5`. The first time that's the case is when `i` is 6. So, the output is reflecting the final value of the `i` after the loop terminates.
+Во-первых, позвольте объяснить откуда взялась цифра `6`. Условие окончания цикла — когда `i`  *не* `<=5`. Первый раз это происходит, когда `i` равно 6. Таким образом, вывод результата отражает конечное значение `i` после завершения цикла.
 
-This actually seems obvious on second glance. The timeout function callbacks are all running well after the completion of the loop. In fact, as timers go, even if it was `setTimeout(.., 0)` on each iteration, all those function callbacks would still run strictly after the completion of the loop, and thus print `6` each time.
+На самом деле это кажется очевидным при повторном взгляде. Все функции обратного вызова функции timeout запускаются прямо после завершения цикла. Фактически, пока тикают таймеры, даже если это был вызов `setTimeout(.., 0)` в каждой итерации цикла, все эти функции обратного вызова все равно будут запущены строго после выполнения цикла, и как следствие напечатают `6` каждый раз.
 
-But there's a deeper question at play here. What's *missing* from our code to actually have it behave as we semantically have implied?
+Но здесь есть более глубокий вопрос на повестке дня. Чего *не хватает* в нашем коде чтобы в самом деле вести себя так как мы себе это семантически представляли?
 
-What's missing is that we are trying to *imply* that each iteration of the loop "captures" its own copy of `i`, at the time of the iteration. But, the way scope works, all 5 of those functions, though they are defined separately in each loop iteration, all **are closed over the same shared global scope**, which has, in fact, only one `i` in it.
+А не хватает того, что мы пытаемся *предполагать*, что каждая итерация цикла "захватывает" свою собственную копию `i` во время выполнения итерации. Но, тем путем, которым работает область видимости, все 5 этих функций, хотя они и определяются отдельно в каждой итерации цикла, все они **замыкаются на одну и ту же глобальную разделяемую область видимости**, в которой, фактически, только одна переменная `i`.
 
-Put that way, *of course* all functions share a reference to the same `i`. Something about the loop structure tends to confuse us into thinking there's something else more sophisticated at work. There is not. There's no difference than if each of the 5 timeout callbacks were just declared one right after the other, with no loop at all.
+В таком свете, *конечно*, все функции разделяют ссылку на одну и ту же `i`. Кое-что в структуре циклов как правило смущает нас мыслями о том, что есть еще что-то сложное в их работе. Это не так. Нет никакой разницы по сравнению с тем, как если бы мы объявили каждый вызов timeout из 5 друг за другом вообще без всякого цикла.
 
-OK, so, back to our burning question. What's missing? We need more ~~cowbell~~ closured scope. Specifically, we need a new closured scope for each iteration of the loop.
+Хорошо, итак вернемся обратно к нашему животрепещущему вопросу. Чего же не хватает? Нам нужна ~~больше колокольчиков на шее у коровы~~ более изолированная область видимости. Точнее говоря, нам нужна новая изолированная область видимости для каждой итерации цикла.
 
-We learned in Chapter 3 that the IIFE creates scope by declaring a function and immediately executing it.
+Мы изучили в главе 3, что IIFE создает область видимости объявляя и сразу выполняя функцию.
 
-Let's try:
+Давайте попробуем:
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -244,13 +245,13 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-Does that work? Try it. Again, I'll wait.
+Это сработает? Попробуйте. Я снова жду.
 
-I'll end the suspense for you. **Nope.** But why? We now obviously have more lexical scope. Each timeout function callback is indeed closing over its own per-iteration scope created respectively by each IIFE.
+Я не буду и дальше интриговать вас. **А вот и нет!** Но почему? Теперь у нас очевидно есть еще одна лексическая область видимости. Каждая функция обратного вызова для timeout, разумеется, замкнута на свою собственную область видимости на итерацию, создаваемую явно каждым вызовом IIFE.
 
-It's not enough to have a scope to close over **if that scope is empty**. Look closely. Our IIFE is just an empty do-nothing scope. It needs *something* in it to be useful to us.
+Недостаточно иметь изолированную область видимости **если эта область пуста**. Взгляните поближе. Наша IIFE — всего лишь пустая ничего не делающая область видимости. Нужно *что-то* внутри нее, чтобы она стала полезной для нас.
 
-It needs its own variable, with a copy of the `i` value at each iteration.
+Ей нужна ее собственная переменная, с копией значения `i` в каждой итерации.
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -263,9 +264,9 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-**Eureka! It works!**
+**Эврика! Работает!**
 
-A slight variation some prefer is:
+Небольшая вариация на тему, которую некоторые предпочтут вышеуказанной:
 
 ```js
 for (var i=1; i<=5; i++) {
@@ -277,28 +278,28 @@ for (var i=1; i<=5; i++) {
 }
 ```
 
-Of course, since these IIFEs are just functions, we can pass in `i`, and we can call it `j` if we prefer, or we can even call it `i` again. Either way, the code works now.
+Конечно, поскольку эти IIFE — всего лишь функции, мы можем передать в них `i` и мы можем назвать передаваемый параметр `j`, если хотим, или даже можем снова назвать его `i`. В любом случае код теперь работает.
 
-The use of an IIFE inside each iteration created a new scope for each iteration, which gave our timeout function callbacks the opportunity to close over a new scope for each iteration, one which had a variable with the right per-iteration value in it for us to access.
+Использование IIFE внутри каждой итерации создало новую область видимости для каждой итерации, что дало обратным вызовам функции при вызове timeout  возможность захватывать новую область видимости в каждой итерации, в каждой из которых есть переменная с правильным итерационным значением в ней.
 
-Problem solved!
+Проблема решена!
 
-### Block Scoping Revisited
+### И вновь рассмотрим блочную область видимости
 
-Look carefully at our analysis of the previous solution. We used an IIFE to create new scope per-iteration. In other words, we actually *needed* a per-iteration **block scope**. Chapter 3 showed us the `let` declaration, which hijacks a block and declares a variable right there in the block.
+Внимательно изучите наш анализ предыдущего решения. Мы использовали IIFE, чтобы создать новую область видимости на каждую итерацию. Иными словами, нам фактически *необходима* **блочная область видимости** для каждой итерации. Глава 3 открыла для нас объявление через `let`, которая "похищает" блок и объявляет переменную прямо в нем.
 
-**It essentially turns a block into a scope that we can close over.** So, the following awesome code "just works":
+**Фактически она превратила блок в область видимости, которую мы можем охватить.** Таким образом, следующий прекрасный код "просто работает":
 
 ```js
 for (var i=1; i<=5; i++) {
-	let j = i; // yay, block-scope for closure!
+	let j = i; // да-да, блочная область видимости для замыкания!
 	setTimeout( function timer(){
 		console.log( j );
 	}, j*1000 );
 }
 ```
 
-*But, that's not all!* (in my best Bob Barker voice). There's a special behavior defined for `let` declarations used in the head of a for-loop. This behavior says that the variable will be declared not just once for the loop, **but each iteration**. And, it will, helpfully, be initialized at each subsequent iteration with the value from the end of the previous iteration.
+*Но и это еще не всё!* (голосом Якубовича). Есть особое поведение для объявлений `let` в заголовке цикла for. Это поведение определяет, что переменная будет объявлена не один раз для всего цикла, **а для каждой итерации**. И, она, конечно же, будет инициализирована в каждой последующей итерации значением с окончания предыдущей итерации.
 
 ```js
 for (let i=1; i<=5; i++) {
@@ -308,11 +309,11 @@ for (let i=1; i<=5; i++) {
 }
 ```
 
-How cool is that? Block scoping and closure working hand-in-hand, solving all the world's problems. I don't know about you, but that makes me a happy JavaScripter.
+Насколько это круто? Блочная область видимости и замыкание работают рука об руку, решая все мировые проблемы. Не знаю насчет вас, но меня это делает счастливым JavaScript-ером.
 
-## Modules
+## Модули
 
-There are other code patterns which leverage the power of closure but which do not on the surface appear to be about callbacks. Let's examine the most powerful of them: *the module*.
+Есть еще паттерны программирования, которые эффективно используют мощь замыканий, но которые внешне не особенно похожи на функции обратного вызова. Давайте рассмотрим самый мощный из них: *модуль*.
 
 ```js
 function foo() {
@@ -329,9 +330,9 @@ function foo() {
 }
 ```
 
-As this code stands right now, there's no observable closure going on. We simply have some private data variables `something` and `another`, and a couple of inner functions `doSomething()` and `doAnother()`, which both have lexical scope (and thus closure!) over the inner scope of `foo()`.
+Как видно из этого кода, здесь нет никакого явного замыкания. У нас просто есть некоторые приватные переменные `something` и `another`, а также парочка внутренних функций `doSomething()` и `doAnother()`, у обеих из которых есть лексическая область видимости (а потому и замыкание!) над внутренней областью `foo()`.
 
-But now consider:
+А теперь смотрите:
 
 ```js
 function CoolModule() {
@@ -358,29 +359,29 @@ foo.doSomething(); // cool
 foo.doAnother(); // 1 ! 2 ! 3
 ```
 
-This is the pattern in JavaScript we call *module*. The most common way of implementing the module pattern is often called "Revealing Module", and it's the variation we present here.
+Этот шаблон в JavaScript мы называем *модуль*. Самый распространенный путь реализации шаблона модуля часто называют "Действенный модуль" и это тот вариант, который мы тут и представили.
 
-Let's examine some things about this code.
+Давайте изучим некоторые факты об этом коде.
 
-Firstly, `CoolModule()` is just a function, but it *has to be invoked* for there to be a module instance created. Without the execution of the outer function, the creation of the inner scope and the closures would not occur.
+Во-первых, `CoolModule()` — просто функция, но ее *надлежит вызвать* для создания объекта модуля. Без выполнения внешней функци не случится ни создание внутренней области видимости, ни создание замыканий.
 
-Secondly, the `CoolModule()` function returns an object, denoted by the object-literal syntax `{ key: value, ... }`. The object we return has references on it to our inner functions, but *not* to our inner data variables. We keep those hidden and private. It's appropriate to think of this object return value as essentially a **public API for our module**.
+Во-вторых, функция `CoolModule()` возвращает объект, выполненный в синтаксисе объектного литерала `{ key: value, ... }`. У объекта, который мы возвращаем, есть ссылки на наши внутренние функции, но *не* на наши внутренние переменные. Мы храним их скрытыми и приватными. Правильнее всего будет думать о возвращаемом значении в виде объекта, как по существу о **публичном API для нашего модуля**.
 
-This object return value is ultimately assigned to the outer variable `foo`, and then we can access those property methods on the API, like `foo.doSomething()`.
+Это объектное возвращаемое значение в итоге присваивается внешей переменной `foo`, а затем мы можем получить доступ к этим методам в API, например к `foo.doSomething()`.
 
-**Note:** It is not required that we return an actual object (literal) from our module. We could just return back an inner function directly. jQuery is actually a good example of this. The `jQuery` and `$` identifiers are the public API for the jQuery "module", but they are, themselves, just a function (which can itself have properties, since all functions are objects).
+**Примечание:** Не обязательно возвращать настоящий объект из нашего модуля. Мы могли бы просто вернуть напрямую внутреннюю функцию. jQuery как раз является хорошим тому примером. Идентификаторы `jQuery` и `$` — это публичное API для "модуля" jQuery, но они сами по сути просто функции  (которые сами по себе могут иметь свойства, поскольку все функции являются объектами).
 
-The `doSomething()` and `doAnother()` functions have closure over the inner scope of the module "instance" (arrived at by actually invoking `CoolModule()`). When we transport those functions outside of the lexical scope, by way of property references on the object we return, we have now set up a condition by which closure can be observed and exercised.
+У функций `doSomething()` и `doAnother()` есть замыкание на внутреннюю область видимости "экземпляра" модуля (полученного на самом деле вызовом `CoolModule()`). Когда мы передаем эти функции вне лексической области видимости путем ссылок на свойства объекта, который мы возвращаем, то мы в этот момент фактически получаем условия, при которых замыкание может появиться и выполниться.
 
-To state it more simply, there are two "requirements" for the module pattern to be exercised:
+Излагая проще, есть два "требования", которые должны выполняться для шаблона модуля:
 
-1. There must be an outer enclosing function, and it must be invoked at least once (each time creates a new module instance).
+1. Должна быть внешняя окружающая функция и она должны быть вызвана хотя бы раз (каждый раз создается новый экземпляр модуля).
 
-2. The enclosing function must return back at least one inner function, so that this inner function has closure over the private scope, and can access and/or modify that private state.
+2. Окружающая функция должна возвращать хотя бы одну внутреннюю функцию, для того, чтобы у этой внутренней функции было замыкание на приватную область видимости и был доступ и/или возможность изменения ее внутреннего состояния.
 
-An object with a function property on it alone is not *really* a module. An object which is returned from a function invocation which only has data properties on it and no closured functions is not *really* a module, in the observable sense.
+Объект со свойством-функцией сам по себе *на самом деле* не модуль. Объект, возвращаемый вызовом функции, у которого есть только свойства-данные и ни одной замыкающей функции *фактически* не является модулем, с точки зрения здравого смысла.
 
-The code snippet above shows a standalone module creator called `CoolModule()` which can be invoked any number of times, each time creating a new module instance. A slight variation on this pattern is when you only care to have one instance, a "singleton" of sorts:
+Вышеприведенный код показывает автономный конструктор модуля с названием `CoolModule()`, который можно вызвать любое количество раз, каждый раз создавая новый экземпляр модуля. Небольшая вариация этого шаблона — это когда вы заботитесь о том, чтобы был только один экземпляр, что-то вроде  "синглтона":
 
 ```js
 var foo = (function CoolModule() {
@@ -405,9 +406,9 @@ foo.doSomething(); // cool
 foo.doAnother(); // 1 ! 2 ! 3
 ```
 
-Here, we turned our module function into an IIFE (see Chapter 3), and we *immediately* invoked it and assigned its return value directly to our single module instance identifier `foo`.
+Тут мы превратили нашу модульную функцию в IIFE (см. главу 3), *сразу же* вызвали ее и присвоили возвращаемое ею значение прямо нашему единственному идентификатору `foo`.
 
-Modules are just functions, so they can receive parameters:
+Модули — это всего лишь функции, поэтому они могут принимать параметры:
 
 ```js
 function CoolModule(id) {
@@ -427,7 +428,7 @@ foo1.identify(); // "foo 1"
 foo2.identify(); // "foo 2"
 ```
 
-Another slight but powerful variation on the module pattern is to name the object you are returning as your public API:
+Еще одна небольшая, но полнофункциональная вариация модульного шаблона — дать имя объекту, который вы возвращаете как публичное API:
 
 ```js
 var foo = (function CoolModule(id) {
@@ -457,11 +458,11 @@ foo.change();
 foo.identify(); // FOO MODULE
 ```
 
-By retaining an inner reference to the public API object inside your module instance, you can modify that module instance **from the inside**, including adding and removing methods, properties, *and* changing their values.
+Сохраняя внутреннюю ссылку на объект публичного API внутри экземпляра модуля вы можете менять эту ссылку на модуль **изнутри**, включая добавление и удаление методов, свойств *и* изменение их значений.
 
-### Modern Modules
+### Современные модули
 
-Various module dependency loaders/managers essentially wrap up this pattern of module definition into a friendly API. Rather than examine any one particular library, let me present a *very simple* proof of concept **for illustration purposes (only)**:
+Различные загрузчики/менеджеры модульных зависимостей фактически упаковывают это определение модульного шаблона в дружественное API. Прежде чем начать изучать любую отдельную библиотеку, позвольте мне показать *очень простой* экспериментальный вариант **только в иллюстративных целях**:
 
 ```js
 var MyModules = (function Manager() {
@@ -485,9 +486,9 @@ var MyModules = (function Manager() {
 })();
 ```
 
-The key part of this code is `modules[name] = impl.apply(impl, deps)`. This is invoking the definition wrapper function for a module (passing in any dependencies), and storing the return value, the module's API, into an internal list of modules tracked by name.
+Ключевая часть этого кода — `modules[name] = impl.apply(impl, deps)`. Это вызов функции-обертки определения для модуля (с передачей внутрь любых зависимостей) и сохранение возвращаемого значения, API модуля, во внутренний список модулей со ссылкой по имени.
 
-And here's how I might use it to define some modules:
+И вот как именно я мог бы его использовать для определения нескольких модулей:
 
 ```js
 MyModules.define( "bar", [], function(){
@@ -522,23 +523,23 @@ console.log(
 foo.awesome(); // LET ME INTRODUCE: HIPPO
 ```
 
-Both the "foo" and "bar" modules are defined with a function that returns a public API. "foo" even receives the instance of "bar" as a dependency parameter, and can use it accordingly.
+Оба модуля "foo" и "bar" объявлены с функцией, которая возвращает публичное API. "foo" даже получает экземпляр "bar" как параметр-зависимость и может его использовать соответствующим образом.
 
-Spend some time examining these code snippets to fully understand the power of closures put to use for our own good purposes. The key take-away is that there's not really any particular "magic" to module managers. They fulfill both characteristics of the module pattern I listed above: invoking a function definition wrapper, and keeping its return value as the API for that module.
+Потратьте немного времени на изучение этих примеров кода, чтобы полностью осознать всю мощь замыканий и потом воспользоваться ими в собственных целях. Ключевой вывод тут в том, что нет никакого особого "волшебства" в модульных менеджерах. Они соответствуют обеим характеристикам шаблона модулей, которые я перечислил выше: вызов обертки определения функции и хранение возвращаемого значения в качестве API для этого модуля.
 
-In other words, modules are just modules, even if you put a friendly wrapper tool on top of them.
+Иными словами, модули — это просто модули, даже если вы делаете ставку на хорошо знакомый вам инструмент для этого.
 
-### Future Modules
+### Будущие модули
 
-ES6 adds first-class syntax support for the concept of modules. When loaded via the module system, ES6 treats a file as a separate module. Each module can both import other modules or specific API members, as well export their own public API members.
+ES6 добавляет первоклассную синтаксическую поддержку концепции модулей. При загрузке через модульную систему, ES6 обрабатывает файл как отдельный модуль. Каждый модуль может как импортировать другие модули или отдельные члены из API, так и экспортировать свои собственные публичные члены API.
 
-**Note:** Function-based modules aren't a statically recognized pattern (something the compiler knows about), so their API semantics aren't considered until run-time. That is, you can actually modify a module's API during the run-time (see earlier `publicAPI` discussion).
+**Примечание:** Модули, основанные на функциях — не статически распознаваемый шаблон (о котором знает компилятор), поэтому их семантика API не учитывается до момента времени выполнения. То есть, вы фактически можете менять API модуля в процессе выполнения кода (см. ранее обсуждение `публичного API`).
 
-By contrast, ES6 Module APIs are static (the APIs don't change at run-time). Since the compiler knows *that*, it can (and does!) check during (file loading and) compilation that a reference to a member of an imported module's API *actually exists*. If the API reference doesn't exist, the compiler throws an "early" error at compile-time, rather than waiting for traditional dynamic run-time resolution (and errors, if any).
+В противоположность этому, модульное API ES6 — статическое (API не меняется во время выполнения). Поскольку компилятор *это* знает, он может (и делает!)  проверить во время (загрузки файла и) компиляции, что ссылка на член API импортируемого модуля *действительно существует*. Если ссылка на API не существует, компилятор выдаст "заблаговременную" ошибку на этапе компиляции, вместо того, чтобы  ждать традиционного динамического разрешения ссылок во время выполнения (и ошибок, если есть).
 
-ES6 modules **do not** have an "inline" format, they must be defined in separate files (one per module). The browsers/engines have a default "module loader" (which is overridable, but that's well-beyond our discussion here) which synchronously loads a module file when it's imported.
+У модулей ES6 **нет** "встраиваемого" формата, они должны определяться в отдельных файлах (по одному на модуль). У браузеров/движков есть "загрузчик модулей" по умолчанию (который может быть переопределен, но это уже далеко за пределами нашего здесь обсуждения), который синхронно загружает файл модуля, когда он импортируется.
 
-Consider:
+Рассмотрим код:
 
 **bar.js**
 ```js
@@ -551,7 +552,7 @@ export hello;
 
 **foo.js**
 ```js
-// import only `hello()` from the "bar" module
+// импортирует только `hello()` из модуля "bar"
 import hello from "bar";
 
 var hungry = "hippo";
@@ -566,7 +567,7 @@ export awesome;
 ```
 
 ```js
-// import the entire "foo" and "bar" modules
+// импортирует модули "foo" и "bar" целиком
 module foo from "foo";
 module bar from "bar";
 
@@ -577,20 +578,20 @@ console.log(
 foo.awesome(); // LET ME INTRODUCE: HIPPO
 ```
 
-**Note:** Separate files **"foo.js"** and **"bar.js"** would need to be created, with the contents as shown in the first two snippets, respectively. Then, your program would load/import those modules to use them, as shown in the third snippet.
+**Примечание:** Необходимо создать отдельные файлы **"foo.js"** и **"bar.js"**, с указанным выше содержимым. Затем ваша программа загрузит/импортирует эти модули, чтобы использовать их как показано в третьем фрагменте кода.
 
-`import` imports one or more members from a module's API into the current scope, each to a bound variable (`hello` in our case). `module` imports an entire module API to a bound variable (`foo`, `bar` in our case). `export` exports an identifier (variable, function) to the public API for the current module. These operators can be used as many times in a module's definition as is necessary.
+`import` импортирует один или более членов API модуля в текущую область видимости, каждый в свою переменную (`hello` в нашем случае). `module` импортирует API модуля целиком в указанную переменную (`foo`, `bar` в нашем случае). `export` экспортирует идентификатор (переменную, функцию) в публичное API текущего модуля. Эти операторы можно использовать в определении модуля столько раз, сколько потребуется.
 
-The contents inside the *module file* are treated as if enclosed in a scope closure, just like with the function-closure modules seen earlier.
+Содержимое внутри *файла модуля* обрабатывается как если бы оно было заключено в замыкание области видимости, также как и у модулей с функцией-замыканием, рассмотренных ранее.
 
-## Review (TL;DR)
+## Итог
 
-Closure seems to the un-enlightened like a mystical world set apart inside of JavaScript which only the few bravest souls can reach. But it's actually just a standard and almost obvious fact of how we write code in a lexically scoped environment, where functions are values and can be passed around at will.
+Похоже, что знания о замыкании полны предрассудков и суеверий как загадочный мир, стоящий особняком внутри JavaScript, который могут познать только самые храбрые души. Но на самом деле — это всего лишь стандартный и почти очевидный факт о том, как писать код в среде лексической области видимости, где функции являются значениями и могут свободно передаваться куда угодно.
 
-**Closure is when a function can remember and access its lexical scope even when it's invoked outside its lexical scope.**
+**Замыкание — это когда функция может запомнить и иметь доступ к своей лексической области видимости даже тогда, когда она вызывается вне своей лексической области видимости.**
 
-Closures can trip us up, for instance with loops, if we're not careful to recognize them and how they work. But they are also an immensely powerful tool, enabling patterns like *modules* in their various forms.
+Замыкания могут сбить нас с толку, например в циклах, если мы не озаботимся тем, чтобы распознавать их и то как они работают. Но они еще и являются весьма мощным инструментом, дающим доступ к шаблонам, таким как *модули* в их различных формах.
 
-Modules require two key characteristics: 1) an outer wrapping function being invoked, to create the enclosing scope 2) the return value of the wrapping function must include reference to at least one inner function that then has closure over the private inner scope of the wrapper.
+Модули требуют две ключевых характеристики: 1) внешнюю функцию-обертку, которую будут вызывать, чтобы создать закрытую область видимости 2) возвращаемое значение функции-обертки должно включать в себя ссылку на не менее чем одну внутреннюю функцию, у которой потом будет замыкание на внутреннюю область видимости обертки.
 
-Now we can see closures all around our existing code, and we have the ability to recognize and leverage them to our own benefit!
+Теперь вы сможете заметить замыкания повсюду в своем существующем коде и у нас теперь есть возможность обнаруживать и использовать все их преимущества!
