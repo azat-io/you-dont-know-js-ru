@@ -1,33 +1,35 @@
 # You Don't Know JS: Scope & Closures
 # Chapter 5: Scope Closure
 
-We arrive at this point with hopefully a very healthy, solid understanding of how scope works.
+Мы достигли этой главы, надеюсь с очень здоровым и твёрдым пониманием того, как работает область видимости.
 
-We turn our attention to an incredibly important, but persistently elusive, *almost mythological*, part of the language: **closure**. If you have followed our discussion of lexical scope thus far, the payoff is that closure is going to be, largely, anticlimactic, almost self-obvious. *There's a man behind the wizard's curtain, and we're about to see him*. No, his name is not Crockford!
+Мы обратим наше внимание на чрезвычайно важную, но постоянно труднодостижимую, *едва ли не мифологическую* часть языка: **замыкания**. Если вы следуя нашему обсуждению о лексической области видимости зашли так далеко, то вас ожидает награждение в качестве замыканий, в основном разочаровываясь почти самоочевидно. *Есть человек за волшебным занавесом и нам предстоит увидеть его*. Нет, его имя не Крокфорд!
 
-If however you have nagging questions about lexical scope, now would be a good time to go back and review Chapter 2 before proceeding.
+Если вы тем не менее всё еще задаётесь вопросами о лексической области видимости, то сейчас самое лучшее время вернуться назад и перечитать главу 2, до продолжения чтения.
 
-## Enlightenment
+## Просвещение
 
-For those who are somewhat experienced in JavaScript, but have perhaps never fully grasped the concept of closures, *understanding closure* can seem like a special nirvana that one must strive and sacrifice to attain.
+Для тех, кто кое-что знает в JavaScript, но возможно никогда полностью не осозновавших идею замыканий, *осознание замыканий* может показаться как особенная Нирвана, к которой нужно стремиться и которая нуждается в жертвах для её достижения.
 
-I recall years back when I had a firm grasp on JavaScript, but had no idea what closure was. The hint that there was *this other side* to the language, one which promised even more capability than I already possessed, teased and taunted me. I remember reading through the source code of early frameworks trying to understand how it actually worked. I remember the first time something of the "module pattern" began to emerge in my mind. I remember the *a-ha!* moments quite vividly.
+Я вспоминаю те годы, когда у меня было твёрдое понимание JavaScript, но не было осознания того, что такое замыкания. Этот намёк о том, что это была *другая сторона* языка, которая обещала еще больше возможностей, чем я уже обладаю, дразнил и усмехался надо мной. Я помню как я изучал исходный код ранних фрэймворков, пытаясь понять как это на самом деле работает. Я помню этот первый раз, когда что-то вроде "шаблона Модуль" начало возникать у меня в голове. Я помню эти *ха-ха* моменты совершенно чётко.
 
-What I didn't know back then, what took me years to understand, and what I hope to impart to you presently, is this secret: **closure is all around you in JavaScript, you just have to recognize and embrace it.** Closures are not a special opt-in tool that you must learn new syntax and patterns for. No, closures are not even a weapon that you must learn to wield and master as Luke trained in The Force.
+Что я не знал тогда, что заняло у меня годы, чтобы понять и что я надеюсь привить вам сейчас, это этот секрет: **Замыкание вокруг вас в JavaScript, вы просто должны осознать и пользоваться этим.** Замыкания это не специальные (opt-in) инструменты, которые требуют изучения нового синтаксиса или шаблонов. Нет, замыкания это даже не оружие, которое вы обязаны изучить для того чтобы обращаться с ним как Luke из звёздных воин со своей силой.
 
-Closures happen as a result of writing code that relies on lexical scope. They just happen. You do not even really have to intentionally create closures to take advantage of them. Closures are created and used for you all over your code. What you are *missing* is the proper mental context to recognize, embrace, and leverage closures for your own will.
+Замыкания случаются как результат написания кода, который зависит от лексической области видимости. Они просто случаются. И вам действительно не нужно целенаправленно создавать замыкания, чтобы пользоваться их преимуществом. Замыкания создаются и используются для вас повсюду в вашем коде. Что вы *упустили*, так это ментальный контекст для осознания, принятия и использования замыканий по собственной воле.
 
-The enlightenment moment should be: **oh, closures are already occurring all over my code, I can finally *see* them now.** Understanding closures is like when Neo sees the Matrix for the first time.
+Момент просвящения должен настать: **Оу, замыкания уже случаются везде в моём коде, я могу наконец-то *увидеть* их сейчас.** Понимание замыканий это как когда Нео видит Матрицу в первый раз.
 
-## Nitty Gritty
+## Суть дела
 
-OK, enough hyperbole and shameless movie references.
+Хорошо, достаточно уже преувеличений и бесстыжих отсылок на фильмы.
 
-Here's a down-n-dirty definition of what you need to know to understand and recognize closures:
+Тут есть внизу ругательное определение, которое вам необходимо знать, чтобы понять и осознать замыкания:
 
 > Closure is when a function is able to remember and access its lexical scope even when that function is executing outside its lexical scope.
 
-Let's jump into some code to illustrate that definition.
+> Замыкание это когда функция доступна для запоминания и доступа её лексической области видимости, даже когда эта функция выполняется за пределами этой лексической области видимости.
+
+Прибегнем к небольшому коду чтобы проилюстрировать это определение.
 
 ```js
 function foo() {
@@ -42,18 +44,17 @@ function foo() {
 
 foo();
 ```
+Этот код должен показаться вам хорошо знакомым из нашей главы о Вложенных областях видимости. Функция `bar()` имеет *доступ* к переменной `a` во внешней области видимости из-за правил ссылок лексической области видимости (в этом случае, это RHS ссылка)
 
-This code should look familiar from our discussions of Nested Scope. Function `bar()` has *access* to the variable `a` in the outer enclosing scope because of lexical scope look-up rules (in this case, it's an RHS reference look-up).
+Это и есть "замыкание"?
 
-Is this "closure"?
+Ну, технически... *возможно*. Но наше что-вы-должны-знать определение выше... *не совсем так*. Я думаю самый правильный путь для понимания отношения `bar()` к `a` - через правила лексической области видимости, и тех правил, которые *только* (это важно!) **часть** того, чем является замыкание.
 
-Well, technically... *perhaps*. But by our what-you-need-to-know definition above... *not exactly*. I think the most accurate way to explain `bar()` referencing `a` is via lexical scope look-up rules, and those rules are *only* (an important!) **part** of what closure is.
+С чисто академической точки зрения, что было сказанно фрагментом выше это то, что функция `bar()` имеет *замыкание* над областью видимости `foo()` (и на самом деле, даже над оставшимися областями, к которыми она имеет доступ, к таким как глобальная область видимости в нашем случае). Выражаясь несколько иначе, можно сказать, что `bar()` замыкает в себе область `foo()`. Почему? Потому что `bar()` находится внутри `foo()`. Очевидно и просто.
 
-From a purely academic perspective, what is said of the above snippet is that the function `bar()` has a *closure* over the scope of `foo()` (and indeed, even over the rest of the scopes it has access to, such as the global scope in our case). Put slightly differently, it's said that `bar()` closes over the scope of `foo()`. Why? Because `bar()` appears nested inside of `foo()`. Plain and simple.
+Но, замыкание здесь определенно *не явно*, также мы не видим применения замыкания в этом фрагменте кода. Мы несомненно видим лексическую область видимости, но замыкание остаётся видом загадочно движущейся тени за кодом.
 
-But, closure defined in this way is not directly *observable*, nor do we see closure *exercised* in that snippet. We clearly see lexical scope, but closure remains sort of a mysterious shifting shadow behind the code.
-
-Let us then consider code which brings closure into full light:
+Позвольте нам тогда предоставить код, который даст полное освещение замыканию:
 
 ```js
 function foo() {
@@ -68,9 +69,10 @@ function foo() {
 
 var baz = foo();
 
-baz(); // 2 -- Whoa, closure was just observed, man.
+baz(); // 2 -- Вау, мы только что наблюдали замыкание, мужик.
 ```
 
+Эта функция `bar()` имеет в своей лексической области видимости доступ к внутренней области `foo Но тогда, мы берём `bar()`, саму эту функцию и передаём её *как* значение. В этом случае, мы `return` (возвращаем) объект функции на которую ссылается `bar` ссылка.
 The function `bar()` has lexical scope access to the inner scope of `foo()`. But then, we take `bar()`, the function itself, and pass it *as* a value. In this case, we `return` the function object itself that `bar` references.
 
 After we execute `foo()`, we assign the value it returned (our inner `bar()` function) to a variable called `baz`, and then we actually invoke `baz()`, which of course is invoking our inner function `bar()`, just by a different identifier reference.
