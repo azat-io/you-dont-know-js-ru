@@ -1,13 +1,13 @@
-# You Don't Know JS: Scope & Closures
-# Appendix A: Dynamic Scope
+# Вы не знаете JS: Область видимости и замыкания
+# Приложение A: Динамическая область видимости
 
-In Chapter 2, we talked about "Dynamic Scope" as a contrast to the "Lexical Scope" model, which is how scope works in JavaScript (and in fact, most other languages).
+В главе 2 мы говорили о "динамической области видимости" как о противопоставлении модели "лексической области видимости", которая и есть то, как работает область видимости в JavaScript (а по факту и во многих других языках).
 
-We will briefly examine dynamic scope, to hammer home the contrast. But, more importantly, dynamic scope actually is a near cousin to another mechanism (`this`) in JavaScript, which we covered in the "*this & Object Prototypes*" title of this book series.
+Мы кратко рассмотрим динамическую область видимости, чтобы крепко усвоить  разницу. Но, важнее то, что динамическая область видимости — ближайшая родственница другого механизма (`this`) в JavaScript, который мы рассмотрели в книге "*this и прототипы объектов*".
 
-As we saw in Chapter 2, lexical scope is the set of rules about how the *Engine* can look-up a variable and where it will find it. The key characteristic of lexical scope is that it is defined at author-time, when the code is written (assuming you don't cheat with `eval()` or `with`).
+Как мы уже отметили в главе 2, лексическая область видимости — это набор правил о том, как именно *Движок* может искать переменную и как он ее может найти. Ключевая характеристика лексической области видимости — она определяется на этапе написания кода (предполагая, что вы не жульничаете с помощью `eval()` или `with`).
 
-Dynamic scope seems to imply, and for good reason, that there's a model whereby scope can be determined dynamically at runtime, rather than statically at author-time. That is in fact the case. Let's illustrate via code:
+Динамическая область видимости похоже означает, и не зря, что есть модель, при помощи которой область видимости можно определить динамически во время выполнения, вместо статического определения при написании кода. То, что нам нужно. Давайте отразим это в коде:
 
 ```js
 function foo() {
@@ -24,11 +24,11 @@ var a = 2;
 bar();
 ```
 
-Lexical scope holds that the RHS reference to `a` in `foo()` will be resolved to the global variable `a`, which will result in value `2` being output.
+Лексическая область видимости хранит информацию о том, что RHS-ссылка на `a` в `foo()` будет разрешена в глобальную переменную `a`, что приведет к тому, что будет выведено значение `2`.
 
-Dynamic scope, by contrast, doesn't concern itself with how and where functions and scopes are declared, but rather **where they are called from**. In other words, the scope chain is based on the call-stack, not the nesting of scopes in code.
+Динамическая область видимости, напротив, не интересуется тем как и где были объявлены функции и области видимости, а скорее интересуется тем **откуда они буду вызываться**. Иными словами, здесь цепочка областей видимости основана на стеке вызовов, а не на вложенности областей видимости в коде.
 
-So, if JavaScript had dynamic scope, when `foo()` is executed, **theoretically** the code below would instead result in `3` as the output.
+Итак, если бы в JavaScript была динамическая область видимости, то когда  выполнилась бы `foo()`, **теоретически** нижеприведенный код привел бы к выводу `3`.
 
 ```js
 function foo() {
@@ -45,14 +45,14 @@ var a = 2;
 bar();
 ```
 
-How can this be? Because when `foo()` cannot resolve the variable reference for `a`, instead of stepping up the nested (lexical) scope chain, it walks up the call-stack, to find where `foo()` was *called from*. Since `foo()` was called from `bar()`, it checks the variables in scope for `bar()`, and finds an `a` there with value `3`.
+Как такое может быть? А всё потому, что когда `foo()` не может разрешить ссылку на переменную `a`, вместо поднятия по цепочке вложенных лексических областей видимости, она взбирается вверх по стеку вызовов, чтобы найти откуда `foo()` была *вызвана*. Поскольку `foo()` вызывалась из `bar()`, она проверяет переменные в области видимости `bar()` и находит там `a` со значением `3`.
 
-Strange? You're probably thinking so, at the moment.
+Странно? Возможно вы так и подумали, на какой-то момент.
 
-But that's just because you've probably only ever worked on (or at least deeply considered) code which is lexically scoped. So dynamic scoping seems foreign. If you had only ever written code in a dynamically scoped language, it would seem natural, and lexical scope would be the odd-ball.
+Но это всего лишь потому, что вы возможно работали только с (или по меньшей мере глубоко изучили) кодом, который работает в лексической областью видимости. Поэтому то динамическая область видимости и кажется чужой. Если бы вы писали код на языке с динамической областью видимости, для вас всё это показалось бы естественным, а лексическая область видимости показалось бы чудаковатой.
 
-To be clear, JavaScript **does not, in fact, have dynamic scope**. It has lexical scope. Plain and simple. But the `this` mechanism is kind of like dynamic scope.
+Чтобы внести ясность, в JavaScript **нет, на самом деле, динамической области видимости**. В нем есть лексическая область видимости. Проще некуда. Но механизм работы `this` немного похож на динамическую область видимости.
 
-The key contrast: **lexical scope is write-time, whereas dynamic scope (and `this`!) are runtime**. Lexical scope cares *where a function was declared*, but dynamic scope cares where a function was *called from*.
+Ключевое сравнение: **лексическая область видимости определяется временем написания кода, тогда как динамическая область видимости (и `this`!) определяется во время выполнения**. Лексическую область видимости интересует *где функция была объявлена*, а динамическую — *откуда была вызвана* функция.
 
-Finally: `this` cares *how a function was called*, which shows how closely related the `this` mechanism is to the idea of dynamic scoping. To dig more into `this`, read the title "*this & Object Prototypes*".
+И наконец: `this` интересует *как была вызвана функция*, что показывает как близко связаны механизм `this` с идеей динамической области видимости. Чтобы изучить во всех подробностях `this`, прочтите книгу "*this и прототипы объектов*".
