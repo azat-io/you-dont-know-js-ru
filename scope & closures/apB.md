@@ -1,13 +1,13 @@
-# You Don't Know JS: Scope & Closures
-# Appendix B: Polyfilling Block Scope
+# Вы не знаете JS: Область видимости и замыкания
+# Приложение B: Полифиллинг блочной области видимости
 
-In Chapter 3, we explored Block Scope. We saw that `with` and the `catch` clause are both tiny examples of block scope that have existed in JavaScript since at least the introduction of ES3.
+В главе 3 мы исследовали блочную область видимости. Мы отметили, что операторы `with` и `catch` оба являются крошечными примерами блочной области видимости, которые существуют в JavaScript с тех пор как появился ES3.
 
-But it's ES6's introduction of `let` that finally gives full, unfettered block-scoping capability to our code. There are many exciting things, both functionally and code-stylistically, that block scope will enable.
+Но в ES6 был представлен `let`, который окончательно дал полные, неограниченные возможности применять блочную область видимости в нашем коде. Есть много впечатляющих вещей, как функциональных, так и стилистических, которые появились благодаря блочной области видимости.
 
-But what if we wanted to use block scope in pre-ES6 environments?
+Но что если мы хотим использовать блочную область видимости в пред-ES6 окружении?
 
-Consider this code:
+Представим такой код:
 
 ```js
 {
@@ -18,7 +18,7 @@ Consider this code:
 console.log( a ); // ReferenceError
 ```
 
-This will work great in ES6 environments. But can we do so pre-ES6? `catch` is the answer.
+Он отлично работает в ES6 окружении. Но можем ли мы также сделать в пред-ES6? `catch` — вот ответ.
 
 ```js
 try{throw 2}catch(a){
@@ -28,21 +28,21 @@ try{throw 2}catch(a){
 console.log( a ); // ReferenceError
 ```
 
-Whoa! That's some ugly, weird looking code. We see a `try/catch` that appears to forcibly throw an error, but the "error" it throws is just a value `2`, and then the variable declaration that receives it is in the `catch(a)` clause. Mind: blown.
+Ого! Какой это уродливый, странновыглядящий код. Тут `try/catch`, которые используются, чтобы принудительно вызвать ошибку, но эта "ошибка" — всего лишь значение `2`, а затем объявление переменной, которая получает это значение в блоке `catch(a)`. Мозг: взорван!
 
-That's right, the `catch` clause has block-scoping to it, which means it can be used as a polyfill for block scope in pre-ES6 environments.
+Все правильно, в блоке `catch` есть блочная область видимости, которая похоже может использоваться как полифиллинг для блочной области видимости в пред-ES6 окружении.
 
-"But...", you say. "...no one wants to write ugly code like that!" That's true. No one writes (some of) the code output by the CoffeeScript compiler, either. That's not the point.
+"Но...", - скажете вы. "...никто не хочет писать ужасный код подобный этому!" Это правда. Никто не пишет такой код, который выдает компилятор CoffeeScript. Но суть не в этом.
 
-The point is that tools can transpile ES6 code to work in pre-ES6 environments. You can write code using block-scoping, and benefit from such functionality, and let a build-step tool take care of producing code that will actually *work* when deployed.
+Суть в том, что утилиты могут транспилировать код на ES6, чтобы он мог работать в пред-ES6 окружении. Можно писать код с блочными областями видимости и извлекать преимущества из такой функциональности и дать возможность утилите во время сборки проекта позаботиться о том, чтобы сгенерировать код, который действительно будет *работать* после публикации.
 
-This is actually the preferred migration path for all (ahem, most) of ES6: to use a code transpiler to take ES6 code and produce ES5-compatible code during the transition from pre-ES6 to ES6.
+Это и в самом деле предпочтительный путь миграции для всего (кхм, большей части) ES6: использовать транспилятор кода чтобы брать код на ES6 и выдать ES5-совместимый код на период перехода от пред-ES6 к ES6.
 
 ## Traceur
 
-Google maintains a project called "Traceur" [^note-traceur], which is exactly tasked with transpiling ES6 features into pre-ES6 (mostly ES5, but not all!) for general usage. The TC39 committee relies on this tool (and others) to test out the semantics of the features they specify.
+Гугл поддерживает проект, называемый "Traceur", единственной задачей которого является транспиляция возможностей ES6 в пред-ES6 (в основном ES5, но не только!) для повседневного использования. Комитет TC39 полагается на этот инструмент (и другие), чтобы проверять на практике семантику тех возможностей, которые он выпускает.
 
-What does Traceur produce from our snippet? You guessed it!
+Во что же превратит Traceur наш код? Вы угадали!
 
 ```js
 {
@@ -57,13 +57,13 @@ What does Traceur produce from our snippet? You guessed it!
 console.log( a );
 ```
 
-So, with the use of such tools, we can start taking advantage of block scope regardless of if we are targeting ES6 or not, because `try/catch` has been around (and worked this way) from ES3 days.
+Так что с использованием таких утилит мы можем получать все преимущества блочной области видимости независимо от того, будет ли это работать только в  ES6 или нет, потому что `try/catch` используется (и работает именно так) со времен ES3.
 
-## Implicit vs. Explicit Blocks
+## Блоки: неявные против явных
 
-In Chapter 3, we identified some potential pitfalls to code maintainability/refactorability when we introduce block-scoping. Is there another way to take advantage of block scope but to reduce this downside?
+В главе 3 мы обозначили некоторые потенциальные проблемы с обслуживаемостью/рефакторингом когда представили блочную область видимости. А есть ли другой путь получить преимущества блочной области видимости, но уменьшив эти недостатки?
 
-Consider this alternate form of `let`, called the "let block" or "let statement" (contrasted with "let declarations" from before).
+Рассмотрим еще одну альтернативную форму `let`, называемую "let-блок" или "оператор let" (в противоположность "объявлениям let", рассмотренным ранее).
 
 ```js
 let (a = 2) {
@@ -73,13 +73,13 @@ let (a = 2) {
 console.log( a ); // ReferenceError
 ```
 
-Instead of implicitly hijacking an existing block, the let-statement creates an explicit block for its scope binding. Not only does the explicit block stand out more, and perhaps fare more robustly in code refactoring, it produces somewhat cleaner code by, grammatically, forcing all the declarations to the top of the block. This makes it easier to look at any block and know what's scoped to it and not.
+Вместо неявного "угона" существующего блока let-оператор создает явный блок со своей собственной областью видимости. Но явный блок выделяется не только этим и возможно более удобным рефакторингом кода, с ним код получается чище  грамматически, с помощью принудительного переноса всех определений наверх блока. Это облегчает понимание любого блока, а также того, что попадает в область его видимости, а что — нет.
 
-As a pattern, it mirrors the approach many people take in function-scoping when they manually move/hoist all their `var` declarations to the top of the function. The let-statement puts them there at the top of the block by intent, and if you don't use `let` declarations strewn throughout, your block-scoping declarations are somewhat easier to identify and maintain.
+Как шаблон, он отражает подход, когда многие люди используют область видимости функции и они вручную перемещают/поднимают все свои объявления `var` вверх функции. let-оператор помещает их в начало блока намеренно и если вы не используете объявления `let`, разбросанные повсюду как попало, то объявления в блочной области видимости немного легче находить и управлять ими.
 
-But, there's a problem. The let-statement form is not included in ES6. Neither does the official Traceur compiler accept that form of code.
+Но есть проблема! let в форме оператора не включен в ES6. И официальный компилятор Traceur также не принимает такую форму кода как корректную.
 
-We have two options. We can format using ES6-valid syntax and a little sprinkle of code discipline:
+У нас есть два варианта. Можно отформатировать код используя ES6-совместимый синтаксис и добавить немного дисциплины в коде:
 
 ```js
 /*let*/ { let a = 2;
@@ -89,11 +89,11 @@ We have two options. We can format using ES6-valid syntax and a little sprinkle 
 console.log( a ); // ReferenceError
 ```
 
-But, tools are meant to solve our problems. So the other option is to write explicit let statement blocks, and let a tool convert them to valid, working code.
+Но инструменты призваны решать наши проблемы. Поэтому вторым вариантом будет  писать явно блоки оператора let и позволить утилите сконвертировать их в корректный, работающий код.
 
-So, I built a tool called "let-er" [^note-let_er] to address just this issue. *let-er* is a build-step code transpiler, but its only task is to find let-statement forms and transpile them. It will leave alone any of the rest of your code, including any let-declarations. You can safely use *let-er* as the first ES6 transpiler step, and then pass your code through something like Traceur if necessary.
+Поэтому, я создал утилиту, названную "let-er" для решения этой единственной проблемы. *let-er* — транспилятор кода на этапе сборки, но его единственной задачей является находить let-операторы и транспилировать их. Она оставит в целости и сохранности весь остальной ваш код, включая любые let-объявления. Вы можете безопасно пользоваться *let-er* как первым звеном транспиляции ES6, а затем передать код во что-то подобное Traceur если надо.
 
-Moreover, *let-er* has a configuration flag `--es6`, which when turned on (off by default), changes the kind of code produced. Instead of the `try/catch` ES3 polyfill hack, *let-er* would take our snippet and produce the fully ES6-compliant, non-hacky:
+Более того, в *let-er* есть опция настройки `--es6`, при включении которой (по умолчанию выключена), меняется получаемый код. Вместо полифильного хака `try/catch` из ES3, *let-er* возьмет наш код и выдаст полностью ES6-совместимый, без всяких хаков:
 
 ```js
 {
@@ -104,20 +104,20 @@ Moreover, *let-er* has a configuration flag `--es6`, which when turned on (off b
 console.log( a ); // ReferenceError
 ```
 
-So, you can start using *let-er* right away, and target all pre-ES6 environments, and when you only care about ES6, you can add the flag and instantly target only ES6.
+Так что вы можете начать пользоваться *let-er* прямо сейчас и выпускать код под все пред-ES6 среды, а когда вам требуется только ES6, можно добавить опцию и сразу же получать только ES6-код.
 
-And most importantly, **you can use the more preferable and more explicit let-statement form** even though it is not an official part of any ES version (yet).
+И что более важно, **вы можете использовать более предпочтительную и более явную форму let-оператора** даже не смотря на то, что он не является официальной частью какой-либо версии ES (пока что).
 
-## Performance
+## Производительность
 
-Let me add one last quick note on the performance of `try/catch`, and/or to address the question, "why not just use an IIFE to create the scope?"
+Позвольте мне напоследок добавить пару слов о производительности `try/catch` и/или чтобы рассмотреть вопрос: "почему бы просто не использовать IIFE для создания области видимости?"
 
-Firstly, the performance of `try/catch` *is* slower, but there's no reasonable assumption that it *has* to be that way, or even that it *always will be* that way. Since the official TC39-approved ES6 transpiler uses `try/catch`, the Traceur team has asked Chrome to improve the performance of `try/catch`, and they are obviously motivated to do so.
+Во-первых, производительность `try/catch` *ниже*, но нет ни одного разумного предположения, что в этом случае так и *есть*, или даже что *так будет всегда* в таких случаях. Поскольку официальный подтвержденный TC39 ES6-транспилятор использует `try/catch`, команда Traceur попросила Chrome улучшить производительность `try/catch` и у них конечно же есть мотивация так и сделать.
 
-Secondly, IIFE is not a fair apples-to-apples comparison with `try/catch`, because a function wrapped around any arbitrary code changes the meaning, inside of that code, of `this`, `return`, `break`, and `continue`. IIFE is not a suitable general substitute. It could only be used manually in certain cases.
+Во-вторых, IIFE — не справедливое равноценное сравнение с `try/catch`, поскольку функция, обернутая вокруг любого обычного кода, меняет значение внутри этого кода у операторов `this`, `return`, `break` и `continue`. IIFE - не замена в повседневных задачах. Ее можно использовать вручную только в особых случаях.
 
-The question really becomes: do you want block-scoping, or not. If you do, these tools provide you that option. If not, keep using `var` and go on about your coding!
+В итоге, вопрос превращается в такой: нужна ли вам блочная область видимости или нет. Если нужна, эти утилиты дадут вам такую возможность. Если нет, продолжайте использовать `var` и кодировать!
 
-[^note-traceur]: [Google Traceur](http://traceur-compiler.googlecode.com/git/demo/repl.html)
+[Google Traceur](http://traceur-compiler.googlecode.com/git/demo/repl.html)
 
-[^note-let_er]: [let-er](https://github.com/getify/let-er)
+[let-er](https://github.com/getify/let-er)
