@@ -1,23 +1,23 @@
-# You Don't Know JS: Scope & Closures
+# Вы не знаете JS: Область видимости и замыкания
 
 <img src="cover.jpg" width="300">
 
 -----
 
-**[Purchase digital/print copy from O'Reilly](http://shop.oreilly.com/product/0636920026327.do)**
+**[Приобрести элекстронную/печатную копию от O'Reilly](http://shop.oreilly.com/product/0636920026327.do)**
 
 -----
 
-[Table of Contents](toc.md)
+[Содержание](toc.md)
 
-* [Foreword](https://shanehudson.net/2014/06/03/foreword-dont-know-js/) (by [Shane Hudson](https://github.com/shanehudson))
-* [Preface](../preface.md)
-* [Chapter 1: What is Scope?](ch1.md)
-* [Chapter 2: Lexical Scope](ch2.md)
-* [Chapter 3: Function vs. Block Scope](ch3.md)
-* [Chapter 4: Hoisting](ch4.md)
-* [Chapter 5: Scope Closures](ch5.md)
-* [Appendix A: Dynamic Scope](apA.md)
-* [Appendix B: Polyfilling Block Scope](apB.md)
-* [Appendix C: Lexical-this](apC.md)
-* [Appendix D: Thank You's!](apD.md)
+* [Предисловие](https://shanehudson.net/2014/06/03/foreword-dont-know-js/) (by [Shane Hudson](https://github.com/shanehudson))
+* [Введение](../preface.md)
+* [Глава 1: Что такое область видимости?](ch1.md)
+* [Глава 2: Лексическая область видимости](ch2.md)
+* [Глава 3: Область видимости: функции против блоков](ch3.md)
+* [Глава 4: Поднятие переменных (Hoisting)](ch4.md)
+* [Глава 5: Замыкание области видимости](ch5.md)
+* [Приложение A: Динамическая область видимости](apA.md)
+* [Приложение B: Полифиллинг блочной области видимости](apB.md)
+* [Приложение C: Лексический this](apC.md)
+* [Приложение D: Благодарности](apD.md)
