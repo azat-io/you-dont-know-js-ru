@@ -1,33 +1,33 @@
-# You Don't Know JS: Scope & Closures
+# Вы не знаете JS: Область видимости и замыкания
 
-## Table of Contents
+## Содержание
 
-* Foreword
-* Preface
-* Chapter 1: What is Scope?
-	* Compiler Theory
-	* Understanding Scope
-	* Nested Scope
-	* Errors
-* Chapter 2: Lexical Scope
-	* Lex-time
-	* Cheating Lexical
-* Chapter 3: Function vs. Block Scope
-	* Scope From Functions
-	* Hiding In Plain Scope
-	* Functions As Scopes
-	* Blocks As Scopes
-* Chapter 4: Hoisting
-	* Chicken Or The Egg?
-	* The Compiler Strikes Again
-	* Functions First
-* Chapter 5: Scope Closures
-	* Enlightenment
-	* Nitty Gritty
-	* Now I Can See
-	* Loops + Closure
-	* Modules
-* Appendix A: Dynamic Scope
-* Appendix B: Polyfilling Block Scope
-* Appendix C: Lexical-this
-* Appendix D: Acknowledgments
+* Предисловие
+* Введение
+* Глава 1: Что такое область видимости?
+	* Теория компиляторов
+	* Понимание области видимости
+	* Вложенная область видимости
+	* Ошибки
+* Глава 2: Лексическая область видимости
+	* Время разбора на лексемы
+	* Обманываем лексическую область видимости
+* Глава 3: Область видимости: функции против блоков
+	* Область видимости из функций
+	* Прячемся на виду у всей области видимости
+	* Функции как области видимости
+	* Блоки как области видимости
+* Глава 4: Поднятие переменных (Hoisting)
+	* Курица или яйцо?
+	* Компилятор снова наносит удар
+	* Сначала функции
+* Глава 5: Замыкание области видимости
+	* Прозрение
+	* Суть дела
+	* Теперь я вижу
+	* Циклы + замыкание
+	* Модули
+* Приложение A: Динамическая область видимости
+* Приложение B: Полифиллинг блочной области видимости
+* Приложение C: Лексический this
+* Приложение D: Благодарности

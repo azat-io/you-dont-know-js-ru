@@ -1,9 +1,9 @@
-# You Don't Know JS: Scope & Closures
-# Appendix C: Lexical-this
+# Вы не знаете JS: Область видимости и замыкания
+# Приложение C: Лексический this
 
-Though this title does not address the `this` mechanism in any detail, there's one ES6 topic which relates `this` to lexical scope in an important way, which we will quickly examine.
+Хотя эта книга и не рассматривает механизм `this` во всех деталях, есть одна тема в ES6, которая связывает `this` с лексической областью видимости существенным образом, по которому мы быстро пробежимся.
 
-ES6 adds a special syntactic form of function declaration called the "arrow function". It looks like this:
+ES6 добавляет особую синтаксическую форму объявления функции, названную "стрелочная функция". Она выглядит примерно так:
 
 ```js
 var foo = a => {
@@ -13,11 +13,11 @@ var foo = a => {
 foo( 2 ); // 2
 ```
 
-The so-called "fat arrow" is often mentioned as a short-hand for the *tediously verbose* (sarcasm) `function` keyword.
+Так называемая "жирная стрелка" часто упоминается как сокращение для *утомительно длинного* (сарказм) ключевого слова `function`.
 
-But there's something much more important going on with arrow-functions that has nothing to do with saving keystrokes in your declaration.
+Но есть кое-что более важное в стрелочных функциях, что не имеет ничего общего с экономией символов в вашем коде.
 
-Briefly, this code suffers a problem:
+В двух словах, этот код страдает от одной проблемы:
 
 ```js
 
@@ -35,9 +35,9 @@ obj.cool(); // awesome
 setTimeout( obj.cool, 100 ); // not awesome
 ```
 
-The problem is the loss of `this` binding on the `cool()` function. There are various ways to address that problem, but one often-repeated solution is `var self = this;`.
+Проблема заключается в потере привязки `this` в функции `cool()`. Есть разные пути решения этой проблемы, но наиболее частое решение — `var self = this;`.
 
-That might look like:
+Выглядит это примерно так:
 
 ```js
 var obj = {
@@ -48,48 +48,48 @@ var obj = {
 		if (self.count < 1) {
 			setTimeout( function timer(){
 				self.count++;
-				console.log( "awesome?" );
+				console.log( "красиво?" );
 			}, 100 );
 		}
 	}
 };
 
-obj.cool(); // awesome?
+obj.cool(); // красиво?
 ```
 
-Without getting too much into the weeds here, the `var self = this` "solution" just dispenses with the whole problem of understanding and properly using `this` binding, and instead falls back to something we're perhaps more comfortable with: lexical scope. `self` becomes just an identifier that can be resolved via lexical scope and closure, and cares not what happened to the `this` binding along the way.
+Чтобы не слишком углубляться в подробности, "решение "`var self = this` всего лишь избавляется целиком от всей проблемы понимания и правильного использования привязки `this`, а взамен возвращается к чему-то более удобному для нас: лексической области видимости. `self` становится всего лишь идентификатором, который может быть определен с помощью лексической области видимости и замыкания, и не заботится о том, что случится с привязкой `this` по пути.
 
-People don't like writing verbose stuff, especially when they do it over and over again. So, a motivation of ES6 is to help alleviate these scenarios, and indeed, *fix* common idiom problems, such as this one.
+Люди не любят писать подробно особенно то, что делают снова и снова. Таким образом, мотивацией ES6 является помощь в облегчении таких сценариев и разумеется в *устранении* общих проблем идиом, таких как эта.
 
-The ES6 solution, the arrow-function, introduces a behavior called "lexical this".
+Решение в ES6, стрелочная функция, вводит поведение, называемое "лексический  this".
 
 ```js
 var obj = {
 	count: 0,
 	cool: function coolFn() {
 		if (this.count < 1) {
-			setTimeout( () => { // arrow-function ftw?
+			setTimeout( () => { // стрелочная функция, выигрышный вариант?
 				this.count++;
-				console.log( "awesome?" );
+				console.log( "красиво?" );
 			}, 100 );
 		}
 	}
 };
 
-obj.cool(); // awesome?
+obj.cool(); // красиво?
 ```
 
-The short explanation is that arrow-functions do not behave at all like normal functions when it comes to their `this` binding. They discard all the normal rules for `this` binding, and instead take on the `this` value of their immediate lexical enclosing scope, whatever it is.
+Вкратце, стрелочные функции ведут себя совсем не как обычные функции в том, что касается их привязки к `this`. Они отбрасывают все обычные правила для привязки `this`, а взамен берут значение `this` из их непосредственной окружаюшей области видимости, неважно из какой.
 
-So, in that snippet, the arrow-function doesn't get its `this` unbound in some unpredictable way, it just "inherits" the `this` binding of the `cool()` function (which is correct if we invoke it as shown!).
+Так что в этом примере кода стрелочная функция не получает свой `this` непривязанным каким-то непредсказуемым путем, она всего лишь "наследует" привязку `this` функции `cool()` (что правильно, если мы вызываем ее так, как показано выше!).
 
-While this makes for shorter code, my perspective is that arrow-functions are really just codifying into the language syntax a common *mistake* of developers, which is to confuse and conflate "this binding" rules with "lexical scope" rules.
+Несмотря на то, что это делает код короче, моя точка зрения в том, что  стрелочные функции — всего лишь на самом деле закодированная в синтаксис языка распространенная *ошибка* разработчиков, которая приводит к тому, чтобы запутать и соединить правила "привязки this" с правилами "лексической области видимости".
 
-Put another way: why go to the trouble and verbosity of using the `this` style coding paradigm, only to cut it off at the knees by mixing it with lexical references. It seems natural to embrace one approach or the other for any given piece of code, and not mix them in the same piece of code.
+Другими словами: зачем искать неприятности и ударяться в словоблудие используя парадигму кодирования стиля `this`, всего лишь чтобы подрезать ему крылья смешивая его с лексическими ссылками. Кажется естественным принять тот или иной подход для любой конкретной части кода, а не смешивать их в одном и том же месте.
 
-**Note:** one other detraction from arrow-functions is that they are anonymous, not named. See Chapter 3 for the reasons why anonymous functions are less desirable than named functions.
+**Примечание:** еще один недостаток стрелочных функций в том, что они анонимны, не именованы. Загляните в главу 3, чтобы ознакомиться с причинами почему анонимные функции менее предпочтительны, чем именованные.
 
-A more appropriate approach, in my perspective, to this "problem", is to use and embrace the `this` mechanism correctly.
+Более подходящий подход, с моей точки зрения, к этой "проблеме", использовать  и рассматривать механизм `this` правильно.
 
 ```js
 var obj = {
@@ -97,18 +97,18 @@ var obj = {
 	cool: function coolFn() {
 		if (this.count < 1) {
 			setTimeout( function timer(){
-				this.count++; // `this` is safe because of `bind(..)`
-				console.log( "more awesome" );
-			}.bind( this ), 100 ); // look, `bind()`!
+				this.count++; // `this` безопасен из-за `bind(..)`
+				console.log( "еще красивее" );
+			}.bind( this ), 100 ); // смотри, `bind()`!
 		}
 	}
 };
 
-obj.cool(); // more awesome
+obj.cool(); // еще красивее
 ```
 
-Whether you prefer the new lexical-this behavior of arrow-functions, or you prefer the tried-and-true `bind()`, it's important to note that arrow-functions are **not** just about less typing of "function".
+Чтобы вы ни предпочли: новое поведение лексического this стрелочных функций или испытанный и верный `bind()`, важно отметить, что стрелочные функции —  **не только** сокращение написания "function".
 
-They have an *intentional behavioral difference* that we should learn and understand, and if we so choose, leverage.
+У них есть *намеренная разница в поведении*, которую необходимо изучить и понимать, и если мы их выбираем, то использовать по максимуму их возможности.
 
-Now that we fully understand lexical scoping (and closure!), understanding lexical-this should be a breeze!
+Теперь, когда мы полностью понимаем образование лексической области видимости (и замыкания!), понять лексический this будет проще простого!
