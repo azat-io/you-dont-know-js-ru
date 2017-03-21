@@ -1,60 +1,60 @@
-# You Don't Know JS: *this* & Object Prototypes
-# Chapter 2: `this` All Makes Sense Now!
+# Вы не знаете JS: *this* и прототипы объектов
+# Глава 2: Весь `this` теперь приобретает смысл!
 
-In Chapter 1, we discarded various misconceptions about `this` and learned instead that `this` is a binding made for each function invocation, based entirely on its **call-site** (how the function is called).
+В главе 1 мы отбросили различные ложные представления о `this` и взамен изучили, что привязка `this` происходит при каждом вызове функции, целиком на основании ее **места вызова** (как была вызвана функция).
 
-## Call-site
+## Точка вызова
 
-To understand `this` binding, we have to understand the call-site: the location in code where a function is called (**not where it's declared**). We must inspect the call-site to answer the question: what's *this* `this` a reference to?
+Чтобы понять привязку `this`, мы должны понять что такое точка вызова: это место в коде, где была вызвана функция (**не там, где она объявлена**). Мы должны исследовать точку вызова, чтобы ответить на вопрос: на что же *этот* `this` указывает?
 
-Finding the call-site is generally: "go locate where a function is called from", but it's not always that easy, as certain coding patterns can obscure the *true* call-site.
+В общем поиск точки вызова выглядит так: "найти откуда вызывается функция", но это не всегда так уж легко, поскольку определенные шаблоны кодирования могут ввести в заблуждение относительно *истинной* точки вызова.
 
-What's important is to think about the **call-stack** (the stack of functions that have been called to get us to the current moment in execution). The call-site we care about is *in* the invocation *before* the currently executing function.
+Важно поразмышлять над **стеком вызовов** (стеком функций, которые были вызваны, чтобы привести нас к текущей точке исполнения кода). Точка вызова, которая нас интересует, находится *в* вызове *перед* текущей выполняемой функцией.
 
-Let's demonstrate call-stack and call-site:
+Продемонстрируем стек вызовов и точку вызова:
 
 ```js
 function baz() {
-    // call-stack is: `baz`
-    // so, our call-site is in the global scope
+    // стек вызовов: `baz`
+    // поэтому наша точка вызова — глобальная область видимости
 
     console.log( "baz" );
-    bar(); // <-- call-site for `bar`
+    bar(); // <-- точка вызова для `bar`
 }
 
 function bar() {
-    // call-stack is: `baz` -> `bar`
-    // so, our call-site is in `baz`
+    // стек вызовов: `baz` -> `bar`
+    // поэтому наша точка вызова в `baz`
 
     console.log( "bar" );
-    foo(); // <-- call-site for `foo`
+    foo(); // <-- точка вызова для `foo`
 }
 
 function foo() {
-    // call-stack is: `baz` -> `bar` -> `foo`
-    // so, our call-site is in `bar`
+    // стек вызовов: `baz` -> `bar` -> `foo`
+    // поэтому наша точка вызова в `bar`
 
     console.log( "foo" );
 }
 
-baz(); // <-- call-site for `baz`
+baz(); // <-- точка вызова для `baz`
 ```
 
-Take care when analyzing code to find the actual call-site (from the call-stack), because it's the only thing that matters for `this` binding.
+Позаботьтесь при анализе кода о том, чтобы найти настоящую точку вызова (из стека вызовов), поскольку это единственная вещь, которая имеет значение для привязки `this`.
 
-**Note:** You can visualize a call-stack in your mind by looking at the chain of function calls in order, as we did with the comments in the above snippet. But this is painstaking and error-prone. Another way of seeing the call-stack is using a debugger tool in your browser. Most modern desktop browsers have built-in developer tools, which includes a JS debugger. In the above snippet, you could have set a breakpoint in the tools for the first line of the `foo()` function, or simply inserted the `debugger;` statement on that first line. When you run the page, the debugger will pause at this location, and will show you a list of the functions that have been called to get to that line, which will be your call stack. So, if you're trying to diagnose `this` binding, use the developer tools to get the call-stack, then find the second item from the top, and that will show you the real call-site.
+**Примечание:** Вы можете мысленно визуализировать стек вызовов посмотрев цепочку вызовов функций в том порядке, в котором мы это делали в  комментариях в коде выше. Но это утомительно и чревато ошибками. Другой путь посмотреть стек вызовов — это использование инструмента отладки в вашем браузере. Во многих современных настольных браузерах есть встроенные инструменты разработчика, включающие JS-отладчик. В вышеприведенном коде вы могли бы поставить точку остановки в такой утилите на первой строке функции `foo()` или просто вставить оператор `debugger;` в первую строку. Как только вы запустите страницу, отладчик остановится в этом месте и покажет вам список функций, которые были вызваны, чтобы добраться до этой строки, каковые и будут являться необходимым стеком вызовов. Таким образом, если вы пытаетесь выяснить привязку `this`, используйте инструменты разработчика для получения стека вызовов, затем найдите второй элемент стека от его вершины и это и будет реальная точка вызова.
 
-## Nothing But Rules
+## Ничего кроме правил
 
-We turn our attention now to *how* the call-site determines where `this` will point during the execution of a function.
+Теперь обратим наш взор на то, *как* точка вызова определяет на что будет указывать `this` во время выполнения функции.
 
-You must inspect the call-site and determine which of 4 rules applies. We will first explain each of these 4 rules independently, and then we will illustrate their order of precedence, if multiple rules *could* apply to the call-site.
+Вам нужно изучить точку вызова и определить какое из 4 правил применяется. Сначала разъясним каждое из 4 правил по отдельности, а затем проиллюстрируем их порядок приоритета, для случаев когда к точке вызова *могут* применяться несколько правил сразу.
 
-### Default Binding
+### Привязка по умолчанию
 
-The first rule we will examine comes from the most common case of function calls: standalone function invocation. Think of *this* `this` rule as the default catch-all rule when none of the other rules apply.
+Первое правило, которое мы изучим, исходит из самого распространенного случая вызовов функции: отдельный вызов функции. Представьте себе *это* правило `this` как правило, действующее по умолчанию когда остальные правила не применяются.
 
-Consider this code:
+Рассмотрим такой код:
 
 ```js
 function foo() {
@@ -66,13 +66,13 @@ var a = 2;
 foo(); // 2
 ```
 
-The first thing to note, if you were not already aware, is that variables declared in the global scope, as `var a = 2` is, are synonymous with global-object properties of the same name. They're not copies of each other, they *are* each other. Think of it as two sides of the same coin.
+Первая вещь, которую можно отметить, если вы еще не сделали этого, то, что переменные, объявленные в глобальной области видимости, как например `var a = 2`,  являются синонимами глобальных свойств-объектов с таким же именем. Они не являются копиями друг друга, они и *есть* одно и то же. Представляйте их как две стороны одной монеты.
 
-Secondly, we see that when `foo()` is called, `this.a` resolves to our global variable `a`. Why? Because in this case, the *default binding* for `this` applies to the function call, and so points `this` at the global object.
+Во-вторых, видно, что когда вызывается `foo()` `this.a` указывает на нашу глобальную переменную  `a`. Почему? Потому что в этом случае, для `this` применяется *привязка по умолчанию* при вызове функции и поэтому `this` указывает на глобальный объект.
 
-How do we know that the *default binding* rule applies here? We examine the call-site to see how `foo()` is called. In our snippet, `foo()` is called with a plain, un-decorated function reference. None of the other rules we will demonstrate will apply here, so the *default binding* applies instead.
+Откуда мы знаем, что здесь применяется *привязка по умолчанию*? Мы исследуем точку вызова, чтобы выяснить как вызывается `foo()`. В нашем примере кода `foo()` вызывается по прямой, необернутой ссылке на функцию. Ни одного из демонстрируемых далее правил тут не будет применено, поэтому вместо них применяется *привязка по умолчанию*.
 
-If `strict mode` is in effect, the global object is not eligible for the *default binding*, so the `this` is instead set to `undefined`.
+Когда включен `strict mode`, объект 'global' не подпадает под действие *привязки по умолчанию*, поэтому в противоположность обычному режиму `this` устанавливается в `undefined`.
 
 ```js
 function foo() {
@@ -86,7 +86,7 @@ var a = 2;
 foo(); // TypeError: `this` is `undefined`
 ```
 
-A subtle but important detail is: even though the overall `this` binding rules are entirely based on the call-site, the global object is **only** eligible for the *default binding* if the **contents** of `foo()` are **not** running in `strict mode`; the `strict mode` state of the call-site of `foo()` is irrelevant.
+Едва уловимая, но важная деталь: даже если все правила привязки `this` целиком основываются на точке вызова, глобальный объект подпадает под *привязку по умолчанию* **только** если **содержимое** `foo()` **не** выполняется в режиме `strict mode`; Состояние `strict mode` в точке вызова `foo()` не имеет значения.
 
 ```js
 function foo() {
@@ -102,13 +102,13 @@ var a = 2;
 })();
 ```
 
-**Note:** Intentionally mixing `strict mode` and non-`strict mode` together in your own code is generally frowned upon. Your entire program should probably either be **Strict** or **non-Strict**. However, sometimes you include a third-party library that has different **Strict**'ness than your own code, so care must be taken over these subtle compatibility details.
+**Примечание:** К намеренному смешиванию включения и выключения `strict mode` в коде обычно относятся недобрительно. Вся программа пожалуй должна быть либо **строгой**, либо **нестрогой**. Однако, иногда вы подключаете сторонние библиотеки, в которых этот режим **строгости** отличается от вашего, поэтому нужно отнестись с вниманием к таким едва уловимым деталям совместимости.
 
-### Implicit Binding
+### Неявная привязка
 
-Another rule to consider is: does the call-site have a context object, also referred to as an owning or containing object, though *these* alternate terms could be slightly misleading.
+Рассмотрим еще одно правило: есть ли у точки вызова объект контекста, также называемый как владеющий или содержащий объект, хотя *эти* альтернативные термины могут немного вводить в заблуждение.
 
-Consider:
+Рассмотрим:
 
 ```js
 function foo() {
@@ -123,15 +123,15 @@ var obj = {
 obj.foo(); // 2
 ```
 
-Firstly, notice the manner in which `foo()` is declared and then later added as a reference property onto `obj`. Regardless of whether `foo()` is initially declared *on* `obj`, or is added as a reference later (as this snippet shows), in neither case is the **function** really "owned" or "contained" by the `obj` object.
+Во-первых, отметим способ, которым была объявлена `foo()`, а затем позже добавлена как ссылочное свойство в `obj`. Независимо от того была ли `foo()` изначально объявлена *в* `obj` или добавлена позднее как ссылка (как в вышеприведенном коде), ни в том, ни в другом случае **функция** на самом деле не "принадлежит" или "содержится" в объекте `obj`.
 
-However, the call-site *uses* the `obj` context to **reference** the function, so you *could* say that the `obj` object "owns" or "contains" the **function reference** at the time the function is called.
+Однако, точка вызова *использует* контекст `obj`, чтобы **ссылаться** на функцию, поэтому *можно* сказать, что объект `obj` "владеет" или "содержит" **ссылку на функцию** в момент вызова функции.
 
-Whatever you choose to call this pattern, at the point that `foo()` is called, it's preceded by an object reference to `obj`. When there is a context object for a function reference, the *implicit binding* rule says that it's *that* object which should be used for the function call's `this` binding.
+Какое название вы бы ни выбрали для этого шаблона, в момент когда вызывается  `foo()`, ей предшествует объектная ссылка на `obj`. Когда есть объект контекста для ссылки на функцию, правило *неявной привязки* говорит о том, что именно *этот* объект и следует использовать для привязки `this` к вызову функции.
 
-Because `obj` is the `this` for the `foo()` call, `this.a` is synonymous with `obj.a`.
+Поскольку `obj` является `this` для вызова `foo()`, `this.a` — синоним  `obj.a`.
 
-Only the top/last level of an object property reference chain matters to the call-site. For instance:
+Только верхний/последний уровень ссылки на свойство объекта в цепочке имеет значение для точки вызова. Например:
 
 ```js
 function foo() {
@@ -151,11 +151,11 @@ var obj1 = {
 obj1.obj2.foo(); // 42
 ```
 
-#### Implicitly Lost
+#### Неявно потерянный
 
-One of the most common frustrations that `this` binding creates is when an *implicitly bound* function loses that binding, which usually means it falls back to the *default binding*, of either the global object or `undefined`, depending on `strict mode`.
+Одним из самых распространенных недовольств, которые вызывает привязка `this` — когда *неявно привязанная* функция теряет эту привязку, что обычно означает что она вернется к *привязке по умолчанию*, либо объекта `global`, либо  `undefined`, в зависимости от режима `strict mode`.
 
-Consider:
+Представим такой код:
 
 ```js
 function foo() {
@@ -167,16 +167,16 @@ var obj = {
 	foo: foo
 };
 
-var bar = obj.foo; // function reference/alias!
+var bar = obj.foo; // ссылка/алиас на функцию!
 
-var a = "oops, global"; // `a` also property on global object
+var a = "ой, глобальная"; // `a` также и свойство глобального объекта
 
-bar(); // "oops, global"
+bar(); // "ой, глобальная"
 ```
 
-Even though `bar` appears to be a reference to `obj.foo`, in fact, it's really just another reference to `foo` itself. Moreover, the call-site is what matters, and the call-site is `bar()`, which is a plain, un-decorated call and thus the *default binding* applies.
+Несмотря на то, что `bar` по всей видимости ссылка на `obj.foo`, фактически, это на самом деле другая ссылка на саму `foo`. Более того, именно точка вызова тут имеет значение, а точкой вызова является `bar()`, который является прямым непривязанным вызовом, а следовательно применяется *привязка по умолчанию*.
 
-The more subtle, more common, and more unexpected way this occurs is when we consider passing a callback function:
+Более неочевидный, более распространенный и более неожиданный путь получить такую ситуацию когда мы предполагаем передать функцию обратного вызова:
 
 ```js
 function foo() {
@@ -184,9 +184,9 @@ function foo() {
 }
 
 function doFoo(fn) {
-	// `fn` is just another reference to `foo`
+	// `fn` — просто еще одна ссылка на `foo`
 
-	fn(); // <-- call-site!
+	fn(); // <-- точка вызова!
 }
 
 var obj = {
@@ -194,14 +194,14 @@ var obj = {
 	foo: foo
 };
 
-var a = "oops, global"; // `a` also property on global object
+var a = "ой, глобальная"; // `a` еще и переменная в глобальном объекте
 
-doFoo( obj.foo ); // "oops, global"
+doFoo( obj.foo ); // "ой, глобальная"
 ```
 
-Parameter passing is just an implicit assignment, and since we're passing a function, it's an implicit reference assignment, so the end result is the same as the previous snippet.
+Передаваемый параметр — всего лишь неявное присваивание, а поскольку мы передаем функцию, это неявное присваивание ссылки, поэтому окончательный результат будет таким же как в предыдущем случае.
 
-What if the function you're passing your callback to is not your own, but built-in to the language? No difference, same outcome.
+Что если функция, которую вы передаете в качестве функции обратного вызова, не ваша собственная, а встроенная в язык? Никакой разницы, такой же результат.
 
 ```js
 function foo() {
@@ -213,35 +213,35 @@ var obj = {
 	foo: foo
 };
 
-var a = "oops, global"; // `a` also property on global object
+var a = "ой, глобальная"; // `a` еще и переменная в глобальном объекте
 
-setTimeout( obj.foo, 100 ); // "oops, global"
+setTimeout( obj.foo, 100 ); // "ой, глобальная"
 ```
 
-Think about this crude theoretical pseudo-implementation of `setTimeout()` provided as a built-in from the JavaScript environment:
+Поразмышляйте над этой грубой теоретической псевдо-реализацией `setTimeout()`, которая есть в качестве встроенной в JavaScript-среде:
 
 ```js
 function setTimeout(fn,delay) {
-	// wait (somehow) for `delay` milliseconds
-	fn(); // <-- call-site!
+	// подождать (так или иначе) `delay` миллисекунд
+	fn(); // <-- точка вызова!
 }
 ```
 
-It's quite common that our function callbacks *lose* their `this` binding, as we've just seen. But another way that `this` can surprise us is when the function we've passed our callback to intentionally changes the `this` for the call. Event handlers in popular JavaScript libraries are quite fond of forcing your callback to have a `this` which points to, for instance, the DOM element that triggered the event. While that may sometimes be useful, other times it can be downright infuriating. Unfortunately, these tools rarely let you choose.
+Достаточно распространенная ситуация, когда функции обратного вызова *теряют* свою привязку `this`, как мы только что видели. Но еще один способ, которым `this` может удивить нас, когда функция, которой мы передаем нашу функцию обратного вызова, намеренно меняет `this` для этого вызова. Обработчики событий в популярных JavaScript-библиотеках часто любят, чтобы в вашей функции обратного вызова `this` принудительно указывал, например, на DOM-элемент, который вызвал это событие. Несмотря на то, что иногда это бывает полезно, в другое время это может прямо таки выводить из себя. К сожалению, эти инструменты редко дают возможность выбирать.
 
-Either way the `this` is changed unexpectedly, you are not really in control of how your callback function reference will be executed, so you have no way (yet) of controlling the call-site to give your intended binding. We'll see shortly a way of "fixing" that problem by *fixing* the `this`.
+Каким бы путем ни менялся неожиданно `this`, у вас в действительности нет контроля над тем как будет вызвана ваша функция обратного вызова, таким образом у вас нет возможности контролировать точку вызова, чтобы получить заданную привязку. Мы кратко рассмотрим способ "починки" этой проблемы  *починив* `this`.
 
-### Explicit Binding
+### Явная привязка
 
-With *implicit binding* as we just saw, we had to mutate the object in question to include a reference on itself to the function, and use this property function reference to indirectly (implicitly) bind `this` to the object.
+В случае *неявной привязки*, как мы только что видели, нам требуется менять объект, о котором идет речь, чтобы включить в него функцию и использовать эту ссылку на свойство-функцию, чтобы опосредованно (неявно) привязать `this` к этому объекту.
 
-But, what if you want to force a function call to use a particular object for the `this` binding, without putting a property function reference on the object?
+Но, что если вам надо явно использовать при вызове функции указанный объект для привязки `this`, без помещения ссылки на свойство-функцию в объект?
 
-"All" functions in the language have some utilities available to them (via their `[[Prototype]]` -- more on that later) which can be useful for this task. Specifically, functions have `call(..)` and `apply(..)` methods. Technically, JavaScript host environments sometimes provide functions which are special enough (a kind way of putting it!) that they do not have such functionality. But those are few. The vast majority of functions provided, and certainly all functions you will create, do have access to `call(..)` and `apply(..)`.
+У "всех" функций в языке есть несколько инструментов, доступных для них (через их `[[Прототип]]`, о котором подробности будут позже), которые могут оказаться полезными в решении этой задачи. Говоря конкретнее, у функций есть методы `call(..)` и `apply(..)` . Технически, управляющие среды JavaScript иногда обеспечивают функции, которые настолько специфичны, что у них нет такой функциональности. Но таких мало. Абсолютное большинство предоставляемых функций и конечно все функции, которые создете вы сами, безусловно имеют доступ к `call(..)` и `apply(..)`.
 
-How do these utilities work? They both take, as their first parameter, an object to use for the `this`, and then invoke the function with that `this` specified. Since you are directly stating what you want the `this` to be, we call it *explicit binding*.
+Как работают эти инструменты? Они оба принимают в качестве первого параметра объект, который будет использоваться в качестве `this`, а затем вызывают функцию с указанным `this`. Поскольку вы явно указываете какой `this` вы хотите использовать, мы называем такой способ *явной привязкой*.
 
-Consider:
+Представим такой код:
 
 ```js
 function foo() {
@@ -255,17 +255,17 @@ var obj = {
 foo.call( obj ); // 2
 ```
 
-Invoking `foo` with *explicit binding* by `foo.call(..)` allows us to force its `this` to be `obj`.
+Вызов `foo` с *явной привязкой* посредством `foo.call(..)` позволяет нам указать, что `this` будет `obj`.
 
-If you pass a simple primitive value (of type `string`, `boolean`, or `number`) as the `this` binding, the primitive value is wrapped in its object-form (`new String(..)`, `new Boolean(..)`, or `new Number(..)`, respectively). This is often referred to as "boxing".
+Если в качестве привязки `this` вы передадите примитивное значение (типа `string`, `boolean` или `number`), то это примитивное значение будет обернуто в свою объектную форму (`new String(..)`, `new Boolean(..)` или `new Number(..)` соответственно). Часто это называют "упаковка".
 
-**Note:** With respect to `this` binding, `call(..)` and `apply(..)` are identical. They *do* behave differently with their additional parameters, but that's not something we care about presently.
+**Примечание:*  * В отношении привязки `this` `call(..)` и `apply(..)` идентичны. Они *по-разному* ведут себя с дополнительными параметрами, но мы не будем сейчас на этом останавливаться.
 
-Unfortunately, *explicit binding* alone still doesn't offer any solution to the issue mentioned previously, of a function "losing" its intended `this` binding, or just having it paved over by a framework, etc.
+К сожалению, *явная привязка* сама по себе все-таки не предлагает никакого решения для указанной ранее проблемы "потери" функцией ее привязки `this`, либо оставляет это на усмотрение фреймворка.
 
-#### Hard Binding
+#### Жесткая привязка
 
-But a variation pattern around *explicit binding* actually does the trick. Consider:
+Но поиграв с вариациями на тему *явной привязки* на самом деле можно получить желаемое. Пример:
 
 ```js
 function foo() {
@@ -283,14 +283,14 @@ var bar = function() {
 bar(); // 2
 setTimeout( bar, 100 ); // 2
 
-// `bar` hard binds `foo`'s `this` to `obj`
-// so that it cannot be overriden
+// `bar` жестко привязывает `this` в `foo` к `obj`
+// поэтому его нельзя перекрыть
 bar.call( window ); // 2
 ```
 
-Let's examine how this variation works. We create a function `bar()` which, internally, manually calls `foo.call(obj)`, thereby forcibly invoking `foo` with `obj` binding for `this`. No matter how you later invoke the function `bar`, it will always manually invoke `foo` with `obj`. This binding is both explicit and strong, so we call it *hard binding*.
+Давайте изучим как работает этот вариант. Мы создаем функцию `bar()`, которая внутри вручную вызывает `foo.call(obj)`, таким образом принудительно вызывая `foo` с привязкой `obj` для `this`. Неважно как вы потом вызовете функцию  `bar`, она всегда будет вручную вызывать `foo` с `obj`. Такая привязка одновременно явная и сильная, поэтому мы называем ее *жесткой привязкой*.
 
-The most typical way to wrap a function with a *hard binding* creates a pass-thru of any arguments passed and any return value received:
+Самый типичный способ обернуть функцию с *жесткой привязкой* — создать сквозную обертку, передающую все параметры и возвращающую полученное значение:
 
 ```js
 function foo(something) {
@@ -310,7 +310,7 @@ var b = bar( 3 ); // 2 3
 console.log( b ); // 5
 ```
 
-Another way to express this pattern is to create a re-usable helper:
+Еще один способ выразить этот шаблон — создать переиспользуемую вспомогательную функцию:
 
 ```js
 function foo(something) {
@@ -318,7 +318,7 @@ function foo(something) {
 	return this.a + something;
 }
 
-// simple `bind` helper
+// простая вспомогательная функция `bind`
 function bind(fn, obj) {
 	return function() {
 		return fn.apply( obj, arguments );
@@ -335,7 +335,7 @@ var b = bar( 3 ); // 2 3
 console.log( b ); // 5
 ```
 
-Since *hard binding* is such a common pattern, it's provided with a built-in utility as of ES5: `Function.prototype.bind`, and it's used like this:
+Поскольку *жесткая привязка* — очень распространеный шаблон, он есть как встроенный инструмент в ES5: `Function.prototype.bind`, а используется вот так:
 
 ```js
 function foo(something) {
@@ -353,15 +353,15 @@ var b = bar( 3 ); // 2 3
 console.log( b ); // 5
 ```
 
-`bind(..)` returns a new function that is hard-coded to call the original function with the `this` context set as you specified.
+`bind(..)` возвращает новую функцию, в которой жестко задан вызов оригинальной функции с именно тем контекстом `this`, который вы указываете.
 
-**Note:** As of ES6, the hard-bound function produced by `bind(..)` has a `.name` property that derives from the original *target function*. For example: `bar = foo.bind(..)` should have a `bar.name` value of `"bound foo"`, which is the function call name that should show up in a stack trace.
+**Примечание:** Начиная с ES6, в функции жесткой привязки, выдаваемой `bind(..)`, есть свойство `.name`, наследуемое от исходной *функции*. Например: у `bar = foo.bind(..)` должно быть в `bar.name` значение `"bound foo"`, которое является названием вызова функции, которое должно отражаться в стеке вызовов.
 
-#### API Call "Contexts"
+#### "Контексты" в вызовах API 
 
-Many libraries' functions, and indeed many new built-in functions in the JavaScript language and host environment, provide an optional parameter, usually called "context", which is designed as a work-around for you not having to use `bind(..)` to ensure your callback function uses a particular `this`.
+Функции многих библиотек, и разумеется многие встроенные в язык JavaScript и во внешнее окружение функции, предоставляют необязательный параметр, обычно называемый "контекст", который спроектирован как обходной вариант для вас, чтобы не пользоваться `bind(..)`, чтобы гарантировать, что ваша функция обратного вызова использует данный `this`.
 
-For instance:
+Например:
 
 ```js
 function foo(el) {
@@ -372,44 +372,44 @@ var obj = {
 	id: "awesome"
 };
 
-// use `obj` as `this` for `foo(..)` calls
+// используем `obj` как `this` для вызовов `foo(..)`
 [1, 2, 3].forEach( foo, obj ); // 1 awesome  2 awesome  3 awesome
 ```
 
-Internally, these various functions almost certainly use *explicit binding* via `call(..)` or `apply(..)`, saving you the trouble.
+Внутренне эти различные функции почти наверняка используют *явную привязку* через `call(..)` или `apply(..)`, избавляя вас от хлопот.
 
-### `new` Binding
+### Привязка `new`
 
-The fourth and final rule for `this` binding requires us to re-think a very common misconception about functions and objects in JavaScript.
+Четвертое и последнее правило привяки `this` потребует от нас переосмысления самого распространенного заблуждения о функциях и объектах в JavaScript.
 
-In traditional class-oriented languages, "constructors" are special methods attached to classes, that when the class is instantiated with a `new` operator, the constructor of that class is called. This usually looks something like:
+В традиционных классо-ориентированных языках, "конструкторы" — это особые методы, связанные с классами, таким образом, что когда создается экземпляр класса с помощью операции `new`, вызывается конструктор этого класса. Обычно это выглядит как-то так:
 
 ```js
 something = new MyClass(..);
 ```
 
-JavaScript has a `new` operator, and the code pattern to use it looks basically identical to what we see in those class-oriented languages; most developers assume that JavaScript's mechanism is doing something similar. However, there really is *no connection* to class-oriented functionality implied by `new` usage in JS.
+В JavaScript есть операция `new` и шаблон кода, который используется для этого, выглядит в основном идентично такой же операции в класс-ориентированных языках; многие разработчики полагают, что механизм JavaScript выполняет что-то похожее. Однако, на самом деле *нет никакой связи* с классо-ориентированной функциональностью у той, что предполагает использование `new` в JS.
 
-First, let's re-define what a "constructor" in JavaScript is. In JS, constructors are **just functions** that happen to be called with the `new` operator in front of them. They are not attached to classes, nor are they instantiating a class. They are not even special types of functions. They're just regular functions that are, in essence, hijacked by the use of `new` in their invocation.
+Во-первых, давайте еще раз посмотрим что такое "конструктор" в JavaScript. В JS конструкторы — это **всего лишь функции**, которые, так уж получилось, были вызваны с операцией `new` перед ними. Они ни связаны с классами, ни создают экземпляров классов. Они — даже не особые типы функций. Они — всего лишь обычные функции, которые, по своей сути, "украдены" операцией `new` при их вызове.
 
-For example, the `Number(..)` function acting as a constructor, quoting from the ES5.1 spec:
+Например, функция `Number(..)` действует как конструктор, цитируя спецификацию ES5.1:
 
-> 15.7.2 The Number Constructor
+> 15.7.2 Конструктор Number
 >
-> When Number is called as part of a new expression it is a constructor: it initialises the newly created object.
+> Когда Number вызывается как часть выражения new, оно является конструктором: оно инициализирует только что созданный объект.
 
-So, pretty much any ol' function, including the built-in object functions like `Number(..)` (see Chapter 3) can be called with `new` in front of it, and that makes that function call a *constructor call*. This is an important but subtle distinction: there's really no such thing as "constructor functions", but rather construction calls *of* functions.
+Так что, практически любая старенькая функция, включая встроенные объектные функции, такие как `Number(..)` (см. главу 3), могут вызываться с `new` перед ними и это превратит такой вызов функции в *вызов конструктора*. Это важное, но едва уловимое различие: нет такой вещи как "функции-конструкторы", а скорее есть вызовы, конструирующие *из* функций.
 
-When a function is invoked with `new` in front of it, otherwise known as a constructor call, the following things are done automatically:
+Когда функция вызывается с указанием перед ней `new`, также известный как вызов конструктора, автоматически выполняются следующие вещи:
 
-1. a brand new object is created (aka, constructed) out of thin air
-2. *the newly constructed object is `[[Prototype]]`-linked*
-3. the newly constructed object is set as the `this` binding for that function call
-4. unless the function returns its own alternate **object**, the `new`-invoked function call will *automatically* return the newly constructed object.
+1. Создается новенький объект (т.е. конструируется) прямо из воздуха
+2. *Только что сконструированный объект связывается с `[[Прототипом]]`*
+3. Только что сконструированный объект устанавливается как привязка `this` для этого вызова функции
+4. За исключением тех случаев, когда функция возвращает свой собственный альтернативный **объект**, вызов функции с `new` *автоматически* вернет только что сконструированный объект.
 
-Steps 1, 3, and 4 apply to our current discussion. We'll skip over step 2 for now and come back to it in Chapter 5.
+Пункты 1, 3 и 4 применимы к нашему текущему обсуждению. Сейчас мы пропустим пункт 2 и вернемся к нему в главе 5.
 
-Consider this code:
+Взглянем на такой код:
 
 ```js
 function foo(a) {
@@ -420,15 +420,15 @@ var bar = new foo( 2 );
 console.log( bar.a ); // 2
 ```
 
-By calling `foo(..)` with `new` in front of it, we've constructed a new object and set that new object as the `this` for the call of `foo(..)`. **So `new` is the final way that a function call's `this` can be bound.** We'll call this *new binding*.
+Вызывая `foo(..)` с `new` впереди нее, мы конструируем новый объект и устанавливаем этот новый объект как `this` для вызова `foo(..)`. **Таким образом `new` — единственный путь, которым `this` при вызове функции может быть привязан.** Мы называем это *привязкой new*.
 
-## Everything In Order
+## Всё по порядку
 
-So, now we've uncovered the 4 rules for binding `this` in function calls. *All* you need to do is find the call-site and inspect it to see which rule applies. But, what if the call-site has multiple eligible rules? There must be an order of precedence to these rules, and so we will next demonstrate what order to apply the rules.
+Итак, теперь мы раскрыли 4 правила привязки `this` в вызовах функций. *Всё*, что вам нужно сделать — это найти точку вызова и иссследовать ее, чтобы понять какое правило применяется. Но что если к точке вызова можно применить несколько соответствующих правил? Должен быть порядок очередности применения этих правил, а потому далее мы покажем в каком порядке применяются эти правила.
 
-It should be clear that the *default binding* is the lowest priority rule of the 4. So we'll just set that one aside.
+Думаю, совершенно ясно, что *привязка по умолчанию* имеет самый низкий приоритет из четырех. Поэтому мы отложим ее в сторону.
 
-Which is more precedent, *implicit binding* or *explicit binding*? Let's test it:
+Что должно идти раньше: *неявная привязка* или *явная привязка*? Давайте проверим:
 
 ```js
 function foo() {
@@ -452,9 +452,9 @@ obj1.foo.call( obj2 ); // 3
 obj2.foo.call( obj1 ); // 2
 ```
 
-So, *explicit binding* takes precedence over *implicit binding*, which means you should ask **first** if *explicit binding* applies before checking for *implicit binding*.
+Итак, *явная привязка* имеет приоритет над *неявной привязкой*, что означает, что вы должны спросить себя применима ли **сначала** *явная привязка* до проверки на *неявную привязку*.
 
-Now, we just need to figure out where *new binding* fits in the precedence.
+Теперь, нам нужно всего лишь указать куда подходит по приоритету *привязка new*.
 
 ```js
 function foo(something) {
@@ -478,15 +478,15 @@ console.log( obj1.a ); // 2
 console.log( bar.a ); // 4
 ```
 
-OK, *new binding* is more precedent than *implicit binding*. But do you think *new binding* is more or less precedent than *explicit binding*?
+Хорошо, *привязка new* более приоритетна, чем *неявная привязка*. Но как вы думаете: *привязка new* более или менее приоритетна, чем *явная привязка*?
 
-**Note:** `new` and `call`/`apply` cannot be used together, so `new foo.call(obj1)` is not allowed, to test *new binding* directly against *explicit binding*. But we can still use a *hard binding* to test the precedence of the two rules.
+**Примечание:** `new` и `call`/`apply` не могут использоваться вместе, поэтому `new foo.call(obj1)` не корректно, чтобы сравнить напрямую *привязку new* с *явной привязкой*. Но мы все-таки можем использовать *жесткую привязку*, чтобы проверить приоритет этих двух правил.
 
-Before we explore that in a code listing, think back to how *hard binding* physically works, which is that `Function.prototype.bind(..)` creates a new wrapper function that is hard-coded to ignore its own `this` binding (whatever it may be), and use a manual one we provide.
+До того, как мы начнем исследовать всё это на примере кода, постарайтесь вспомнить как физически работает *жесткая привязка*, которая есть в `Function.prototype.bind(..)`, которая создает новую функцию-обертку, и в ней жестко задано игнорировать ее собсвенную привязку `this` (какой бы она ни была) и использовать указанную вручную нами.
 
-By that reasoning, it would seem obvious to assume that *hard binding* (which is a form of *explicit binding*) is more precedent than *new binding*, and thus cannot be overridden with `new`.
+По этой причине, кажется очевидным предполагать, что *жесткая привязка* (которая является формой *явной привязки*) более приоритетна, чем *привязка new*, а потому и не может быть перекрыта действием `new`.
 
-Let's check:
+Давайте проверим:
 
 ```js
 function foo(something) {
@@ -504,9 +504,9 @@ console.log( obj1.a ); // 2
 console.log( baz.a ); // 3
 ```
 
-Whoa! `bar` is hard-bound against `obj1`, but `new bar(3)` did **not** change `obj1.a` to be `3` as we would have expected. Instead, the *hard bound* (to `obj1`) call to `bar(..)` ***is*** able to be overridden with `new`. Since `new` was applied, we got the newly created object back, which we named `baz`, and we see in fact that  `baz.a` has the value `3`.
+Ого! `bar` жестко связан с `obj1`, но `new bar(3)` **не** меняет `obj1.a` на значение `3` что было бы ожидаемо нами. Вместо этого *жестко связанный* (с `obj1`) вызов `bar(..)` ***может*** быть перекрыт с `new`. Поскольку был применен `new`, обратно мы получили новый созданный объект, который мы назвали `baz`, и в результате видно, что в `baz.a` значение `3`.
 
-This should be surprising if you go back to our "fake" bind helper:
+Это должно быть удивительно с учетом ранее рассмотренной "фальшивой" вспомогательной функции привязки:
 
 ```js
 function bind(fn, obj) {
@@ -516,16 +516,16 @@ function bind(fn, obj) {
 }
 ```
 
-If you reason about how the helper's code works, it does not have a way for a `new` operator call to override the hard-binding to `obj` as we just observed.
+Если вы порассуждаете о том, как работает код этой вспомогательной функции, в нем нет способа для перекрытия жесткой привязки к `obj` операцией `new` как мы только что выяснили.
 
-But the built-in `Function.prototype.bind(..)` as of ES5 is more sophisticated, quite a bit so in fact. Here is the (slightly reformatted) polyfill provided by the MDN page for `bind(..)`:
+Но встроенная `Function.prototype.bind(..)` из ES5 — более сложная, даже очень на самом деле. Вот (немного отформатированный) полифиллинг кода, предоставленный со страницы MDN для функции `bind(..)`:
 
 ```js
 if (!Function.prototype.bind) {
 	Function.prototype.bind = function(oThis) {
 		if (typeof this !== "function") {
-			// closest thing possible to the ECMAScript 5
-			// internal IsCallable function
+			// наиболее подходящая вещь в ECMAScript 5
+			// внутренняя функция IsCallable
 			throw new TypeError( "Function.prototype.bind - what " +
 				"is trying to be bound is not callable"
 			);
@@ -553,9 +553,9 @@ if (!Function.prototype.bind) {
 }
 ```
 
-**Note:** The `bind(..)` polyfill shown above differs from the built-in `bind(..)` in ES5 with respect to hard-bound functions that will be used with `new` (see below for why that's useful). Because the polyfill cannot create a function without a `.prototype` as the built-in utility does, there's some nuanced indirection to approximate the same behavior. Tread carefully if you plan to use `new` with a hard-bound function and you rely on this polyfill.
+**Примечание:** Полифиллинг `bind(..)`, показанный выше, отличается от встроенной `bind(..)` в ES5, учитывающей функции жесткой привязки, которые используются с `new` (см. ниже почему это может быть полезно). Поскольку полифиллинг не может создавать функцию без `.prototype` так, как это делает встроенная утилита, есть едва уловимый окольный путь, чтобы приблизиться к такому же поведению. Двигайтесь осторожно, если планируете использовать `new` вместе с функцией жесткой привязки и полагаетесь на этот полифиллинг.
 
-The part that's allowing `new` overriding is:
+Часть, которая позволяет перекрыть `new`:
 
 ```js
 this instanceof fNOP &&
@@ -567,22 +567,22 @@ fNOP.prototype = this.prototype;
 fBound.prototype = new fNOP();
 ```
 
-We won't actually dive into explaining how this trickery works (it's complicated and beyond our scope here), but essentially the utility determines whether or not the hard-bound function has been called with `new` (resulting in a newly constructed object being its `this`), and if so, it uses *that* newly created `this` rather than the previously specified *hard binding* for `this`.
+Мы не будем на самом деле углубляться в объяснения того, как работает эта хитрость (это сложно и выходит за рамки нашего обсуждения), но по сути утилита определяет была ли вызвана или нет функция жесткой привязки с `new` (в результате получая новый сконструированный объект в качестве ее `this`), и если так, то она использует *этот* свежесозданный `this` вместо ранее указанной *жесткой привязки* для `this`.
 
-Why is `new` being able to override *hard binding* useful?
+Почему перекрытие операцией `new` *жесткой привязки* может быть полезным?
 
-The primary reason for this behavior is to create a function (that can be used with `new` for constructing objects) that essentially ignores the `this` *hard binding* but which presets some or all of the function's arguments. One of the capabilities of `bind(..)` is that any arguments passed after the first `this` binding argument are defaulted as standard arguments to the underlying function (technically called "partial application", which is a subset of "currying").
+Основная причина такого поведения — чтобы создать функцию (которую можно использовать вместе с `new` для конструирования объектов), которая фактически игнорирует *жесткую привязку* `this`, но которая инициализирует некоторые или все аргументы функции. Одной из возможностей `bind(..)` является умение сделать аргументы, переданные после после первого аргумента, привязки `this`,  стандартными аргументами по умолчанию для предшествующей функции (технически называемое "частичным применением", которое является подмножеством "карринга").
 
-For example:
+Пример:
 
 ```js
 function foo(p1,p2) {
 	this.val = p1 + p2;
 }
 
-// using `null` here because we don't care about
-// the `this` hard-binding in this scenario, and
-// it will be overridden by the `new` call anyway!
+// используем здесь `null`, т.к. нам нет дела до 
+// жесткой привязки `this` в этом сценарии, и она 
+// будет переопределена вызовом с операцией `new` в любом случае!
 var bar = foo.bind( null, "p1" );
 
 var baz = new bar( "p2" );
@@ -590,37 +590,37 @@ var baz = new bar( "p2" );
 baz.val; // p1p2
 ```
 
-### Determining `this`
+### Определяем `this`
 
-Now, we can summarize the rules for determining `this` from a function call's call-site, in their order of precedence. Ask these questions in this order, and stop when the first rule applies.
+Теперь можно кратко сформулировать правила для определения `this` по точке вызова функции, в порядке их приоритета. Зададим вопросы в том же порядке и остановимся как только будет применено первое же правило.
 
-1. Is the function called with `new` (**new binding**)? If so, `this` is the newly constructed object.
+1. Функция вызвана с `new` (**привязка new**)? Раз так, то `this` — новый сконструированный объект.
 
     `var bar = new foo()`
 
-2. Is the function called with `call` or `apply` (**explicit binding**), even hidden inside a `bind` *hard binding*? If so, `this` is the explicitly specified object.
+2. Функция вызвана с `call` или `apply` (**явная привязка**), даже скрыто внутри *жесткой привязки* в `bind`? Раз так, `this` — явно указанный объект.
 
     `var bar = foo.call( obj2 )`
 
-3. Is the function called with a context (**implicit binding**), otherwise known as an owning or containing object? If so, `this` is *that* context object.
+3. Функция вызвана с контекстом (**неявная привязка**), иначе называемым как владеющий или содержащий объект? Раз так, `this` является *тем самым* объектом контекста.
 
     `var bar = obj1.foo()`
 
-4. Otherwise, default the `this` (**default binding**). If in `strict mode`, pick `undefined`, otherwise pick the `global` object.
+4. В противном случае, будет `this` по умолчанию (**привязка по умолчанию**). В режиме `strict mode`, это будет `undefined`, иначе будет объект `global`.
 
     `var bar = foo()`
 
-That's it. That's *all it takes* to understand the rules of `this` binding for normal function calls. Well... almost.
+Вот и всё. Вот *всё, что нужно*, чтобы понимать правила привязки `this` для обычных вызовов функций. Ну... почти.
 
-## Binding Exceptions
+## Исключения привязок
 
-As usual, there are some *exceptions* to the "rules".
+Как обычно, из "правил" есть несколько *исключений*.
 
-The `this`-binding behavior can in some scenarios be surprising, where you intended a different binding but you end up with binding behavior from the *default binding* rule (see previous).
+Поведение привязки `this` в некоторых сценариях может быт неожиданным, там где вы подразумеваете одну привязку, а получаете в итоге поведение привязки по правилу *привязки по умолчанию* (см. ранее).
 
-### Ignored `this`
+### Проигнорированный `this`
 
-If you pass `null` or `undefined` as a `this` binding parameter to `call`, `apply`, or `bind`, those values are effectively ignored, and instead the *default binding* rule applies to the invocation.
+Если вы передаете `null` или `undefined` в качестве параметра привязки `this` в `call`, `apply` или `bind`, то эти значения фактически игнорируются, а взамен к вызову применяется правило *привязки по умолчанию*.
 
 ```js
 function foo() {
@@ -632,64 +632,64 @@ var a = 2;
 foo.call( null ); // 2
 ```
 
-Why would you intentionally pass something like `null` for a `this` binding?
+Зачем вам бы понадобилось намеренно передавать что-то подобное `null` в качестве привязки `this`?
 
-It's quite common to use `apply(..)` for spreading out arrays of values as parameters to a function call. Similarly, `bind(..)` can curry parameters (pre-set values), which can be very helpful.
+Довольно распространено использовать `apply(..)` для распаковки массива значений в качестве параметров вызова функции. Аналогично и `bind(..)` может каррировать параметры (предварительно заданные значения), что может быть очень полезно.
 
 ```js
 function foo(a,b) {
 	console.log( "a:" + a + ", b:" + b );
 }
 
-// spreading out array as parameters
+// распакуем массив как параметры
 foo.apply( null, [2, 3] ); // a:2, b:3
 
-// currying with `bind(..)`
+// каррируем с помощью `bind(..)`
 var bar = foo.bind( null, 2 );
 bar( 3 ); // a:2, b:3
 ```
 
-Both these utilities require a `this` binding for the first parameter. If the functions in question don't care about `this`, you need a placeholder value, and `null` might seem like a reasonable choice as shown in this snippet.
+Обе этих инструмента требуют указания привязки `this` в качестве первого параметра. Если рассматриваемым функциям не важен `this`, то вам нужно -значение-заменитель, и `null` — это похоже разумный выбор, как мы видели выше.
 
-**Note:** We don't cover it in this book, but ES6 has the `...` spread operator which will let you syntactically "spread out" an array as parameters without needing `apply(..)`, such as `foo(...[1,2])`, which amounts to `foo(1,2)` -- syntactically avoiding a `this` binding if it's unnecessary. Unfortunately, there's no ES6 syntactic substitute for currying, so the `this` parameter of the `bind(..)` call still needs attention.
+**Примечание:** В этой книге мы не уделим этому внимания, но в ES6 есть операция расширения `...`, которая дает возможности синтаксически "развернуть" массив как параметры без необходимости использования `apply(..)`, например как в `foo(...[1,2])`, что равносильно `foo(1,2)` — синтаксически избегая привязки `this`, раз она не нужна. К сожалению, в ES6 нет синтаксической замены каррингу, поэтому параметр `this` вызова `bind(..)` все еще требует внимания.
 
-However, there's a slight hidden "danger" in always using `null` when you don't care about the `this` binding. If you ever use that against a function call (for instance, a third-party library function that you don't control), and that function *does* make a `this` reference, the *default binding* rule means it might inadvertently reference (or worse, mutate!) the `global` object (`window` in the browser).
+Однако, есть некоторая скрытая "опасность" в том, чтобы всегда использовать `null`, когда вам не нужна привязка `this`. Если вы когда-нибудь воспользуетесь этим при вызове функции (например, функции сторонней библиотеки, которой вы не управляете) и эта функция *все-таки* воспользуется ссылкой на `this`, сработает правило *привязки по умолчанию*, что повлечет за собой ненамеренно ссылку (или еще хуже, мутацию!) на объект `global` (`window` в браузере).
 
-Obviously, such a pitfall can lead to a variety of *very difficult* to diagnose/track-down bugs.
+Очевидно, что такая ловушка может привести к ряду *очень трудно* диагностируемых/отслеживаемых ошибок.
 
-#### Safer `this`
+#### Более безопасный `this`
 
-Perhaps a somewhat "safer" practice is to pass a specifically set up object for `this` which is guaranteed not to be an object that can create problematic side effects in your program. Borrowing terminology from networking (and the military), we can create a "DMZ" (de-militarized zone) object -- nothing more special than a completely empty, non-delegated (see Chapters 5 and 6) object.
+Пожалуй в некоторой степени "более безопасная" практика — передавать особым образом настроенный объект для `this`, который гарантирует отсутствие побочных эффектов в вашей программе. Заимствуя терминологию из сетевых (и военных) технологий, мы можем создать объект "DMZ" (демилитаризованной зоны (de-militarized zone)) — не более чем полностью пустой, неделегированный (см. главы 5 и 6) объект.
 
-If we always pass a DMZ object for ignored `this` bindings we don't think we need to care about, we're sure any hidden/unexpected usage of `this` will be restricted to the empty object, which insulates our program's `global` object from side-effects.
+Если всегда передавать DMZ-объект для привязок `this`, которые не требуются, то мы можем быть уверены в том, что любое скрытое/неожидаемое использование `this` будет ограничено пустым объектом, который защитит объект `global` нашей программы от побочных эффектов.
 
-Since this object is totally empty, I personally like to give it the variable name `ø` (the lowercase mathematical symbol for the empty set). On many keyboards (like US-layout on Mac), this symbol is easily typed with `⌥`+`o` (option+`o`). Some systems also let you set up hotkeys for specific symbols. If you don't like the `ø` symbol, or your keyboard doesn't make that as easy to type, you can of course call it whatever you want.
+Поскольку этот объект совершенно пустой, лично я люблю давать его переменной имя `ø` (математический символ пустого множества в нижнем регистре). На многих клавиатурах (как например US-раскладка на Mac), этот символ легко можно ввести с помощью `⌥`+`o` (option+`o`). В некоторых системах есть возможность назначать горячие клавиши на определенные символы. Если вам не нравится символ `ø` или на вашей клавиатуре сложно набрать такой символ, вы конечно же можете назвать переменную как вам угодно.
 
-Whatever you call it, the easiest way to set it up as **totally empty** is `Object.create(null)` (see Chapter 5). `Object.create(null)` is similar to `{ }`, but without the delegation to `Object.prototype`, so it's "more empty" than just `{ }`.
+Как бы вы ни назвали ее, самый простой путь получить **абсолютно пустой** объект — это `Object.create(null)` (см. главу 5). `Object.create(null)` — похож на `{ }`, но без передачи `Object.prototype`, поэтому он "более пустой", чем просто `{ }`.
 
 ```js
 function foo(a,b) {
 	console.log( "a:" + a + ", b:" + b );
 }
 
-// our DMZ empty object
+// наш пустой DMZ-объект
 var ø = Object.create( null );
 
-// spreading out array as parameters
+// распаковываем массив как параметры
 foo.apply( ø, [2, 3] ); // a:2, b:3
 
-// currying with `bind(..)`
+// каррируем с помощью `bind(..)`
 var bar = foo.bind( ø, 2 );
 bar( 3 ); // a:2, b:3
 ```
 
-Not only functionally "safer", there's a sort of stylistic benefit to `ø`, in that it semantically conveys "I want the `this` to be empty" a little more clearly than `null` might. But again, name your DMZ object whatever you prefer.
+Не только функционально "безопаснее", но еще и стилистически выгоднее использовать `ø`, что семантически отражает желаение "Я хочу, чтобы `this` был пустым" немного точнее, чем `null`. Но опять таки, называйте свой DMZ-объект как хотите.
 
-### Indirection
+### Косвенность
 
-Another thing to be aware of is you can (intentionally or not!) create "indirect references" to functions, and in those cases,  when that function reference is invoked, the *default binding* rule also applies.
+Еще одной вещью, которую нужно опасаться, является создание (намеренно или нет) "косвенных ссылок" на функции, и в этих случаях, когда такая ссылка на функцию вызывается, то также применяется правило *привязки по умолчанию*.
 
-One of the most common ways that *indirect references* occur is from an assignment:
+Самый распространенный путь появления *косвенных ссылок* — при присваивании:
 
 ```js
 function foo() {
@@ -704,17 +704,17 @@ o.foo(); // 3
 (p.foo = o.foo)(); // 2
 ```
 
-The *result value* of the assignment expression `p.foo = o.foo` is a reference to just the underlying function object. As such, the effective call-site is just `foo()`, not `p.foo()` or `o.foo()` as you might expect. Per the rules above, the *default binding* rule applies.
+*Результатом* выражения присваивания `p.foo = o.foo` будет всего лишь ссылка  на внутренний объект функции. В силу этого, настоящая точка вызова - это просто `foo()`, а не `p.foo()` или `o.foo()` как вы могли бы предположить. Согласно вышеприведенным правилам будет применено правило *привязки по умолчанию*.
 
-Reminder: regardless of how you get to a function invocation using the *default binding* rule, the `strict mode` status of the **contents** of the invoked function making the `this` reference -- not the function call-site -- determines the *default binding* value: either the `global` object if in non-`strict mode` or `undefined` if in `strict mode`.
+Напоминание: независимо от того как вы добрались до вызова функции используя правило *привязки по умолчанию*, статус **содержимого** вызванной функции в режиме  `strict mode`, использующего ссылку на `this`, а не точка вызова функции, определяет значение *привязки по умолчанию*: либо объект `global` если не в `strict mode` или `undefined` в `strict mode`.
 
-### Softening Binding
+### Смягчение привязки
 
-We saw earlier that *hard binding* was one strategy for preventing a function call falling back to the *default binding* rule inadvertently, by forcing it to be bound to a specific `this` (unless you use `new` to override it!). The problem is, *hard-binding* greatly reduces the flexibility of a function, preventing manual `this` override with either the *implicit binding* or even subsequent *explicit binding* attempts.
+Ранее мы отметили, что *жесткая привязка* была одной из стратегий для предотвращения случайного действия правила *привязки по умолчанию* при вызове функции, заставив ее привязаться к указанному `this` (до тех пор, пока вы не используете `new`, чтобы переопределить это поведение!). Проблема в том, что *жесткая приязка* значительно уменьшает гибкость фнукции, не давая указывать `this` вручную, чтобы перекрыть *невяную привязку* или даже последующие попытки *явной привязки*.
 
-It would be nice if there was a way to provide a different default for *default binding* (not `global` or `undefined`), while still leaving the function able to be manually `this` bound via *implicit binding* or *explicit binding* techniques.
+Было бы неплохо, если бы был путь указать другое умолчание для *привязки по умолчанию* (не `global` или `undefined`), но при этом оставив возможность для функции вручную привязать `this` через технику *неявной* или *явной* привязки.
 
-We can construct a so-called *soft binding* utility which emulates our desired behavior.
+Можно собрать инструмент так называемой *мягкой привязки*, который эмулирует желаемое поведение.
 
 ```js
 if (!Function.prototype.softBind) {
@@ -738,9 +738,9 @@ if (!Function.prototype.softBind) {
 }
 ```
 
-The `softBind(..)` utility provided here works similarly to the built-in ES5 `bind(..)` utility, except with our *soft binding* behavior. It wraps the specified function in logic that checks the `this` at call-time and if it's `global` or `undefined`, uses a pre-specified alternate *default* (`obj`). Otherwise the `this` is left untouched. It also provides optional currying (see the `bind(..)` discussion earlier).
+Инструмент `softBind(..)`, представленный здесь, работает подобно встроенному  в ES5 инструменту `bind(..)`, за исключением нашего поведения *мягкой привязки*. Он делает обертку указанной функции с логикой, которая проверяет `this` в момент вызова и если это `global` или `undefined`, использует указанное заданее альтернативное *умолчание* (`obj`). В противном случае  `this` остается как есть. Также этот инструмент дает возможность опционального карринга (см. ранее обсуждение`bind(..)`).
 
-Let's demonstrate its usage:
+Продемонстрируем его в действии:
 
 ```js
 function foo() {
@@ -756,28 +756,28 @@ var fooOBJ = foo.softBind( obj );
 fooOBJ(); // name: obj
 
 obj2.foo = foo.softBind(obj);
-obj2.foo(); // name: obj2   <---- look!!!
+obj2.foo(); // name: obj2   <---- смотрите!!!
 
-fooOBJ.call( obj3 ); // name: obj3   <---- look!
+fooOBJ.call( obj3 ); // name: obj3   <---- смотрите!
 
-setTimeout( obj2.foo, 10 ); // name: obj   <---- falls back to soft-binding
+setTimeout( obj2.foo, 10 ); // name: obj   <---- возврат к мягкой привяке
 ```
 
-The soft-bound version of the `foo()` function can be manually `this`-bound to `obj2` or `obj3` as shown, but it falls back to `obj` if the *default binding* would otherwise apply.
+Для мягкопривязанной версии функции `foo()` можно вручную привязать `this` к `obj2` или `obj3` как показано выше, но он возвращается к `obj` в случае применения *привязки по умолчанию*.
 
-## Lexical `this`
+## Лексический `this`
 
-Normal functions abide by the 4 rules we just covered. But ES6 introduces a special kind of function that does not use these rules: arrow-function.
+В обычных функциях строго соблюдаются 4 правила, которые мы только что рассмотрели. Но в ES6 представлен особый вид функции, которая не использует эти правила: стрелочная функция.
 
-Arrow-functions are signified not by the `function` keyword, but by the `=>` so called "fat arrow" operator. Instead of using the four standard `this` rules, arrow-functions adopt the `this` binding from the enclosing (function or global) scope.
+Стрелочные функции обозначаются не ключевым словом `function`, а операцией `=>`, так называемой "жирной стрелкой". Вместо использования четырех стандартных `this`-правил, стрелочные функции заимствуют привязку `this` из окружающей (функции или глобальной) области видимости.
 
-Let's illustrate arrow-function lexical scope:
+Проиллюстрируем лексическую область видимости стрелочной функции:
 
 ```js
 function foo() {
-	// return an arrow function
+	// возвращаем стрелочную функцию
 	return (a) => {
-		// `this` here is lexically adopted from `foo()`
+		// Здесь `this` лексически заимствован из `foo()`
 		console.log( this.a );
 	};
 }
@@ -791,17 +791,17 @@ var obj2 = {
 };
 
 var bar = foo.call( obj1 );
-bar.call( obj2 ); // 2, not 3!
+bar.call( obj2 ); // 2, а не 3!
 ```
 
-The arrow-function created in `foo()` lexically captures whatever `foo()`s `this` is at its call-time. Since `foo()` was `this`-bound to `obj1`, `bar` (a reference to the returned arrow-function) will also be `this`-bound to `obj1`. The lexical binding of an arrow-function cannot be overridden (even with `new`!).
+Стрелочная функция, созданная в `foo()`, лексически захватывает любой `this` в `foo()` во время ее вызова. Поскольку в `foo()` `this` был привязан к `obj1`, `bar` (ссылка на возвращаемую стрелочную функцию) также будет с привязкой `this` к `obj1`. Лексическая привязка стрелочной функции не может быть перекрыта (даже с помощью `new`!).
 
-The most common use-case will likely be in the use of callbacks, such as event handlers or timers:
+Самый распространенный вариант использования стрелочной функции — обычно при использовании функций обратного вызова, таких как обработчики событий или таймеры:
 
 ```js
 function foo() {
 	setTimeout(() => {
-		// `this` here is lexically adopted from `foo()`
+		// Здесь `this` лексически заимствован из `foo()`
 		console.log( this.a );
 	},100);
 }
@@ -813,11 +813,11 @@ var obj = {
 foo.call( obj ); // 2
 ```
 
-While arrow-functions provide an alternative to using `bind(..)` on a function to ensure its `this`, which can seem attractive, it's important to note that they essentially are disabling the traditional `this` mechanism in favor of more widely-understood lexical scoping. Pre-ES6, we already have a fairly common pattern for doing so, which is basically almost indistinguishable from the spirit of ES6 arrow-functions:
+Несмотря на то, что стрелочные функции предоставляют альтернативу применению `bind(..)` к функции, чтобы гарантировать определенный `this`, что может выглядеть весьма привлекательно, важно отметить, что они фактически запрещают традиционный механизм `this` в пользу более понятной лексической области видимости. До ES6, у нас уже был довольно распространенный шаблон для выполнения такой задачи, который по сути почти неотличим от сущности стрелочных функций ES6:
 
 ```js
 function foo() {
-	var self = this; // lexical capture of `this`
+	var self = this; // лексический захват `this`
 	setTimeout( function(){
 		console.log( self.a );
 	}, 100 );
@@ -830,28 +830,28 @@ var obj = {
 foo.call( obj ); // 2
 ```
 
-While `self = this` and arrow-functions both seem like good "solutions" to not wanting to use `bind(..)`, they are essentially fleeing from `this` instead of understanding and embracing it.
+В том время как `self = this` и стрелочные функции обе кажутся хорошим "решением" при нежелании использовать `bind(..)`, они фактически убегают от `this` вместо того, чтобы понять и научиться использовать его.
 
-If you find yourself writing `this`-style code, but most or all the time, you defeat the `this` mechanism with lexical `self = this` or arrow-function "tricks", perhaps you should either:
+Если вы застали себя пишущим код в стиле `this`, но большую часть или всё время вы сводите на нет механизм `this` с помощью трюков лексической конструкции `self = this` или стрелочной функции, возможно вам следует сделать что-то одно из этого:
 
-1. Use only lexical scope and forget the false pretense of `this`-style code.
+1. Использовать только лексическую область видимости и забыть о фальшивости кода в стиле `this`.
 
-2. Embrace `this`-style mechanisms completely, including using `bind(..)` where necessary, and try to avoid `self = this` and arrow-function "lexical this" tricks.
+2. Полностью научиться использовать механизмы `this`-стиля, включая применение `bind(..)`, где необходимо, и попытаться избегать трюков "лексического this" с помощью `self = this` и стрелочной функции.
 
-A program can effectively use both styles of code (lexical and `this`), but inside of the same function, and indeed for the same sorts of look-ups, mixing the two mechanisms is usually asking for harder-to-maintain code, and probably working too hard to be clever.
+Программа может эффективно использовать оба стиля кодирования (лексический и  `this`), но внутри одной и той же функции и, разумеется, при одних и тех же видах поисков переменных, смешивание двух этих механизмов обычно приводит к менее обслуживаемому коду, и возможно будет слишком перегруженным, чтобы выглядеть умным.
 
-## Review (TL;DR)
+## Обзор
 
-Determining the `this` binding for an executing function requires finding the direct call-site of that function. Once examined, four rules can be applied to the call-site, in *this* order of precedence:
+Определение привязки `this` для вызова функции требует поиска непосредственной точки вызова этой функции. Как уже выяснилось, к точке вызова могут быть применены четыре правила, в *именно таком* порядке  приоритета:
 
-1. Called with `new`? Use the newly constructed object.
+1. Вызвана с `new`? Используем только что созданный объект.
 
-2. Called with `call` or `apply` (or `bind`)? Use the specified object.
+2. Вызвана с помощью `call` или `apply` (или `bind`)? Используем указанный объект.
 
-3. Called with a context object owning the call? Use that context object.
+3. Вызвана с объектом контекста, владеющего вызовом функции? Используем этот объект контекста.
 
-4. Default: `undefined` in `strict mode`, global object otherwise.
+4. По умолчанию: `undefined` в режиме `strict mode`, в противном случае объект global.
 
-Be careful of accidental/unintentional invoking of the *default binding* rule. In cases where you want to "safely" ignore a `this` binding, a "DMZ" object like `ø = Object.create(null)` is a good placeholder value that protects the `global` object from unintended side-effects.
+Остерегайтесь случайного/неумышленного вызова с применением правила *привязки по умолчанию*. В случаях, когда вам нужно "безопасно" игнорировать привязку `this`, "DMZ"-объект, подобный `ø = Object.create(null)`, — хорошая замена, защищающая объект `global` от непредусмотренных побочных эффектов.
 
-Instead of the four standard binding rules, ES6 arrow-functions use lexical scoping for `this` binding, which means they adopt the `this` binding (whatever it is) from its enclosing function call. They are essentially a syntactic replacement of `self = this` in pre-ES6 coding.
+Вместо четырех стандартных правил привязки стрелочные функции ES6 используют лексическую область видимости для привязки `this`, что означает, что они  заимствуют привязку `this` (какой бы она ни была) от вызова своей окружающей функции. Они по существу являются синтаксической заменой `self = this` в до-ES6 коде.
