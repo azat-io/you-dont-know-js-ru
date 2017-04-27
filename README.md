@@ -15,12 +15,12 @@
 
 ## Содержимое
 
-* Читать онлайн (бесплатно!): [«Начните и Совершенствуйтесь»](up & going/README.md#you-dont-know-js-up--going), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920039303.do) в бумажном варианте, электронная книга бесплатна!
-* Читать онлайн (бесплатно!): [«Область Видимости и Замыкания»](scope & closures/README.md#you-dont-know-js-scope--closures), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920026327.do)
-* Читать онлайн (бесплатно!): [«This и Прототипы Объектов»](this & object prototypes/README.md#you-dont-know-js-this--object-prototypes), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033738.do)
-* Читать онлайн (бесплатно!): [«Типы и Синтаксис»](types & grammar/README.md#you-dont-know-js-types--grammar), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033745.do)
-* Читать онлайн (бесплатно!): [«Асинхронность и Производительность»](async & performance/README.md#you-dont-know-js-async--performance), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033752.do)
-* Читать онлайн (бесплатно!): [«ES6 и не только»](es6 & beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](https://www.ozon.ru/context/detail/id/137473815/)
+* Читать онлайн (бесплатно!): [«Начните и Совершенствуйтесь»](up%20%26%20going/README.md#Вы-не-знаете-js-Начните-и-Совершенствуйтесь), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920039303.do) в бумажном варианте, электронная книга бесплатна!
+* Читать онлайн (бесплатно!): [«Область Видимости и Замыкания»](scope%20%26%20closures/README.md#Вы-не-знаете-js-Область-видимости-и-замыкания), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920026327.do)
+* Читать онлайн (бесплатно!): [«This и Прототипы Объектов»](this%20%26%20object%20prototypes/README.md#you-dont-know-js-this--object-prototypes), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033738.do)
+* Читать онлайн (бесплатно!): [«Типы и Синтаксис»](types%20%26%20grammar/README.md#you-dont-know-js-types--grammar), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033745.do)
+* Читать онлайн (бесплатно!): [«Асинхронность и Производительность»](async%20%26%20performance/README.md#you-dont-know-js-async--performance), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033752.do)
+* Читать онлайн (бесплатно!): [«ES6 и не только»](es6%20%26%20beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](https://www.ozon.ru/context/detail/id/137473815/)
 
 ## Издательство
 
