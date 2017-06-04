@@ -45,6 +45,9 @@ typeof a;				// "undefined"
 
 a = { b: "c" };
 typeof a;				// "object"
+
+a = Symbol();
+typeof a;                               // "symbol"
 ```
 
 Значение, возвращаемое операцией `typeof`, всегда одно из шести (семи в ES6! - тип "symbol") строковых значений. Это значит, что `typeof "abc"` вернет `"string"`, а не `string`.
