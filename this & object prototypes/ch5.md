@@ -1,17 +1,17 @@
-# You Don't Know JS: *this* & Object Prototypes
-# Chapter 5: Prototypes
+# Вы не знаете JS: *this* и прототипы объектов
+# Глава 5: Прототипы
 
-In Chapters 3 and 4, we mentioned the `[[Prototype]]` chain several times, but haven't said what exactly it is. We will now examine prototypes in detail.
+В главах 3 и 4 мы неоднократно упоминали цепочку `[[Prototype]]`, но не уточняли что это такое. Пришло время разобраться с тем, как работают прототипы.
 
-**Note:** All of the attempts to emulate class-copy behavior, as described previously in Chapter 4, labeled as variations of "mixins", completely circumvent the `[[Prototype]]` chain mechanism we examine here in this chapter.
+**Примечание:** Любые попытки эмуляции копирования классов, упомянутые в главе 4 как "примеси", полностью обходят механизм цепочки `[[Prototype]]`, рассматриваемый в эторй главе.
 
 ## `[[Prototype]]`
 
-Objects in JavaScript have an internal property, denoted in the specification as `[[Prototype]]`, which is simply a reference to another object. Almost all objects are given a non-`null` value for this property, at the time of their creation.
+Объекты в JavaScript имеют внутреннее свойство, обозначенное в спецификации как `[[Prototype]]`, которое является всего лишь ссылкой на другой объект. Почти у всех объектов при создании это свойство получает не-`null` значение.
 
-**Note:** We will see shortly that it *is* possible for an object to have an empty `[[Prototype]]` linkage, though this is somewhat less common.
+**Примечание:** Чуть ниже мы увидим, что объект *может* иметь пустую ссылку `[[Prototype]]`, хотя такой вариант встречается реже.
 
-Consider:
+Рассмотрим пример:
 
 ```js
 var myObject = {
@@ -21,92 +21,92 @@ var myObject = {
 myObject.a; // 2
 ```
 
-What is the `[[Prototype]]` reference used for? In Chapter 3, we examined the `[[Get]]` operation that is invoked when you reference a property on an object, such as `myObject.a`. For that default `[[Get]]` operation, the first step is to check if the object itself has a property `a` on it, and if so, it's used.
+Для чего используется ссылка `[[Prototype]]`? В главе 3 мы изучили операцию `[[Get]]`, которая вызывается когда вы ссылаетесь на свойство объекта, например `myObject.a`. Стандартная операция `[[Get]]` сначала проверяет, есть ли у объекта собственное свойство `a`, если да, то оно используется.
 
-**Note:** ES6 Proxies are outside of our discussion scope in this book (will be covered in a later book in the series!), but everything we discuss here about normal `[[Get]]` and `[[Put]]` behavior does not apply if a `Proxy` is involved.
+**Примечание:** Прокси-объекты ES6 выходят за рамки этой книги (мы увидим их в одной из следующих книг серии!), но имейте в виду, что обсуждаемое нами стандартное поведение `[[Get]]` и `[[Put]]` неприменимо если используются `Proxy`.
 
-But it's what happens if `a` **isn't** present on `myObject` that brings our attention now to the `[[Prototype]]` link of the object.
+Но нас интересует то, что происходит, когда `a` **отсутствует** в `myObject`, т.к. именно здесь вступает в действие ссылка `[[Prototype]]` объекта.
 
-The default `[[Get]]` operation proceeds to follow the `[[Prototype]]` **link** of the object if it cannot find the requested property on the object directly.
+Если стандартная операция `[[Get]]` не может найти запрашиваемое свойство в самом объекте, то она следует по **ссылке** `[[Prototype]]` этого объекта.
 
 ```js
 var anotherObject = {
 	a: 2
 };
 
-// create an object linked to `anotherObject`
+// создаем объект, привязанный к `anotherObject`
 var myObject = Object.create( anotherObject );
 
 myObject.a; // 2
 ```
 
-**Note:** We will explain what `Object.create(..)` does, and how it operates, shortly. For now, just assume it creates an object with the `[[Prototype]]` linkage we're examining to the object specified.
+**Примечание:** Чуть позже мы объясним что делает `Object.create(..)` и как он работает. Пока же считайте, что создается объект со ссылкой `[[Prototype]]` на указанный объект.
 
-So, we have `myObject` that is now `[[Prototype]]` linked to `anotherObject`. Clearly `myObject.a` doesn't actually exist, but nevertheless, the property access succeeds (being found on `anotherObject` instead) and indeed finds the value `2`.
+Итак, у нас есть `myObject`, который теперь связан с `anotherObject` через ссылку `[[Prototype]]`. Очевидно, что `myObject.a` на самом деле не существует, однако обращение к свойству выполнилось успешно (свойство нашлось в `anotherObject`) и действительно вернуло значение `2`.
 
-But, if `a` weren't found on `anotherObject` either, its `[[Prototype]]` chain, if non-empty, is again consulted and followed.
+Если бы `a` не нашлось и в объекте `anotherObject`, то теперь уже его цепочка `[[Prototype]]` использовалась бы для дальнейшего поиска.
 
-This process continues until either a matching property name is found, or the `[[Prototype]]` chain ends. If no matching property is *ever* found by the end of the chain, the return result from the `[[Get]]` operation is `undefined`.
+Этот процесс продолжается до тех пор, пока либо не будет найдено свойство с совпадающим именем, либо не закончится цепочка `[[Prototype]]`. Если по достижении конца цепочки искомое свойство *так и не будет* найдено, операция `[[Get]]` вернет `undefined`.
 
-Similar to this `[[Prototype]]` chain look-up process, if you use a `for..in` loop to iterate over an object, any property that can be reached via its chain (and is also `enumerable` -- see Chapter 3) will be enumerated. If you use the `in` operator to test for the existence of a property on an object, `in` will check the entire chain of the object (regardless of *enumerability*).
+По аналогии с этим процессом поиска по цепочке `[[Prototype]]`, если вы используете цикл `for..in` для итерации по объекту, будут перечислены все свойства, достижимые по его цепочке (при условии, что они перечислимые — см. `enumerable` в главе 3). Если вы используете оператор `in` для проверки существования свойства в объекте, то `in` проверит всю цепочку объекта (независимо от *перечислимости*).
 
 ```js
 var anotherObject = {
 	a: 2
 };
 
-// create an object linked to `anotherObject`
+// создаем объект, привязанный к `anotherObject`
 var myObject = Object.create( anotherObject );
 
 for (var k in myObject) {
-	console.log("found: " + k);
+	console.log("найдено: " + k);
 }
-// found: a
+// найдено: a
 
 ("a" in myObject); // true
 ```
 
-So, the `[[Prototype]]` chain is consulted, one link at a time, when you perform property look-ups in various fashions. The look-up stops once the property is found or the chain ends.
+Итак, ссылки в цепочке `[[Prototype]]` используются одна за другой, когда вы тем или иным способом пытаетесь найти свойство. Поиск заканчивается при нахождении свойства или достижении конца цепочки.
 
 ### `Object.prototype`
 
-But *where* exactly does the `[[Prototype]]` chain "end"?
+Но *где* именно "заканчивается" цепочка `[[Prototype]]`?
 
-The top-end of every *normal* `[[Prototype]]` chain is the built-in `Object.prototype`. This object includes a variety of common utilities used all over JS, because all normal (built-in, not host-specific extension) objects in JavaScript "descend from" (aka, have at the top of their `[[Prototype]]` chain) the `Object.prototype` object.
+В конце каждой *типичной* цепочки `[[Prototype]]` находится встроенный объект `Object.prototype`. Этот объект содержит различные утилиты, используемые в JS повсеместно, поскольку все обычные (встроенные, не связанные с конкретной средой исполнения) объекты в JavaScript "происходят от" объекта `Object.prototype` (иными словами, имеют его на вершине своей цепочки `[[Prototype]]`).
 
-Some utilities found here you may be familiar with include `.toString()` and `.valueOf()`. In Chapter 3, we introduced another: `.hasOwnProperty(..)`. And yet another function on `Object.prototype` you may not be familiar with, but which we'll address later in this chapter, is `.isPrototypeOf(..)`.
+Некоторые утилиты этого объекта могут быть вам знакомы: `.toString()` и `.valueOf()`. В главе 3 мы видели еще одну: `.hasOwnProperty(..)`. Еще одна функция `Object.prototype`, о которой вы могли не знать, но узнаете далее в этой главе — это `.isPrototypeOf(..)`.
 
-### Setting & Shadowing Properties
+### Установка и затенение свойств
 
-Back in Chapter 3, we mentioned that setting properties on an object was more nuanced than just adding a new property to the object or changing an existing property's value. We will now revisit this situation more completely.
+Ранее в главе 3 мы отмечали, что установка свойств объекта происходит чуть сложнее, чем просто добавление к объекту нового свойства или изменение значения существующего свойства.
 
 ```js
 myObject.foo = "bar";
 ```
 
-If the `myObject` object already has a normal data accessor property called `foo` directly present on it, the assignment is as simple as changing the value of the existing property.
+Если непосредственно у `myObject` есть обычное свойство доступа к данным с именем `foo`, то присваивание сводится к изменению значения существующего свойства.
 
-If `foo` is not already present directly on `myObject`, the `[[Prototype]]` chain is traversed, just like for the `[[Get]]` operation. If `foo` is not found anywhere in the chain, the property `foo` is added directly to `myObject` with the specified value, as expected.
+Если непосредственно у `myObject` нет `foo`, то выполняется обход цепочки `[[Prototype]]` по аналогии с операцией `[[Get]]`. Если `foo` не будет найдено в цепочке, то свойство `foo` добавляется непосредственно к `myObject` и получает указанное значение, как мы того и ожидаем.
 
-However, if `foo` is already present somewhere higher in the chain, nuanced (and perhaps surprising) behavior can occur with the `myObject.foo = "bar"` assignment. We'll examine that more in just a moment.
+Однако если `foo` находится где-то выше по цепочке, то присваивание `myObject.foo = "bar"` может повлечь за собой более сложное (и даже неожиданное) поведение. Рассмотрим этот вопрос подробнее.
 
-If the property name `foo` ends up both on `myObject` itself and at a higher level of the `[[Prototype]]` chain that starts at `myObject`, this is called *shadowing*. The `foo` property directly on `myObject` *shadows* any `foo` property which appears higher in the chain, because the `myObject.foo` look-up would always find the `foo` property that's lowest in the chain.
+Если свойство с именем `foo` присутствует как у самого `myObject`, так и где-либо выше в цепочке `[[Prototype]]`, начинающейся с `myObject`, то такая ситуация называется *затенением*. Свойство `foo` самого `myObject` *затеняет* любые свойства `foo`, расположенные выше по цепочке, потому что поиск `myObject.foo` всегда находит свойство `foo`, ближайшее к началу цепочки.
 
-As we just hinted, shadowing `foo` on `myObject` is not as simple as it may seem. We will now examine three scenarios for the `myObject.foo = "bar"` assignment when `foo` is **not** already on `myObject` directly, but **is** at a higher level of `myObject`'s `[[Prototype]]` chain:
+Как уже отмечалось, затенение `foo` в `myObject` происходит не так просто, как может показаться. Мы рассмотрим три сценария присваивания `myObject.foo = "bar"`, когда `foo` **не** содержится непосредственно в `myObject`, а **находится** выше по цепочке `[[Prototype]]` объекта `myObject`:
 
-1. If a normal data accessor (see Chapter 3) property named `foo` is found anywhere higher on the `[[Prototype]]` chain, **and it's not marked as read-only (`writable:false`)** then a new property called `foo` is added directly to `myObject`, resulting in a **shadowed property**.
-2. If a `foo` is found higher on the `[[Prototype]]` chain, but it's marked as **read-only (`writable:false`)**, then both the setting of that existing property as well as the creation of the shadowed property on `myObject` **are disallowed**. If the code is running in `strict mode`, an error will be thrown. Otherwise, the setting of the property value will silently be ignored. Either way, **no shadowing occurs**.
-3. If a `foo` is found higher on the `[[Prototype]]` chain and it's a setter (see Chapter 3), then the setter will always be called. No `foo` will be added to (aka, shadowed on) `myObject`, nor will the `foo` setter be redefined.
+1. Если обычное свойство доступа к данным (см. главу 3) с именем `foo` находится где-либо выше по цепочке `[[Prototype]]`, **и не отмечено как только для чтения (`writable:false`)**, то новое свойство `foo` добавляется непосредственно в объект `myObject`, и происходит **затенение свойства**.
+2. Если `foo` находится выше по цепочке `[[Prototype]]`, но отмечено как **только для чтения (`writable:false`)**, то установка значения этого существующего свойства, равно как и создание затененного свойства у `myObject`, **запрещены**. Если код выполняется в `strict mode`, то будет выброшена ошибка, если нет, то попытка установить значение свойства будет проигнорирована. В любом случае, **затенения не происходит**.
+3. Если `foo` находится выше по цепочке `[[Prototype]]` и является сеттером (см. главу 3), то всегда будет вызываться сеттер. Свойство `foo` не будет добавлено в `myObject`, сеттер `foo` не будет переопределен.
 
-Most developers assume that assignment of a property (`[[Put]]`) will always result in shadowing if the property already exists higher on the `[[Prototype]]` chain, but as you can see, that's only true in one (#1) of the three situations just described.
+Большинство разработчиков предполагает, что присваивание свойства (`[[Put]]`) всегда приводит к затенению, если свойство уже существует выше по цепочке `[[Prototype]]`, но как видите это является правдой лишь в одной (№1) из трех рассмотренных ситуаций.
 
-If you want to shadow `foo` in cases #2 and #3, you cannot use `=` assignment, but must instead use `Object.defineProperty(..)` (see Chapter 3) to add `foo` to `myObject`.
+Если вы хотите затенить `foo` в случаях №2 и №3, то вместо присваивания `=` нужно использовать `Object.defineProperty(..)` (см. главу 3) чтоы добавить `foo` в `myObject`.
 
-**Note:** Case #2 may be the most surprising of the three. The presence of a *read-only* property prevents a property of the same name being implicitly created (shadowed) at a lower level of a `[[Prototype]]` chain. The reason for this restriction is primarily to reinforce the illusion of class-inherited properties. If you think of the `foo` at a higher level of the chain as having been inherited (copied down) to `myObject`, then it makes sense to enforce the non-writable nature of that `foo` property on `myObject`. If you however separate the illusion from the fact, and recognize that no such inheritance copying *actually* occurred (see Chapters 4 and 5), it's a little unnatural that `myObject` would be prevented from having a `foo` property just because some other object had a non-writable `foo` on it. It's even stranger that this restriction only applies to `=` assignment, but is not enforced when using `Object.defineProperty(..)`.
+**Примечание:** Ситуация №2 может показаться наиболее удивительной из трех. Наличие свойства *только для чтения* мешает нам неявно создать (затенить) свойство с таким же именем на более низком уровне цепочки `[[Prototype]]`. Причина такого ограничения по большей части кроется в желании поддержать иллюзию наследования свойств класса. Если представить, что `foo` с верхнего уровня цепочки наследуется (копируется) в `myObject`, то имеет смысл запретить изменение этого свойства `foo` в `myObject`. Но если перейти от иллюзий к фактам и согласиться с тем, что никакого наследования с копированием *на самом деле* не происходит (см. главы 4 и 5), то кажется немного странным, что `myObject` не может иметь свойство `foo` лишь потому, что у какого-то другого объекта есть неизменяемое свойство `foo`. Еще более странно то, что это ограничение действует только на присваивание `=`, но не распространяется на `Object.defineProperty(..)`.
 
-Shadowing with **methods** leads to ugly *explicit pseudo-polymorphism* (see Chapter 4) if you need to delegate between them. Usually, shadowing is more complicated and nuanced than it's worth, **so you should try to avoid it if possible**. See Chapter 6 for an alternative design pattern, which among other things discourages shadowing in favor of cleaner alternatives.
+Затенение при использовании **методов** приведет к уродливому *явному псевдополиморфизму* (см. главу 4) если вам потребуется делегирование между ними. Обычно затенение приносит больше проблем и сложностей, чем пользы, **поэтому старайтесь избегать его если это возможно**. В главе 6 вы увидите альтернативный шаблон проектирования, который наряду с другими вещами предполагает отказ от затенения в пользу более разумных альтернатив.
 
-Shadowing can even occur implicitly in subtle ways, so care must be taken if trying to avoid it. Consider:
+Затенение может даже произойти неявно, поэтому если вы хотите его избежать, будьте бдительны. Например:
 
 ```js
 var anotherObject = {
@@ -121,7 +121,7 @@ myObject.a; // 2
 anotherObject.hasOwnProperty( "a" ); // true
 myObject.hasOwnProperty( "a" ); // false
 
-myObject.a++; // oops, implicit shadowing!
+myObject.a++; // ой, неявное затенение!
 
 anotherObject.a; // 2
 myObject.a; // 3
@@ -129,25 +129,25 @@ myObject.a; // 3
 myObject.hasOwnProperty( "a" ); // true
 ```
 
-Though it may appear that `myObject.a++` should (via delegation) look-up and just increment the `anotherObject.a` property itself *in place*, instead the `++` operation corresponds to `myObject.a = myObject.a + 1`. The result is `[[Get]]` looking up `a` property via `[[Prototype]]` to get the current value `2` from `anotherObject.a`, incrementing the value by one, then `[[Put]]` assigning the `3` value to a new shadowed property `a` on `myObject`. Oops!
+Хотя может показаться, что выражение `myObject.a++` должно (через делегирование) найти и просто инкрементировать свойство `anotherObject.a`, вместо этого операция `++` соответствует выражению `myObject.a = myObject.a + 1`. В результате `[[Get]]` ищет свойство `a` через `[[Prototype]]` и получает текущее значение `2` из `anotherObject.a`, далее это значение увеличивается на 1, после чего `[[Put]]` присваивает значение `3` новому затененному свойству `a` в `myObject`. Ой!
 
-Be very careful when dealing with delegated properties that you modify. If you wanted to increment `anotherObject.a`, the only proper way is `anotherObject.a++`.
+Будьте очень осторожны при работе с делегированными свойствами, пытаясь изменить их значение. Если вам нужно инкрементировать `anotherObject.a`, то вот единственно верный способ сделать это: `anotherObject.a++`.
 
-## "Class"
+## "Класс"
 
-At this point, you might be wondering: "*Why* does one object need to link to another object?" What's the real benefit? That is a very appropriate question to ask, but we must first understand what `[[Prototype]]` is **not** before we can fully understand and appreciate what it *is* and how it's useful.
+Вы уже могли задаться вопросом: "*Зачем* одному объекту нужна ссылка ссылка на другой объект?" Какой от этого толк? Это очень хороший вопрос, но сначала нам нужно выяснить, чем `[[Prototype]]` **не является**, прежде чем мы сможем понять и оценить то, чем он *является*, и какая от него польза.
 
-As we explained in Chapter 4, in JavaScript, there are no abstract patterns/blueprints for objects called "classes" as there are in class-oriented languages. JavaScript **just** has objects.
+В главе 4 мы выяснили, что в отличие от класс-ориентированных языков в JavaScript нет абстрактных шаблонов/схем объектов, называемых "классами". В JavaScript **просто** есть объекты.
 
-In fact, JavaScript is **almost unique** among languages as perhaps the only language with the right to use the label "object oriented", because it's one of a very short list of languages where an object can be created directly, without a class at all.
+На самом деле, JavaScript — **практически уникальный** язык, ведь пожалуй только он имеет право называться "объектно-ориентированным", т.к. относится к весьма немногочисленной группе языков, где объекты можно создавать напрямую, без классов.
 
-In JavaScript, classes can't (being that they don't exist!) describe what an object can do. The object defines its own behavior directly. **There's *just* the object.**
+В JavaScript классы не могут описывать поведение объекта (учитывая тот факт, что их вообще не существует!). Объект сам определяет собственное поведение. **Есть *только* объект.**
 
-### "Class" Functions
+### Функции "классов"
 
-There's a peculiar kind of behavior in JavaScript that has been shamelessly abused for years to *hack* something that *looks* like "classes". We'll examine this approach in detail.
+В JavaScript есть специфическое поведение, которым долгие годы цинично злоупотребляли для создания *поделок*, внешне *похожих* на "классы". Рассмотрим этот подход более подробно.
 
-The peculiar "sort-of class" behavior hinges on a strange characteristic of functions: all functions by default get a public, non-enumerable (see Chapter 3) property on them called `prototype`, which points at an otherwise arbitrary object.
+Специфическое поведение "как бы классов" основано на одной странной особенности: у всех функций по умолчанию есть публичное, неперечислимое (см. главу 3) свойство, называемое `prototype`, которое указывает на некий объект.
 
 ```js
 function Foo() {
@@ -157,13 +157,13 @@ function Foo() {
 Foo.prototype; // { }
 ```
 
-This object is often called "Foo's prototype", because we access it via an unfortunately-named `Foo.prototype` property reference. However, that terminology is hopelessly destined to lead us into confusion, as we'll see shortly. Instead, I will call it "the object formerly known as Foo's prototype". Just kidding. How about: "object arbitrarily labeled 'Foo dot prototype'"?
+Этот объект часто называют "прототипом Foo", поскольку обращение к нему происходит через свойство с неудачно выбранным названием `Foo.prototype`. Как мы вскоре увидим, такая терминология обречена приводить людей в замешательство. Вместо этого, я буду называть его "объектом, ранее известным как прототип Foo". Ладно, шучу. Как насчет этого: "объект, условно называемый 'Foo точка prototype'"?
 
-Whatever we call it, what exactly is this object?
+Как бы мы не называли его, что же это за объект?
 
-The most direct way to explain it is that each object created from calling `new Foo()` (see Chapter 2) will end up (somewhat arbitrarily) `[[Prototype]]`-linked to this "Foo dot prototype" object.
+Проще всего объяснить так: у каждого объекта, создаваемого с помощью вызова `new Foo()` (см. главу 2), ссылка `[[Prototype]]` будет указывать на этот объект "Foo точка prototype".
 
-Let's illustrate:
+Проиллюстрируем на примере:
 
 ```js
 function Foo() {
@@ -175,53 +175,53 @@ var a = new Foo();
 Object.getPrototypeOf( a ) === Foo.prototype; // true
 ```
 
-When `a` is created by calling `new Foo()`, one of the things (see Chapter 2 for all *four* steps) that happens is that `a` gets an internal `[[Prototype]]` link to the object that `Foo.prototype` is pointing at.
+Когда `a` создается путем вызова `new Foo()`, одним из результатов (все *четыре* шага см. в главе 2) будет создание в `a` внутренней ссылки `[[Prototype]]` на объект, на который указывает `Foo.prototype`.
 
-Stop for a moment and ponder the implications of that statement.
+Остановитесь на секунду и задумайтесь о смысле этого утверждения.
 
-In class-oriented languages, multiple **copies** (aka, "instances") of a class can be made, like stamping something out from a mold. As we saw in Chapter 4, this happens because the process of instantiating (or inheriting from) a class means, "copy the behavior plan from that class into a physical object", and this is done again for each new instance.
+В класс-ориентированных языках множественные **копии** (или "экземпляры") создаются как детали, штампуемые на пресс-форме. Как мы видели в главе 4, так происходит потому что процесс создания экземпляра (или наследования от) класса означает "скопировать поведение из этого класса в физический объект", и это выполняется для каждого нового экземпляра.
 
-But in JavaScript, there are no such copy-actions performed. You don't create multiple instances of a class. You can create multiple objects that `[[Prototype]]` *link* to a common object. But by default, no copying occurs, and thus these objects don't end up totally separate and disconnected from each other, but rather, quite ***linked***.
+Но в JavaScript такого копирования не происходит. Вы не создаете множественные экземпляры класса. Вы можете создать множество объектов, *связанных** ссылкой `[[Prototype]]` с общим объектом. Но по умолчанию никакого копирования не происходит, поэтому эти объекты не становятся полностью автономными и не соединенными друг с другом, напротив, они весьма ***связаны***.
 
-`new Foo()` results in a new object (we called it `a`), and **that** new object `a` is internally `[[Prototype]]` linked to the `Foo.prototype` object.
+Вызов `new Foo()` создает новый объект (мы назвали его `a`), и **этот** новый объект `a` связан внутренней ссылкой `[[Prototype]]` с объектом `Foo.prototype`.
 
-**We end up with two objects, linked to each other.** That's *it*. We didn't instantiate a class. We certainly didn't do any copying of behavior from a "class" into a concrete object. We just caused two objects to be linked to each other.
+**В результате получилось два объекта, связанных друг с другом.** Вот и *все*. Мы не создали экземпляр класса. И мы уж точно не копировали никакого поведения из "класса" в реальный объект. Мы просто связали два объекта друг с другом.
 
-In fact, the secret, which eludes most JS developers, is that the `new Foo()` function calling had really almost nothing *direct* to do with the process of creating the link. **It was sort of an accidental side-effect.** `new Foo()` is an indirect, round-about way to end up with what we want: **a new object linked to another object**.
+На самом деле секрет, о котором не догадывается большинство JS разработчиков, стстоит в том, что вызов функции `new Foo()` практически никак *напрямую* не связан с процессом создания ссылки. **Это всегда было неким побочным эффектом.** `new Foo()` — это косвенный, окольный путь к желаемому результату: **новому объекту, связанному с другим объектом**.
 
-Can we get what we want in a more *direct* way? **Yes!** The hero is `Object.create(..)`. But we'll get to that in a little bit.
+Можем ли мы добиться желаемого более *прямым* путем? **Да!** Герой дня — `Object.create(..)`. Но мы вернемся к нему чуть позже.
 
-#### What's in a name?
+#### Что значит имя?
 
-In JavaScript, we don't make *copies* from one object ("class") to another ("instance"). We make *links* between objects. For the `[[Prototype]]` mechanism, visually, the arrows move from right to left, and from bottom to top.
+В JavaScript мы не делаем *копии* из одного объекта ("класса") в другой ("экземпляр"). Мы создаем *ссылки* между объектами. В механизме `[[Prototype]]` визуально стрелки идут справа налево и снизу вверх.
 
 <img src="fig3.png">
 
-This mechanism is often called "prototypal inheritance" (we'll explore the code in detail shortly), which is commonly said to be the dynamic-language version of "classical inheritance". It's an attempt to piggy-back on the common understanding of what "inheritance" means in the class-oriented world, but *tweak* (**read: pave over**) the understood semantics, to fit dynamic scripting.
+Этт механизм часто называют "прототипным наследованием" (мы подробнее рассмотрим код чуть ниже), которое обычно считается вариантом "классического наследования" для динамических языков. Это попытка воспользоваться общепринятым пониманием термина "наследование" в класс-ориентированных языках и *подогнать** знакомую семантику под динамический язык.
 
-The word "inheritance" has a very strong meaning (see Chapter 4), with plenty of mental precedent. Merely adding "prototypal" in front to distinguish the *actually nearly opposite* behavior in JavaScript has left in its wake nearly two decades of miry confusion.
+Термин "наследование" имеет очень четкий смысл (см. главу 4). Добавление перед ним слова "прототипное" чтобы обозначить *на самом деле почти противоположное* поведение привело к неразберихе в течение двух десятков лет.
 
-I like to say that sticking "prototypal" in front "inheritance" to drastically reverse its actual meaning is like holding an orange in one hand, an apple in the other, and insisting on calling the apple a "red orange". No matter what confusing label I put in front of it, that doesn't change the *fact* that one fruit is an apple and the other is an orange.
+Я люблю говорить, что использовать слово "прототипное" перед "наследованием" для придания существенно иного смысла — это как держать в одной руке апельсин, а в другой яблоко и настаивать на том, что яблоко — это "красный апельсин". Не важно, какое прилагательное я добавлю перед ним, это не изменит тот *факт*, что один фрукт — яблоко, а другой — апельсин.
 
-The better approach is to plainly call an apple an apple -- to use the most accurate and direct terminology. That makes it easier to understand both their similarities and their **many differences**, because we all have a simple, shared understanding of what "apple" means.
+Лучше называть вещи своими именами. Это позволяет лучше понять как их сходство, так и **многочисленные отличия**.
 
-Because of the confusion and conflation of terms, I believe the label "prototypal inheritance" itself (and trying to mis-apply all its associated class-orientation terminology, like "class", "constructor", "instance", "polymorphism", etc) has done **more harm than good** in explaining how JavaScript's mechanism *really* works.
+Из-за всей этой неразберихи с терминами я считаю, что само название "прототипное наследование" (а также некорректное использование связанных с ним терминов, таких как "класс", "конструктор", "экземпляр", "полиморфизм" и т.д.) принесло **больше вреда чем пользы** в понимании того, как *на самом деле* работает JavaScript.
 
-"Inheritance" implies a *copy* operation, and JavaScript doesn't copy object properties (natively, by default). Instead, JS creates a link between two objects, where one object can essentially *delegate* property/function access to another object. "Delegation" (see Chapter 6) is a much more accurate term for JavaScript's object-linking mechanism.
+"Наследование" подразумевает операцию *копирования*, а JavaScript не копирует свойства объекта (по умолчанию). Вместо этого JS создает ссылку между двумя объектами, в результате один объект по сути *делегирует* доступ к свойствам/функциям другом объекту. "Делегирование" (см. главу 6) — более точный термин для описания механизма связывания объектов в JavaScript.
 
-Another term which is sometimes thrown around in JavaScript is "differential inheritance". The idea here is that we describe an object's behavior in terms of what is *different* from a more general descriptor. For example, you explain that a car is a kind of vehicle, but one that has exactly 4 wheels, rather than re-describing all the specifics of what makes up a general vehicle (engine, etc).
+Другой термин, который иногда встречается в JavaScript - это "дифференциальное наследование". Суть в том, что мы описываем поведение объекта с точки зрения того, что *отличается* в нем от более общего описания. Например, вы можете сказать, что автомобиль является видом транспортного средства, у которого ровно 4 колеса, вместо того чтобы заново описывать все свойства транспортного средства (двигатель, и т.д.).
 
-If you try to think of any given object in JS as the sum total of all behavior that is *available* via delegation, and **in your mind you flatten** all that behavior into one tangible *thing*, then you can (sorta) see how "differential inheritance" might fit.
+Если представить, что любой объект в JS является суммой всего поведения, которое *доступно* через делегирование, и **мысленно объединить** все это поведение в одну реальную *сущность**, то можно предположить, что "дифференциальное наследование" (вроде как) подходящий термин.
 
-But just like with "prototypal inheritance", "differential inheritance" pretends that your mental model is more important than what is physically happening in the language. It overlooks the fact that object `B` is not actually differentially constructed, but is instead built with specific characteristics defined, alongside "holes" where nothing is defined. It is in these "holes" (gaps in, or lack of, definition) that delegation *can* take over and, on the fly, "fill them in" with delegated behavior.
+Но как и "прототипное наследование", "дифференциальное наследование" претендует на то, что мысленная модель важнее того, что физически происходит в языке. Здесь упускается из виду факт, что объект `B` на самом деле не создается дифференциально, а создается с конкретно заданными характеристиками, а также с "дырами", где ничего не задано. Эти дыры (пробелы или отсутствующие определения) *могут* заменяться механизмом делегирования, который на лету "заполняет их" делегированным поведением.
 
-The object is not, by native default, flattened into the single differential object, **through copying**, that the mental model of "differential inheritance" implies. As such, "differential inheritance" is just not as natural a fit for describing how JavaScript's `[[Prototype]]` mechanism actually works.
+Объект по умолчанию не сворачивается в единый дифференциальный объект **посредством копирования**, как это подразумевается в мысленной модели "диференциального наследования". Таким образом, "дифференциальное наследование" не слишком подходит для описания реального механизма работы `[[Prototype]]` в JavaScript.
 
-You *can choose* to prefer the "differential inheritance" terminology and mental model, as a matter of taste, but there's no denying the fact that it *only* fits the mental acrobatics in your mind, not the physical behavior in the engine.
+Вы *можете** придерживаться терминологии и мысленной модели "дифференциального наследования", но нельзя отрицать тот факт, что это *лишь* упражнение ума в вашей голове, а не реальное поведение движка.
 
-### "Constructors"
+### "Конструкторы"
 
-Let's go back to some earlier code:
+Вернемся к рассмотренному ранее коду:
 
 ```js
 function Foo() {
@@ -231,11 +231,11 @@ function Foo() {
 var a = new Foo();
 ```
 
-What exactly leads us to think `Foo` is a "class"?
+Что именно заставляет нас подумать, что `Foo` является "классом"?
 
-For one, we see the use of the `new` keyword, just like class-oriented languages do when they construct class instances. For another, it appears that we are in fact executing a *constructor* method of a class, because `Foo()` is actually a method that gets called, just like how a real class's constructor gets called when you instantiate that class.
+С одной стороны, мы видим использование ключевого слова `new`, совсем как в класс-ориентированных языках, когда создаются экземпляры классов. С другой стороны, кажется, что мы на самом деле выполняем метод *конструктора* класса, потому что метод `Foo()` на самом деле вызывается, так же как конструктор реального класса вызывается при создании экземпляра.
 
-To further the confusion of "constructor" semantics, the arbitrarily labeled `Foo.prototype` object has another trick up its sleeve. Consider this code:
+У объекта `Foo.prototype` есть еще один фокус, который усиливает недоразумение, связанное с семантикой "конструкторов". Посмотрите на этот код:
 
 ```js
 function Foo() {
@@ -248,21 +248,21 @@ var a = new Foo();
 a.constructor === Foo; // true
 ```
 
-The `Foo.prototype` object by default (at declaration time on line 1 of the snippet!) gets a public, non-enumerable (see Chapter 3) property called `.constructor`, and this property is a reference back to the function (`Foo` in this case) that the object is associated with. Moreover, we see that object `a` created by the "constructor" call `new Foo()` *seems* to also have a property on it called `.constructor` which similarly points to "the function which created it".
+По умолчанию объект `Foo.prototype` (во время объявления в первой строке примера!) получает публичное неперечислимое (см. главу 3) свойство `.constructor`, и это свойство является обратной ссылкой на функцию (в данном случае `Foo`), с которой связан этот объект. Более того, мы видим, что объект `a`, созданный путем вызова "конструктора" `new Foo()`, похоже тоже имеет свойство с именем `.constructor`, также указывающее на "функцию, создавшую его".
 
-**Note:** This is not actually true. `a` has no `.constructor` property on it, and though `a.constructor` does in fact resolve to the `Foo` function, "constructor" **does not actually mean** "was constructed by", as it appears. We'll explain this strangeness shortly.
+**Примечание:** На самом деле это неправда. У `a` нет свойства `.constructor`, и хотя `a.constructor` действительно разрешается в функцию `Foo`, "конструктор" **на самом деле не значит** "был сконструирован этой функцией". Мы разберемся с этим курьезом чуть позже.
 
-Oh, yeah, also... by convention in the JavaScript world, "class"es are named with a capital letter, so the fact that it's `Foo` instead of `foo` is a strong clue that we intend it to be a "class". That's totally obvious to you, right!?
+Ах, да, к тому же... в мире JavaScript принято соглашение об именовании "классов" с заглавной буквы, поэтому тот факт что это `Foo`, а не `foo` является четким указанием, что мы хотим определить "класс". Это ведь абсолютно очевидно, не так ли!?
 
-**Note:** This convention is so strong that many JS linters actually *complain* if you call `new` on a method with a lowercase name, or if we don't call `new` on a function that happens to start with a capital letter. That sort of boggles the mind that we struggle so much to get (fake) "class-orientation" *right* in JavaScript that we create linter rules to ensure we use capital letters, even though the capital letter doesn't mean ***anything* at all** to the JS engine.
+**Примечание:** Это соглашение имеет такое влияние, что многие JS линтеры *возмущаются* когда вы вызываете `new` с методом, имя которого состоит из строчных букв, или не вызываете `new` с функцией, начинающейся с заглавной буквы. Удивительно, что мы с таким трудом пытаемся добиться (фальшивой) "класс-ориентированности" в JavaScript, что даже создаем правила для линтеров, чтобы гарантировать использование заглавных букв, хотя заглавные буквы *вообще***ничего** не значат для движка JS.
 
-#### Constructor Or Call?
+#### Конструктор или вызов?
 
-In the above snippet, it's tempting to think that `Foo` is a "constructor", because we call it with `new` and we observe that it "constructs" an object.
+В примере выше есть соблазн предположить, что `Foo` — это "конструктор", потому что мы вызываем ее с `new` и видим, что она "конструирует" объект.
 
-In reality, `Foo` is no more a "constructor" than any other function in your program. Functions themselves are **not** constructors. However, when you put the `new` keyword in front of a normal function call, that makes that function call a "constructor call". In fact, `new` sort of hijacks any normal function and calls it in a fashion that constructs an object, **in addition to whatever else it was going to do**.
+В действительности, `Foo` такой же "конструктор", как и любая другая функция в вашей программе. Функции сами по себе **не** являются конструкторами. Однако когда вы добавляете ключевое слово `new` перед обычным вызовом функции, это превращает вызов функции в "вызов конструктора". На самом деле `new` как бы перехватывает любую обычную функцию и вызывает ее так, что в результате создается объект, **а также выполняется код самой функции**.
 
-For example:
+Например:
 
 ```js
 function NothingSpecial() {
@@ -275,17 +275,17 @@ var a = new NothingSpecial();
 a; // {}
 ```
 
-`NothingSpecial` is just a plain old normal function, but when called with `new`, it *constructs* an object, almost as a side-effect, which we happen to assign to `a`. The **call** was a *constructor call*, but `NothingSpecial` is not, in and of itself, a *constructor*.
+`NothingSpecial` — обычная функция, но когда она вызывается с `new`, то практически в качестве побочного эффекта *создает* объект, котрый мы присваиваем `a`. Этот **вызов** был *вызовом конструктора*, но сама по себе функция `NothingSpecial` не является *конструктором*.
 
-In other words, in JavaScript, it's most appropriate to say that a "constructor" is **any function called with the `new` keyword** in front of it.
+Иначе говоря, в JavaScript "конструктор" — это **любая функция, вызванная с ключевым словом `new`** перед ней.
 
-Functions aren't constructors, but function calls are "constructor calls" if and only if `new` is used.
+Функции не являются конструкторами, но вызовы функций являются "вызовами конструктора" тогда и только тогда, когда используется `new`.
 
-### Mechanics
+### Механика
 
-Are *those* the only common triggers for ill-fated "class" discussions in JavaScript?
+Являются ли эти особенности единственными причинами многострадальных дискуссий о "классах" в JavaScript?
 
-**Not quite.** JS developers have strived to simulate as much as they can of class-orientation:
+**Не совсем.** JS разработчики постарались симулировать поведение классов настолько, насколько это возможно:
 
 ```js
 function Foo(name) {
@@ -303,91 +303,91 @@ a.myName(); // "a"
 b.myName(); // "b"
 ```
 
-This snippet shows two additional "class-orientation" tricks in play:
+Этот пример показывает два дополнительных трюка для "класс-ориентированности":
 
-1. `this.name = name`: adds the `.name` property onto each object (`a` and `b`, respectively; see Chapter 2 about `this` binding), similar to how class instances encapsulate data values.
+1. `this.name = name`: свойство `.name` добавляется в каждый объект (`a` и `b`, соответственно; см. главу 2 о привязке `this`), аналогично тому как экземпляры классов инкапсулируют значения данных.
 
-2. `Foo.prototype.myName = ...`: perhaps the more interesting technique, this adds a property (function) to the `Foo.prototype` object. Now, `a.myName()` works, but perhaps surprisingly. How?
+2. `Foo.prototype.myName = ...`: возможно более интересный прием, добавляет свойство (функцию) в объект `Foo.prototype`. Теперь работает `a.myName()`, но каким образом?
 
-In the above snippet, it's strongly tempting to think that when `a` and `b` are created, the properties/functions on the `Foo.prototype` object are *copied* over to each of `a` and `b` objects. **However, that's not what happens.**
+В примере выше велик соблазн думать, что при создании `a` и `b` свойства/функции объекта `Foo.prototype` *копируются* в каждый из объектов `a` и `b`. **Однако этого не происходит**.
 
-At the beginning of this chapter, we explained the `[[Prototype]]` link, and how it provides the fall-back look-up steps if a property reference isn't found directly on an object, as part of the default `[[Get]]` algorithm.
+В начале этой главы мы изучали ссылку `[[Prototype]]` — часть стандартного алгоритма `[[Get]]`, которая предоставляет запасной вариант поиска, если ссылка на свойство отсутствует в самом объекте.
 
-So, by virtue of how they are created, `a` and `b` each end up with an internal `[[Prototype]]` linkage to `Foo.prototype`. When `myName` is not found on `a` or `b`, respectively, it's instead found (through delegation, see Chapter 6) on `Foo.prototype`.
+В силу того, как создаются `a` и `b`, оба объекта получают внутреннюю ссылку `[[Prototype]]` на `Foo.prototype`. Когда `myName` не находится в `a` или `b` соответственно, она обнаруживается (через делегирование, см. главу 6) в `Foo.prototype`.
 
-#### "Constructor" Redux
+#### И снова о "конструкторе"
 
-Recall the discussion from earlier about the `.constructor` property, and how it *seems* like `a.constructor === Foo` being true means that `a` has an actual `.constructor` property on it, pointing at `Foo`? **Not correct.**
+Вспомните наше обсуждение свойства `.constructor`. *Кажется*, что `a.constructor === Foo` означает, что в `a` есть реальное свойство `.constructor`, указывающее на `Foo`, верно? **Не верно.**
 
-This is just unfortunate confusion. In actuality, the `.constructor` reference is also *delegated* up to `Foo.prototype`, which **happens to**, by default, have a `.constructor` that points at `Foo`.
+Это всего лишь путаница. На самом деле ссылка `.constructor` также *делегируется* вверх по цепочке в `Foo.prototype`, у которого, **так уж случилось**, по умолчанию есть свойство `.constructor`, указывающее на `Foo`.
 
-It *seems* awfully convenient that an object `a` "constructed by" `Foo` would have access to a `.constructor` property that points to `Foo`. But that's nothing more than a false sense of security. It's a happy accident, almost tangentially, that `a.constructor` *happens* to point at `Foo` via this default `[[Prototype]]` delegation. There's actually several ways that the ill-fated assumption of `.constructor` meaning "was constructed by" can come back to bite you.
+*Кажется* ужасно удобным, что у объекта `a`, "созданного" `Foo`, будет доступ к свойству `.constructor`, которое указывает на `Foo`. Но это ложное чувство безопасности. Лишь по счастливой *случайности* `a.constructor` указывает на `Foo` через делегирование `[[Prototype]]` по умолчанию. На самом деле есть несколько способов наломать дров, предполагая что `.constructor` означает "использовался для создания".
 
-For one, the `.constructor` property on `Foo.prototype` is only there by default on the object created when `Foo` the function is declared. If you create a new object, and replace a function's default `.prototype` object reference, the new object will not by default magically get a `.constructor` on it.
+Начнем с того, что свойство `.constructor` в `Foo.prototype` по умолчанию есть лишь у объекта, создаваемого в момент объявления функции `Foo`. Если создать новый объект и заменить у функции ссылку на стандартный объект `.prototype`, то новый объект по умолчанию не получит свойства `.constructor`.
 
-Consider:
+Рассмотрим:
 
 ```js
 function Foo() { /* .. */ }
 
-Foo.prototype = { /* .. */ }; // create a new prototype object
+Foo.prototype = { /* .. */ }; // создаем новый объект-прототип
 
 var a1 = new Foo();
 a1.constructor === Foo; // false!
 a1.constructor === Object; // true!
 ```
 
-`Object(..)` didn't "construct" `a1` did it? It sure seems like `Foo()` "constructed" it. Many developers think of `Foo()` as doing the construction, but where everything falls apart is when you think "constructor" means "was constructed by", because by that reasoning, `a1.constructor` should be `Foo`, but it isn't!
+`Object(..)` не был "конструктором" `a1`, не так ли? Выглядит так, будто "конструктором" объекта должна быть `Foo()`. Многие разработчики думают, что `Foo()` создает объект, но эта идея трещит по швам, когда вы думаете что "constructor" значит "был создан при помощи". Ведь в таком случае `a1.constructor` должен указывать на `Foo`, но это не так!
 
-What's happening? `a1` has no `.constructor` property, so it delegates up the `[[Prototype]]` chain to `Foo.prototype`. But that object doesn't have a `.constructor` either (like the default `Foo.prototype` object would have had!), so it keeps delegating, this time up to `Object.prototype`, the top of the delegation chain. *That* object indeed has a `.constructor` on it, which points to the built-in `Object(..)` function.
+Что же происходит? У `a1` нет свойства `.constructor`, поэтому он делегирует вверх по цепочке `[[Prototype]]` к `Foo.prototype`. Но и у этого объекта нет `.constructor` (в отличие от стандартного объекта `Foo.prototype`!), поэтому делегирование идет дальше, на этот раз до `Object.prototype` — вершины цепочки делегирования. У *этого* объекта действительно есть `.constructor`, который указывает на встроенную функцию `Object(..)`.
 
-**Misconception, busted.**
+**Разрушаем заблуждение.**
 
-Of course, you can add `.constructor` back to the `Foo.prototype` object, but this takes manual work, especially if you want to match native behavior and have it be non-enumerable (see Chapter 3).
+Конечно, можно вернуть объекту `Foo.prototype` свойство `.constructor`, но это придется сделать вручную, особенно если вы хотите, чтобы свойство соответствовало стандартному поведению и было не перечислимым (см. главу 3).
 
-For example:
+Например:
 
 ```js
 function Foo() { /* .. */ }
 
-Foo.prototype = { /* .. */ }; // create a new prototype object
+Foo.prototype = { /* .. */ }; // создаем новый объект-прототип
 
-// Need to properly "fix" the missing `.constructor`
-// property on the new object serving as `Foo.prototype`.
-// See Chapter 3 for `defineProperty(..)`.
+// Необходимо правильно "пофиксить" отсутствующее свойство `.constructor`
+// у нового объекта, выступающего в роли `Foo.prototype`.
+// См. главу 3 про `defineProperty(..)`.
 Object.defineProperty( Foo.prototype, "constructor" , {
 	enumerable: false,
 	writable: true,
 	configurable: true,
-	value: Foo    // point `.constructor` at `Foo`
+	value: Foo    // `.constructor` теперь указывает на `Foo`
 } );
 ```
 
-That's a lot of manual work to fix `.constructor`. Moreover, all we're really doing is perpetuating the misconception that "constructor" means "was constructed by". That's an *expensive* illusion.
+Как видите, для исправления `.constructor` необходимо много ручной работы. Больше того, все это мы делаем ради поддержания ошибочного представления о том, что "constructor" означает "используется для создания". *Дорого* же нам обходится эта иллюзия.
 
-The fact is, `.constructor` on an object arbitrarily points, by default, at a function who, reciprocally, has a reference back to the object -- a reference which it calls `.prototype`. The words "constructor" and "prototype" only have a loose default meaning that might or might not hold true later. The best thing to do is remind yourself, "constructor does not mean constructed by".
+Факт в том, что `.constructor` объекта по умолчанию указывает на функцию, которая, в свою очередь, имеет обратную ссылку на объект — ссылку `.prototype`. Слова "конструктор" и "прототип" лишь наделяются по умолчанию ненадежным смыслом, который позднее может оказаться неверным. Лучше всего постоянно напоминать себе, что "конструктор не значит используется для создания".
 
-`.constructor` is not a magic immutable property. It *is* non-enumerable (see snippet above), but its value is writable (can be changed), and moreover, you can add or overwrite (intentionally or accidentally) a property of the name `constructor` on any object in any `[[Prototype]]` chain, with any value you see fit.
+`.constructor` — это не магическое неизменяемое свойство. Оно *является*, неперечислимым (см. пример выше), но его значение доступно для записи (может быть изменено), и более того, вы можете добавить или перезаписать (намеренно или случайно) свойство с именем `constructor` в любом объекте любой цепочки `[[Prototype]]`, задав ему любое подходящее вам значение.
 
-By virtue of how the `[[Get]]` algorithm traverses the `[[Prototype]]` chain, a `.constructor` property reference found anywhere may resolve quite differently than you'd expect.
+В силу того как алгоритм `[[Get]]` обходит цепочку `[[Prototype]]`, ссылка на свойство `.constructor`, найденная в любом узле цепочки, может получать значение, весьма отличающееся от ожидаемого.
 
-See how arbitrary its meaning actually is?
+Видите, насколько произвольным является его значение?
 
-The result? Some arbitrary object-property reference like `a1.constructor` cannot actually be *trusted* to be the assumed default function reference. Moreover, as we'll see shortly, just by simple omission, `a1.constructor` can even end up pointing somewhere quite surprising and insensible.
+Что в итоге? Некая произвольная ссылка на свойство объекта, например `a1.constructor`, не может считаться *надежной* ссылкой на функцию по умолчанию. Более того, как мы вскоре увидим, в результате небольшого упущения `a1.constructor` может вообще указывать на весьма странное и бессмысленное значение.
 
-`a1.constructor` is extremely unreliable, and an unsafe reference to rely upon in your code. **Generally, such references should be avoided where possible.**
+`a1.constructor` — слишком ненадежная и небезопасная ссылка, чтобы полагаться на нее в коде. **В общем случае таких ссылок по возможности следует избегать.**
 
-## "(Prototypal) Inheritance"
+## "(Прототипное) наследование"
 
-We've seen some approximations of "class" mechanics as typically hacked into JavaScript programs. But JavaScript "class"es would be rather hollow if we didn't have an approximation of "inheritance".
+Мы увидели некоторые типичные хаки для добавления механики "классов" в программы на JavaScript. Но "классы" JavaScript были бы неполными без попыток смоделировать "наследование".
 
-Actually, we've already seen the mechanism which is commonly called "prototypal inheritance" at work when `a` was able to "inherit from" `Foo.prototype`, and thus get access to the `myName()` function. But we traditionally think of "inheritance" as being a relationship between two "classes", rather than between "class" and "instance".
+На самом деле мы уже видели механизм под названием "прототипное наследование", когда объект `a` "унаследовал от" `Foo.prototype` функцию `myName()`. Но обычно под "наследованием" подразумевается отношение между двумя "классами", а не между "классом" и "экземпляром".
 
 <img src="fig3.png">
 
-Recall this figure from earlier, which shows not only delegation from an object (aka, "instance") `a1` to object `Foo.prototype`, but from `Bar.prototype` to `Foo.prototype`, which somewhat resembles the concept of Parent-Child class inheritance. *Resembles*, except of course for the direction of the arrows, which show these are delegation links rather than copy operations.
+Мы уже видели эту схему, на которой показано не только делегирование от объекта (или "экземпляра") `a1` к объекту `Foo.prototype`, но и от `Bar.prototype` к `Foo.prototype`, что отчасти напоминает концепцию наследования классов родитель-потомок. Вот только направление стрелок здесь другое, поскольку изображены делегирующие ссылки, а не операции копирования.
 
-And, here's the typical "prototype style" code that creates such links:
+Вот типичный пример кода в "прототипном стиле", где создаются такие ссылки:
 
 ```js
 function Foo(name) {
@@ -403,13 +403,13 @@ function Bar(name,label) {
 	this.label = label;
 }
 
-// here, we make a new `Bar.prototype`
-// linked to `Foo.prototype`
+// здесь мы создаем `Bar.prototype`
+// связанный с `Foo.prototype`
 Bar.prototype = Object.create( Foo.prototype );
 
-// Beware! Now `Bar.prototype.constructor` is gone,
-// and might need to be manually "fixed" if you're
-// in the habit of relying on such properties!
+// Осторожно! Теперь `Bar.prototype.constructor` отсутствует,
+// и это придется "пофиксить" вручную, 
+// если вы привыкли полагаться на подобные свойства!
 
 Bar.prototype.myLabel = function() {
 	return this.label;
@@ -421,52 +421,52 @@ a.myName(); // "a"
 a.myLabel(); // "obj a"
 ```
 
-**Note:** To understand why `this` points to `a` in the above code snippet, see Chapter 2.
+**Примечание:** Чтобы понять, почему `this` указывает на `a`, см. главу 2.
 
-The important part is `Bar.prototype = Object.create( Foo.prototype )`. `Object.create(..)` *creates* a "new" object out of thin air, and links that new object's internal `[[Prototype]]` to the object you specify (`Foo.prototype` in this case).
+Самая важная строка здесь `Bar.prototype = Object.create( Foo.prototype )`. `Object.create(..)` *создает* "новый" объект из ничего, и связывает внутреннюю ссылку `[[Prototype]]` этого объекта с указаным объектом (в данном случае `Foo.prototype`).
 
-In other words, that line says: "make a *new* 'Bar dot prototype' object that's linked to 'Foo dot prototype'."
+Другими словами, эта строка означает: "создать *новый* объект 'Bar точка prototype', связанный с 'Foo точка prototype'".
 
-When `function Bar() { .. }` is declared, `Bar`, like any other function, has a `.prototype` link to its default object. But *that* object is not linked to `Foo.prototype` like we want. So, we create a *new* object that *is* linked as we want, effectively throwing away the original incorrectly-linked object.
+При объявлении `function Bar() { .. }` функция `Bar`, как и любая другая, получает ссылку `.prototype` на объект по умолчанию. Но *этот* объект не ссылается на `Foo.prototype`, как мы того хотим. Поэтому мы создаем *новый** объект, который *имеет* нужную ссылку, и отбрасываем исходный, неправильно связанный объект.
 
-**Note:** A common mis-conception/confusion here is that either of the following approaches would *also* work, but they do not work as you'd expect:
+**Примечание:** Типичная ошибка — пытаться использовать следующие варианты, думая, что они *тоже* сработают, но это приводит к неожиданным результатам:
 
 ```js
-// doesn't work like you want!
+// работает не так, как вы ожидаете!
 Bar.prototype = Foo.prototype;
 
-// works kinda like you want, but with
-// side-effects you probably don't want :(
+// работает почти так, как нужно,
+// но с побочными эффектами, которые возможно нежелательны :(
 Bar.prototype = new Foo();
 ```
 
-`Bar.prototype = Foo.prototype` doesn't create a new object for `Bar.prototype` to be linked to. It just makes `Bar.prototype` be another reference to `Foo.prototype`, which effectively links `Bar` directly to **the same object as** `Foo` links to: `Foo.prototype`. This means when you start assigning, like `Bar.prototype.myLabel = ...`, you're modifying **not a separate object** but *the* shared `Foo.prototype` object itself, which would affect any objects linked to `Foo.prototype`. This is almost certainly not what you want. If it *is* what you want, then you likely don't need `Bar` at all, and should just use only `Foo` and make your code simpler.
+`Bar.prototype = Foo.prototype` не создает новый объект, на который ссылалось бы `Bar.prototype`. Вместо этого `Bar.prototype` становится еще одной ссылкой на `Foo.prototype`, и в результате `Bar` напрямую связывается с **тем же самым объектом**, что и `Foo`: `Foo.prototype`. Это значит, что когда вы начнете присваивать значения, например `Bar.prototype.myLabel = ...`, вы будете изменять **не отдельный объект**, а общий объект `Foo.prototype`, что повлияет на любые объекты, привязанные к `Foo.prototype`. Это наверняка не то, чего вы хотите. В противном случае вам вообще не нужен `Bar`, и стоит использовать только `Foo`, сделав код проще.
 
-`Bar.prototype = new Foo()` **does in fact** create a new object which is duly linked to `Foo.prototype` as we'd want. But, it uses the `Foo(..)` "constructor call" to do it. If that function has any side-effects (such as logging, changing state, registering against other objects, **adding data properties to `this`**, etc.), those side-effects happen at the time of this linking (and likely against the wrong object!), rather than only when the eventual `Bar()` "descendents" are created, as would likely be expected.
+`Bar.prototype = new Foo()` **действительно** создает новый объект, корректно привязанный к `Foo.prototype`. Но для этого используется "вызов конструктора" `Foo(..)`. Если эта функция имеет какие-либо побочные эфекты (логирование, изменение состояния, регистрация в других объектах, **добавление свойств в `this`**, и т.д.), то эти побочные эффекты сработают во время привязывания (и возможно в отношении неправильного объекта!), а не только при создании конечных "потомков" `Bar`, как можно было бы ожидать.
 
-So, we're left with using `Object.create(..)` to make a new object that's properly linked, but without having the side-effects of calling `Foo(..)`. The slight downside is that we have to create a new object, throwing the old one away, instead of modifying the existing default object we're provided.
+Поэтому, для правильного привязывания нового объекта без побочных эффектов от вызова `Foo(..)` у нас остается лишь `Object.create(..)`. Небольшой недостаток состоит в том, что нам приходится создавать новый объект и выбрасывать старый, вместо того чтобы модифицировать существующий стандартный объект.
 
-It would be *nice* if there was a standard and reliable way to modify the linkage of an existing object. Prior to ES6, there's a non-standard and not fully-cross-browser way, via the `.__proto__` property, which is settable. ES6 adds a `Object.setPrototypeOf(..)` helper utility, which does the trick in a standard and predictable way.
+Было бы *здорово* если бы существовал стандартный и надежный способ поменять привязку существующего объекта. До ES6 был нестандартный и не полностью кроссбраузерный способ через свойство `.__proto__`, которое можно изменять. В ES6 добавлена вспомогательная утилита `Object.setPrototypeOf(..)`, которая проделывает нужный трюк стандартным и предсказуемым способом.
 
-Compare the pre-ES6 and ES6-standardized techniques for linking `Bar.prototype` to `Foo.prototype`, side-by-side:
+Сравните пред-ES6 и стандартизованный в ES6 способ привязки `Bar.prototype` к `Foo.prototype`:
 
 ```js
-// pre-ES6
-// throws away default existing `Bar.prototype`
+// пред-ES6
+// выбрасывает стандартный существующий `Bar.prototype`
 Bar.prototype = Object.create( Foo.prototype );
 
 // ES6+
-// modifies existing `Bar.prototype`
+// изменяет существующий `Bar.prototype`
 Object.setPrototypeOf( Bar.prototype, Foo.prototype );
 ```
 
-Ignoring the slight performance disadvantage (throwing away an object that's later garbage collected) of the `Object.create(..)` approach, it's a little bit shorter and may be perhaps a little easier to read than the ES6+ approach. But it's probably a syntactic wash either way.
+Если отбросить небольшой проигрыш в производительности (выбрасывание объекта, который позже удаляется сброщиком мусора), то способ с `Object.create(..)` немного короче и может даже читабельнее, чем подход ES6+. Хотя это всего лишь пустые разговоры о синтаксисе.
 
-### Inspecting "Class" Relationships
+### Инспектируем связи между "классами"
 
-What if you have an object like `a` and want to find out what object (if any) it delegates to? Inspecting an instance (just an object in JS) for its inheritance ancestry (delegation linkage in JS) is often called *introspection* (or *reflection*) in traditional class-oriented environments.
+Что если у вас есть объект `a` и вы хотите выяснить, какому объекту он делегирует? Инспектирование экземпляра (объект в JS) с целью найти его предка (делегирующая связь в JS) в традиционных класс-ориентированных языках часто называют *интроспекцией* (или *рефлексией*).
 
-Consider:
+Рассмотрим:
 
 ```js
 function Foo() {
@@ -478,25 +478,25 @@ Foo.prototype.blah = ...;
 var a = new Foo();
 ```
 
-How do we then introspect `a` to find out its "ancestry" (delegation linkage)? The first approach embraces the "class" confusion:
+Как выполнить интроспекцию `a`, чтобы найти его "предка" (делегирующую связь)? Первый подход использует путаницу с "классами":
 
 ```js
 a instanceof Foo; // true
 ```
 
-The `instanceof` operator takes a plain object as its left-hand operand and a **function** as its right-hand operand. The question `instanceof` answers is: **in the entire `[[Prototype]]` chain of `a`, does the object arbitrarily pointed to by `Foo.prototype` ever appear?**
+Оператор `instanceof` принимает в качестве операнда слева обычный объект, а в качества операнда справа — **функцию**. `instanceof` отвечает на следующий вопрос: **присутствует ли где-либо в цепочке `[[Prototype]]` объекта `a` объект, на который указывает `Foo.prototype`?**
 
-Unfortunately, this means that you can only inquire about the "ancestry" of some object (`a`) if you have some **function** (`Foo`, with its attached `.prototype` reference) to test with. If you have two arbitrary objects, say `a` and `b`, and want to find out if *the objects* are related to each other through a `[[Prototype]]` chain, `instanceof` alone can't help.
+К сожалению, это значит, что вы можете получить сведения о "происхождении" некоторого объекта (`a`) только имея некоторую **функцию** (`Foo` c ее ссылкой `.prototype`). Если у вас есть два произвольных объекта, например `a` и `b`, и вы хотите узнать, связаны ли сами эти *объекты* друг с другом через цепочку `[[Prototype]]`, одного `instanceof` будет недостаточно.
 
-**Note:** If you use the built-in `.bind(..)` utility to make a hard-bound function (see Chapter 2), the function created will not have a `.prototype` property. Using `instanceof` with such a function transparently substitutes the `.prototype` of the *target function* that the hard-bound function was created from.
+**Примечание:** Если вы используете встроенную утилиту `.bind(..)` для создания жестко привязанной функции (см. главу 2), то у созданной функции не будет свойства `.prototype`. При использовании `instanceof` с такой функцией прозрачно подставляется `.prototype` *целевой функции*, из которой была создана жестко привязанная функция.
 
-It's fairly uncommon to use hard-bound functions as "constructor calls", but if you do, it will behave as if the original *target function* was invoked instead, which means that using `instanceof` with a hard-bound function also behaves according to the original function.
+Использование функции с жесткой привязкой для "вызова конструктора" крайне маловероятно, но если вы сделаете это, то она будет вести себя так, как если бы вы вызвали *целевую функцию*. Это значит, что вызов `instanceof` с жестко привязанной функцией также ведет себя в соответствии с оригинальной функцией.
 
-This snippet illustrates the ridiculousness of trying to reason about relationships between **two objects** using "class" semantics and `instanceof`:
+Этот фрагмент кода показывает нелепость попыток рассуждать об отношениях между **двумя объектами** используясемантику "классов" и `instanceof`:
 
 ```js
-// helper utility to see if `o1` is
-// related to (delegates to) `o2`
+// вспомогательная утилита для проверки
+// связан ли `o1` (через делегирование) с `o2`
 function isRelatedTo(o1, o2) {
 	function F(){}
 	F.prototype = o2;
@@ -509,53 +509,53 @@ var b = Object.create( a );
 isRelatedTo( b, a ); // true
 ```
 
-Inside `isRelatedTo(..)`, we borrow a throw-away function `F`, reassign its `.prototype` to arbitrarily point to some object `o2`, then ask if `o1` is an "instance of" `F`. Obviously `o1` isn't *actually* inherited or descended or even constructed from `F`, so it should be clear why this kind of exercise is silly and confusing. **The problem comes down to the awkwardness of class semantics forced upon JavaScript**, in this case as revealed by the indirect semantics of `instanceof`.
+Внутри `isRelatedTo(..)` мы временно используем функцию `F`, меняя значение ее свойства `.prototype` на объект `o2`, а затем спрашиваем, является ли `o1` "экземпляром" `F`. Ясно, что `o1` *на самом деле* не унаследован от и даже не создан с помощью `F`, поэтому должно быть понятно, что подобные приемы бессмысленны и сбивают с толку. **Проблема сводится к несуразности семантики классов, навязываемой JavaScript**, что наглядно показано на примере косвенной семантики `instanceof`.
 
-The second, and much cleaner, approach to `[[Prototype]]` reflection is:
+Второй подход к рефлексии `[[Prototype]]` более наглядный:
 
 ```js
 Foo.prototype.isPrototypeOf( a ); // true
 ```
 
-Notice that in this case, we don't really care about (or even *need*) `Foo`, we just need an **object** (in our case, arbitrarily labeled `Foo.prototype`) to test against another **object**. The question `isPrototypeOf(..)` answers is: **in the entire `[[Prototype]]` chain of `a`, does `Foo.prototype` ever appear?**
+Заметьте, что в этом случае нам неинтересна (и даже *не нужна*) `Foo`. Нам просто нужен **объект** (в данном случае произвольный объект с именем `Foo.prototype`) для сопоставления его с другим **объктом**. `isPrototypeOf(..)` отвечает на вопрос: **присутствует ли где-либо в цепочке `[[Prototype]]` объекта `a` объект `Foo.prototype`?**
 
-Same question, and exact same answer. But in this second approach, we don't actually need the indirection of referencing a **function** (`Foo`) whose `.prototype` property will automatically be consulted.
+Тот же вопрос, и в точности такой же ответ. Но во втором подходе нам не нужна  **функция** (`Foo`) для косвенного обращения к ее свойству `.prototype`.
 
-We *just need* two **objects** to inspect a relationship between them. For example:
+Нам *просто нужны* два **объекта** для выявления связи между ними. Например:
 
 ```js
-// Simply: does `b` appear anywhere in
-// `c`s [[Prototype]] chain?
+// Просто: присутствует ли `b` где-либо
+// в цепочке [[Prototype]] объекта `c`
 b.isPrototypeOf( c );
 ```
 
-Notice, this approach doesn't require a function ("class") at all. It just uses object references directly to `b` and `c`, and inquires about their relationship. In other words, our `isRelatedTo(..)` utility above is built-in to the language, and it's called `isPrototypeOf(..)`.
+Заметьте, что в этом подходе вообще не требуется функция ("класс"). Используются прямые ссылки на объекты `b` и `c`, чтобы выяснить нет ли между ними связи. Другими словами, наша утилита  `isRelatedTo(..)` уже встроена в язык и называется `isPrototypeOf(..)`.
 
-We can also directly retrieve the `[[Prototype]]` of an object. As of ES5, the standard way to do this is:
+Мы можем напрямую получить `[[Prototype]]` объекта. В ES5 появился стандартный способ сделать это:
 
 ```js
 Object.getPrototypeOf( a );
 ```
 
-And you'll notice that object reference is what we'd expect:
+Здесь видно, что ссылка на объект является тем, что мы и ожидаем:
 
 ```js
 Object.getPrototypeOf( a ) === Foo.prototype; // true
 ```
 
-Most browsers (not all!) have also long supported a non-standard alternate way of accessing the internal `[[Prototype]]`:
+В большинстве браузеров (но не во всех!) давно добавлена поддержка нестандартного альтернативного способа доступа к `[[Prototype]]`:
 
 ```js
 a.__proto__ === Foo.prototype; // true
 ```
 
-The strange `.__proto__` (not standardized until ES6!) property "magically" retrieves the internal `[[Prototype]]` of an object as a reference, which is quite helpful if you want to directly inspect (or even traverse: `.__proto__.__proto__...`) the chain.
+Загадочное свойство `.__proto__` (стандартизовано лишь в ES6!) "магически" возвращает ссылку на внутреннее свойство `[[Prototype]]` объекта, что весьма полезно, если вы хотите напрямую проинспектировать (или даже обойти: `.__proto__.__proto__...`) цепочку.
 
-Just as we saw earlier with `.constructor`, `.__proto__` doesn't actually exist on the object you're inspecting (`a` in our running example). In fact, it exists (non-enumerable; see Chapter 2) on the built-in `Object.prototype`, along with the other common utilities (`.toString()`, `.isPrototypeOf(..)`, etc).
+Аналогично рассмотренному ранее `.constructor`, свойство `.__proto__` отсутствует у инспектируемого объекта (`a` в нашем примере). На самом деле оно есть (и является неперечислимым, см. главу 2) у встроенного `Object.prototype`, наряду с другими известными утилитами (`.toString()`, `.isPrototypeOf(..)`, и т.д.).
 
-Moreover, `.__proto__` looks like a property, but it's actually more appropriate to think of it as a getter/setter (see Chapter 3).
+Более того, `.__proto__` выглядит как свойство, но правильнее думать о нем как о геттере/сеттере (см. главу 3).
 
-Roughly, we could envision `.__proto__` implemented (see Chapter 3 for object property definitions) like this:
+Грубо говоря, можно представить, что `.__proto__` реализовано так (см. главу 3 об определениях свойств объекта):
 
 ```js
 Object.defineProperty( Object.prototype, "__proto__", {
@@ -563,60 +563,60 @@ Object.defineProperty( Object.prototype, "__proto__", {
 		return Object.getPrototypeOf( this );
 	},
 	set: function(o) {
-		// setPrototypeOf(..) as of ES6
+		// setPrototypeOf(..) доступно начиная с ES6
 		Object.setPrototypeOf( this, o );
 		return o;
 	}
 } );
 ```
 
-So, when we access (retrieve the value of) `a.__proto__`, it's like calling `a.__proto__()` (calling the getter function). *That* function call has `a` as its `this` even though the getter function exists on the `Object.prototype` object (see Chapter 2 for `this` binding rules), so it's just like saying `Object.getPrototypeOf( a )`.
+Таким образом, когда мы обращаемся (получаем значение) к `a.__proto__`, это похоже на вызов `a.__proto__()` (вызов функции геттера). В *этом** вызове функции `this` указывает на `a`, несмотря на то что функция геттера находится в объекте `Object.prototype` (см. главу 2 о правилах привязки `this`), так что это равносильно `Object.getPrototypeOf( a )`.
 
-`.__proto__` is also a settable property, just like using ES6's `Object.setPrototypeOf(..)` shown earlier. However, generally you **should not change the `[[Prototype]]` of an existing object**.
+Значение `.__proto__` можно также изменять, например с помощью функции `Object.setPrototypeOf(..)` в ES6, как показано выше. Однако обычно **не следует изменять `[[Prototype]]` существующего объекта**.
 
-There are some very complex, advanced techniques used deep in some frameworks that allow tricks like "subclassing" an `Array`, but this is commonly frowned on in general programming practice, as it usually leads to *much* harder to understand/maintain code.
+Глубоко внутри некоторых фреймворков можно встретить сложные, продвинутые механизмы, позволяющие выполнять трюки наподобие "создания производного класса" от `Array`, но обычно подобные вещи не поощряются в повседневной практике, поскольку такой код *гораздо* труднее понимать и сопровождать.
 
-**Note:** As of ES6, the `class` keyword will allow something that approximates "subclassing" of built-in's like `Array`. See Appendix A for discussion of the `class` syntax added in ES6.
+**Примечание:** В ES6 добавлено ключевое слово `class`, с помощью которого можно делать вещи, напоминающие "создание производных классов" от встроенных объектов, таких как `Array`. Обсуждение синтаксиса `class` из ES6 см. в Приложении А.
 
-The only other narrow exception (as mentioned earlier) would be setting the `[[Prototype]]` of a default function's `.prototype` object to reference some other object (besides `Object.prototype`). That would avoid replacing that default object entirely with a new linked object. Otherwise, **it's best to treat object `[[Prototype]]` linkage as a read-only characteristic** for ease of reading your code later.
+В остальном же единственным исключением будет установка свойства `[[Prototype]]` стандартного объекта `.prototype` функции, чтобы оно ссылалось на какой-то другой объект (помимо `Object.prototype`). Это позволить избежать замены этого стандартного объекта новым объектом. В любой другой ситуации **лучше всего считать ссылку `[[Prototype]]` доступной только для чтения**, чтобы облегчить чтение вашего кода в будущем.
 
-**Note:** The JavaScript community unofficially coined a term for the double-underscore, specifically the leading one in properties like `__proto__`: "dunder". So, the "cool kids" in JavaScript would generally pronounce `__proto__` as "dunder proto".
+**Примечание:** В сообществе JavaScript неофициально закрепилось название двойного подчеркивания, особенно перед именами свойств (как `__proto__`): "dunder". Поэтому в мире JavaScript "крутые ребята" обычно произносят `__proto__` как "dunder proto".
 
-## Object Links
+## Объектные ссылки
 
-As we've now seen, the `[[Prototype]]` mechanism is an internal link that exists on one object which references some other object.
+Как мы уже видели, механизм `[[Prototype]]` является внутренней ссылкой, существующей у объекта, который ссылается на другой объект.
 
-This linkage is (primarily) exercised when a property/method reference is made against the first object, and no such property/method exists. In that case, the `[[Prototype]]` linkage tells the engine to look for the property/method on the linked-to object. In turn, if that object cannot fulfill the look-up, its `[[Prototype]]` is followed, and so on. This series of links between objects forms what is called the "prototype chain".
+Переход по этой ссылке выполняется (в основном) когда происходит обращение к свойству/методу первого объекта, и это свойство/метод отсутствует. В таком случае ссылка `[[Prototype]]` указывает движку, что свойство/метод нужно искать в связанном объекте. Если и в этом объекте ничего не находится, то происходит переход по его ссылке `[[Prototype]]`, и так далее. Эта последовательность ссылок между объектами образует то, что называется "цепочкой прототипов".
 
-### `Create()`ing Links
+### Создание ссылок
 
-We've thoroughly debunked why JavaScript's `[[Prototype]]` mechanism is **not** like *classes*, and we've seen how it instead creates **links** between proper objects.
+Мы подробно объяснили, почему механизм `[[Prototype]]` в JavaScript **не** похож на "классы", и увидели, что вместо этого создаются **ссылки** между подходящими объектами.
 
-What's the point of the `[[Prototype]]` mechanism? Why is it so common for JS developers to go to so much effort (emulating classes) in their code to wire up these linkages?
+В чем смысл механизма `[[Prototype]]`? Почему многие JS разработчики прикладывают так много усилий (эмулируя классы), чтобы настроить эти ссылки?
 
-Remember we said much earlier in this chapter that `Object.create(..)` would be a hero? Now, we're ready to see how.
+Помните, как в начале этой главы мы сказали, что `Object.create(..)` станет нашим героем? Теперь вы готовы это увидеть.
 
 ```js
 var foo = {
 	something: function() {
-		console.log( "Tell me something good..." );
+		console.log( "Скажи что-нибудь хорошее..." );
 	}
 };
 
 var bar = Object.create( foo );
 
-bar.something(); // Tell me something good...
+bar.something(); // Скажи что-нибудь хорошее...
 ```
 
-`Object.create(..)` creates a new object (`bar`) linked to the object we specified (`foo`), which gives us all the power (delegation) of the `[[Prototype]]` mechanism, but without any of the unnecessary complication of `new` functions acting as classes and constructor calls, confusing `.prototype` and `.constructor` references, or any of that extra stuff.
+`Object.create(..)` создает новый объект (`bar`), связанный с объектом, который мы указали (`foo`), и это дает нам всю мощь (делегирование) механизма `[[Prototype]]`, но без ненужных сложностей вроде функции `new`, выступающей в роли классов и вызовов конструктора, сбивающих с толку ссылок `.prototype` и `.constructor`, и прочих лишних вещей.
 
-**Note:** `Object.create(null)` creates an object that has an empty (aka, `null`) `[[Prototype]]` linkage, and thus the object can't delegate anywhere. Since such an object has no prototype chain, the `instanceof` operator (explained earlier) has nothing to check, so it will always return `false`. These special empty-`[[Prototype]]` objects are often called "dictionaries" as they are typically used purely for storing data in properties, mostly because they have no possible surprise effects from any delegated properties/functions on the `[[Prototype]]` chain, and are thus purely flat data storage.
+**Примечание:** `Object.create(null)` создает объект с пустой (или `null`) ссылкой `[[Prototype]]`, поэтому этот объект не сможет ничего делегировать. Поскольку у такого объекта нет цепочки прототипов, оператору `instanceof` (рассмотренному ранее) нечего проверять, и он всегда вернет `false`. Эти специальные объекты с пустым `[[Prototype]]` часто называют "словарями", поскольку они обычно используются исключительно для хранения данных в свойствах, потому что у них не может быть никаких побочных эффектов от делегируемых свойств/функций цепочки `[[Prototype]]`, и они являются абсолютно плоскими хранилищами данных.
 
-We don't *need* classes to create meaningful relationships between two objects. The only thing we should **really care about** is objects linked together for delegation, and `Object.create(..)` gives us that linkage without all the class cruft.
+Для создания продуманных связей между двумя объектами нам не *нужны* классы. Нам нужно **только лишь** связать объекты друг с другом для делегировани, и `Object.create(..)` дает нам эту связь без лишней возни с классами.
 
-#### `Object.create()` Polyfilled
+#### Полифилл для `Object.create()`
 
-`Object.create(..)` was added in ES5. You may need to support pre-ES5 environments (like older IE's), so let's take a look at a simple **partial** polyfill for `Object.create(..)` that gives us the capability that we need even in those older JS environments:
+`Object.create(..)` была добавлена в ES5. Вам может понадобиться поддержка пред-ES5 окружения (например, старые версии IE), поэтому давайте рассмотрим простенький **частичный** полифилл для `Object.create(..)`:
 
 ```js
 if (!Object.create) {
@@ -628,9 +628,9 @@ if (!Object.create) {
 }
 ```
 
-This polyfill works by using a throw-away `F` function and overriding its `.prototype` property to point to the object we want to link to. Then we use `new F()` construction to make a new object that will be linked as we specified.
+В этом полифилле используется временно создаваемая функция `F`, и ее свойство `.prototype` переопределяется так, чтобы указывать на объект, с которым нужно создать связь. Затем мы используем `new F()`, чтобы создать новый объект, который будет привязан нужным нам образом.
 
-This usage of `Object.create(..)` is by far the most common usage, because it's the part that *can be* polyfilled. There's an additional set of functionality that the standard ES5 built-in `Object.create(..)` provides, which is **not polyfillable** for pre-ES5. As such, this capability is far-less commonly used. For completeness sake, let's look at that additional functionality:
+Такой вариант использования `Object.create(..)` встречается в подавляющем большинстве случаев, поскольку эту часть *можно* заменить полифиллом. В ES5 стандартная функция `Object.create(..)` предоставляет дополнительную функциональность, которую нельзя **заменить полифиллом** в пред-ES5. Для полноты картины рассмотрим, в чем она заключается:
 
 ```js
 var anotherObject = {
@@ -661,11 +661,11 @@ myObject.b; // 3
 myObject.c; // 4
 ```
 
-The second argument to `Object.create(..)` specifies property names to add to the newly created object, via declaring each new property's *property descriptor* (see Chapter 3). Because polyfilling property descriptors into pre-ES5 is not possible, this additional functionality on `Object.create(..)` also cannot be polyfilled.
+Второй аргумент `Object.create(..)` указывает свойства, которые будут добавлены в создаваемый объект, объявляя *дескриптор* каждого нового свойства (см. главу 3). Поскольку полифиллинг дескрипторов свойств в пред-ES5 невозможен, эту дополнительную функциональность `Object.create(..)` также невозможно реализовать в виде полифилла.
 
-The vast majority of usage of `Object.create(..)` uses the polyfill-safe subset of functionality, so most developers are fine with using the **partial polyfill** in pre-ES5 environments.
+В большинстве случаев используется лишь та часть функциональности `Object.create(..)`, которую можно заменить полифиллом, поэтому большинство разработчиков устраивает использование **частичного полифилла** в пред-ES5 окружениях.
 
-Some developers take a much stricter view, which is that no function should be polyfilled unless it can be *fully* polyfilled. Since `Object.create(..)` is one of those partial-polyfill'able utilities, this narrower perspective says that if you need to use any of the functionality of `Object.create(..)` in a pre-ES5 environment, instead of polyfilling, you should use a custom utility, and stay away from using the name `Object.create` entirely. You could instead define your own utility, like:
+Некоторые разработчики придерживаются более строгого подхода, считая, что можно использовать только *полные* полифиллы. Поскольку `Object.create(..)` — одна из тех утилит, что нельзя полностью заменить полифиллом, такой строгий подход предписывает, что если вы хотите использовать `Object.create(..)` в пред-ES5 окружении, то вместо полифилла следует применить собственную утилиту, и вообще воздержаться от использования имени `Object.create`. Вместо этого можно определить свою собственную утилиту:
 
 ```js
 function createAndLinkObject(o) {
@@ -683,70 +683,70 @@ var myObject = createAndLinkObject( anotherObject );
 myObject.a; // 2
 ```
 
-I do not share this strict opinion. I fully endorse the common partial-polyfill of `Object.create(..)` as shown above, and using it in your code even in pre-ES5. I'll leave it to you to make your own decision.
+Я не разделяю такой подход. Меня полностью устраивает показанный выше частичный полифилл `Object.create(..)` и его использование в коде даже в пред-ES5. Решайте сами, какой подход вам ближе.
 
-### Links As Fallbacks?
+### Ссылки в роли запасных свойств?
 
-It may be tempting to think that these links between objects *primarily* provide a sort of fallback for "missing" properties or methods. While that may be an observed outcome, I don't think it represents the right way of thinking about `[[Prototype]]`.
+Существует соблазн думать, что эти ссылки между объектами *в основном* предоставляют что-то вроде запасного варианта на случай "отсутствующих" свойств или методов. И хотя такой вывод допустим, я не считаю что это верный способ размышления о `[[Prototype]]`.
 
-Consider:
+Рассмотрим:
 
 ```js
 var anotherObject = {
 	cool: function() {
-		console.log( "cool!" );
+		console.log( "круто!" );
 	}
 };
 
 var myObject = Object.create( anotherObject );
 
-myObject.cool(); // "cool!"
+myObject.cool(); // "круто!"
 ```
 
-That code will work by virtue of `[[Prototype]]`, but if you wrote it that way so that `anotherObject` was acting as a fallback **just in case** `myObject` couldn't handle some property/method that some developer may try to call, odds are that your software is going to be a bit more "magical" and harder to understand and maintain.
+Этот код работает благодаря `[[Prototype]]`, но если вы написали его так, что `anotherObject` играет роль запасного варианта **на случай если** `myObject` не сможет обработать обращение к некоторому свойству/методу, то вероятно ваше ПО будет содержать больше "магии" и будет сложнее для понимания и сопровождения.
 
-That's not to say there aren't cases where fallbacks are an appropriate design pattern, but it's not very common or idiomatic in JS, so if you find yourself doing so, you might want to take a step back and reconsider if that's really appropriate and sensible design.
+Я не хочу сказать, что такой подход является в корне неверным шаблоном проектирования, но но он нехарактерен для JS. Если вы используете его, возможно вам стоит сделать шаг назад и подумать, является ли такое решение уместным и разумным.
 
-**Note:** In ES6, an advanced functionality called `Proxy` is introduced which can provide something of a "method not found" type of behavior. `Proxy` is beyond the scope of this book, but will be covered in detail in a later book in the *"You Don't Know JS"* series.
+**Примечание:** В ES6 добавлена продвинутая функциональность, называемая `Proxy`, с помощью которой можно реализовать что-то наподобие поведения "отсутствующих методов". `Proxy` выходит за рамки этой книги, но будет подробно рассмотрена в одной из следующих книг серии *"Вы не знаете JS"*.
 
-**Don't miss an important but nuanced point here.**
+**Не упустите одну важную, но едва уловимую мысль.**
 
-Designing software where you intend for a developer to, for instance, call `myObject.cool()` and have that work even though there is no `cool()` method on `myObject` introduces some "magic" into your API design that can be surprising for future developers who maintain your software.
+Явно проектируя ПО таким образом, что разработчик может вызвать, к примеру, `myObject.cool()`, и это будет работать даже при отсутствии метода `cool()` у `myObject`, вы добавляете немного "магии" в дизайн вашего API, что может в будущем преподнести сюрприз другим разработчикам, которые будут поддерживать ваш код.
 
-You can however design your API with less "magic" to it, but still take advantage of the power of `[[Prototype]]` linkage.
+Но вы можете спроектировать API и без подобной "магии", не отказываясь при этом от преимуществ ссылки `[[Prototype]]`.
 
 ```js
 var anotherObject = {
 	cool: function() {
-		console.log( "cool!" );
+		console.log( "круто!" );
 	}
 };
 
 var myObject = Object.create( anotherObject );
 
 myObject.doCool = function() {
-	this.cool(); // internal delegation!
+	this.cool(); // внутреннее делегирование!
 };
 
-myObject.doCool(); // "cool!"
+myObject.doCool(); // "круто!"
 ```
 
-Here, we call `myObject.doCool()`, which is a method that *actually exists* on `myObject`, making our API design more explicit (less "magical"). *Internally*, our implementation follows the **delegation design pattern** (see Chapter 6), taking advantage of `[[Prototype]]` delegation to `anotherObject.cool()`.
+Здесь мы вызываем `myObject.doCool()` — метод, который *действительно есть* у объекта `myObject`, делая наш API более явным (менее "магическим"). *Внутри* наша реализация следует **шаблону делегирования** (см. главу 6), используя  делегирование `[[Prototype]]` к `anotherObject.cool()`.
 
-In other words, delegation will tend to be less surprising/confusing if it's an internal implementation detail rather than plainly exposed in your API interface design. We will expound on **delegation** in great detail in the next chapter.
+Другими словами, делегирование как правило преподносит меньше сюрпризов, если оно является частью внутренней реализации, а не выставлено наружу в дизайне API. Мы изучим **делегирование** в мельчайших подробностях в следующей главе.
 
-## Review (TL;DR)
+## Обзор
 
-When attempting a property access on an object that doesn't have that property, the object's internal `[[Prototype]]` linkage defines where the `[[Get]]` operation (see Chapter 3) should look next. This cascading linkage from object to object essentially defines a "prototype chain" (somewhat similar to a nested scope chain) of objects to traverse for property resolution.
+При попытке обратиться к несуществующему свойству объекта внутренняя ссылка `[[Prototype]]` этого объекта задает дальнейшее направление поиска для операции `[[Get]]` (см. главу 3). Этот каскад ссылок от объекта к объекту образует "цепочку прототипов" (чем то похожую на цепочку вложенных областей видимости) для обхода при разрешении свойства.
 
-All normal objects have the built-in `Object.prototype` as the top of the prototype chain (like the global scope in scope look-up), where property resolution will stop if not found anywhere prior in the chain. `toString()`, `valueOf()`, and several other common utilities exist on this `Object.prototype` object, explaining how all objects in the language are able to access them.
+У обычных объектов есть встроенный объект `Object.prototype` на конце цепочки прототипов (похоже на глобальную область видимости при поиске по цепочке областей видимости), где процесс разрешения свойства остановится, если свойство не будет найдено в предыдущих звеньях цепочки. У этого объекта есть утилиты `toString()`, `valueOf()` и несколько других, благодаря чему все объекты в языке имеют доступ к ним.
 
-The most common way to get two objects linked to each other is using the `new` keyword with a function call, which among its four steps (see Chapter 2), it creates a new object linked to another object.
+Наиболее популярный способ связать два объекта друг с другом — использовать ключевое слово `new` с вызовом функции, что помимо четырех шагов (см. главу 2) создаст новый объект, привязанный к другому объекту.
 
-The "another object" that the new object is linked to happens to be the object referenced by the arbitrarily named `.prototype` property of the function called with `new`. Functions called with `new` are often called "constructors", despite the fact that they are not actually instantiating a class as *constructors* do in traditional class-oriented languages.
+Этим "другим объектом" является объект, на который указывает свойство `.prototype` функции, вызванной с `new`. Функции, вызываемые с `new`, часто называют "конструкторами", несмотря на то что они не создают экземпляры классов, как это делают *конструкторы* в традиционных класс-ориентированных языках.
 
-While these JavaScript mechanisms can seem to resemble "class instantiation" and "class inheritance" from traditional class-oriented languages, the key distinction is that in JavaScript, no copies are made. Rather, objects end up linked to each other via an internal `[[Prototype]]` chain.
+Хотя эти механизмы JavaScript могут напоминать "создание экземпляров классов" и "наследование классов" из традиционных класс-ориентированных языков, ключевое отличие в том, что в JavaScript не создаются копии. Вместо этого объекты связываются друг с другом через внутреннюю цепочку `[[Prototype]]`.
 
-For a variety of reasons, not the least of which is terminology precedent, "inheritance" (and "prototypal inheritance") and all the other OO terms just do not make sense when considering how JavaScript *actually* works (not just applied to our forced mental models).
+По множеству причин, среди которых не последнюю роль играет терминологический прецедент, "наследование" (и "прототипное наследование") и все остальные ОО-термины не имеют смысла, учитывая то как *на самом деле* работает JavaScript.
 
-Instead, "delegation" is a more appropriate term, because these relationships are not *copies* but delegation **links**.
+Более подходящим термином является "делегирование", поскольку эти связи являются не *копиями*, а делегирующими **ссылками**.
