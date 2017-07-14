@@ -1,22 +1,22 @@
-# You Don't Know JS: Async & Performance
-# Foreword
+# Вы не знаете JS: Асинхронность и Производительность
+# Предисловие
 
-Over the years, my employer has trusted me enough to conduct interviews. If we're looking for someone with skills in JavaScript, my first line of questioning… actually that's not true, I first check if the candidate needs the bathroom and/or a drink, because comfort is important, but once I'm past the bit about the candidate's fluid in/out-take, I set about determining if the candidate knows JavaScript, or just jQuery.
+Мой работодатель доверяет мне проводить собеседования на протяжении многих лет. Если мы ищем JavaScript разработчика, то я начинаю опрос с…, нет, не начинаю, я сначала узнаю не нужно ли моему потенциальному коллеге выйти в туалет и/или попить, потому что важна комфортная обстановка, а потом я начну задавать вопросы, чтобы узнать: "Он знает JavaScript или jQuery".
 
-Not that there's anything wrong with jQuery. It lets you do a lot without really knowing JavaScript, and that's a feature not a bug. But if the job calls for advanced skills in JavaScript performance and maintainability, you need someone who knows how libraries such as jQuery are put together. You need to be able to harness the core of JavaScript the same way they do.
+В jQuery нет ничего плохого. С помощью него можно многое сделать, не зная JavaScript. Но если требуется высокая квалификация и глубокие знания в оптимизации JavaScript, чтобы при необходимости быстро решать проблемы, нам нужен тот кто знает и понимает, как устроены такие библиотеки, как jQuery изнутри, чтобы использовать чистый JavaScript, как это делают другие библиотеки.
 
-If I want to get a picture of someone's core JavaScript skill, I'm most interested in what they make of closures (you've read that book of this series already, right?) and how to get the most out of asynchronicity, which brings us to this book.
+Как получить картинку используя только JavaScript, или как делаются замыкания (вы ведь уже читали книгу про [Область видимости и замыкания](https://github.com/azat-io/you-dont-know-js-ru/tree/master/scope%20%26%20closures)) и как получить максимальную пользу от асинхронности, именно об этом будет написано в этой книге.
 
-For starters, you'll be taken through callbacks, the bread and butter of asynchronous programming. Of course, bread and butter does not make for a particularly satisfying meal, but the next course is full of tasty tasty promises!
+Сначала мы познакомимся с обратными вызовами (callbacks), а в дальнейшем и с обещаниями (promises).
 
-If you don't know promises, now is the time to learn. Promises are now the official way to provide async return values in both JavaScript and the DOM. All future async DOM APIs will use them, many already do, so be prepared! At the time of writing, Promises have shipped in most major browsers, with IE shipping soon. Once you've finished that, I hope you left room for the next course, Generators.
+Если вы ничего не знаете о обещаниях (promises), сейчас самое время это исправить. Обещания теперь стандарт использования асинхронности в JavaScript и DOM. Все будущие DOM API будут использовать обещания (promises), многие уже это делают, так что будьте готовы! В момент написания этой книги, обещания (promises) поддерживаются в основных браузерах [Подробнее](http://caniuse.com/#search=Promises), а IE уже на подходе. Я надеюсь, что после изучения у вас останется место для следующей курса про генераторы.
 
-Generators snuck their way into stable versions of Chrome and Firefox without too much pomp and ceremony, because, frankly, they're more complicated than they are interesting. Or, that's what I thought until I saw them combined with promises. There, they become an important tool in readability and maintenance.
+Генераторы пробрались в стабильные версии браузеров Chrome и Firefox, от них больше головной боли, чем пользы. Именно так я думал пока не увидел их в вместе с обещаниями (promises). Там они стали важным инструментом в читабельности и поддержке кода.
 
-For dessert, well, I won't spoil the surprise, but prepare to gaze into the future of JavaScript! Features that give you more and more control over concurrency and asynchronicity.
+На десерт, я не буду портить сюрприз, приготовьтесь увидеть будущее JavaScript! Особенности, которые дают вам больше контроля над параллельностью и асинхронностью.
 
-Well, I won't block your enjoyment of the book any longer, on with the show! If you've already read part of the book before reading this Foreword, give yourself 10 asynchronous points! You deserve them!
+Что ж, я больше не буду задерживать вас от прочтения этой книги. Если вы уже прочитали часть книги перед тем, как прочитать это предисловие, то дайте себе 10 очков по асинхронности! Вы действительно их заслуживаете!
 
-Jake Archibald<br>
-[jakearchibald.com](http://jakearchibald.com), [@jaffathecake](http://twitter.com/jaffathecake)<br>
-Developer Advocate at Google Chrome
+Джейк Арчибальд<br>
+[jakearchibald.com](https://jakearchibald.com), [@jaffathecake](https://twitter.com/jaffathecake)<br>
+Google Chrome Разработчик
