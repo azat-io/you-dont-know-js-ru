@@ -1,8 +1,8 @@
-# You Don't Know JS: Async & Performance
+# Вы не знаете JS: Асинхронность и Производительность
 
-## Table of Contents
+## Содержимое
 
-* Foreword
+* Предисловие
 * Preface
 * Chapter 1: Asynchrony: Now & Later
 	* A Program In Chunks
@@ -48,4 +48,3 @@
 * Appendix A: *asynquence* Library
 * Appendix B: Advanced Async Patterns
 * Appendix C: Acknowledgments
-

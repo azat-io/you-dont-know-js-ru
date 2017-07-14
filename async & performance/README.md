@@ -1,4 +1,4 @@
-# You Don't Know JS: Async & Performance
+# Вы не знаете JS: Асинхронность и Производительность
 
 <img src="cover.jpg" width="300">
 
@@ -10,7 +10,7 @@
 
 [Table of Contents](toc.md)
 
-* [Foreword](foreword.md) (by [Jake Archibald](http://jakearchibald.com))
+* [Предисловие](foreword.md) (от [Jake Archibald](http://jakearchibald.com))
 * [Preface](../preface.md)
 * [Chapter 1: Asynchrony: Now & Later](ch1.md)
 * [Chapter 2: Callbacks](ch2.md)
