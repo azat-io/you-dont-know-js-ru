@@ -1,19 +1,19 @@
-# You Don't Know JS: *this* & Object Prototypes
-# Appendix A: ES6 `class`
+# Вы не знаете JS: This и прототипы объектов
+# Приложение А: `class` в ES6
 
-If there's any take-away message from the second half of this book (Chapters 4-6), it's that classes are an optional design pattern for code (not a necessary given), and that furthermore they are often quite awkward to implement in a `[[Prototype]]` language like JavaScript.
+Если что-то можно вынести из второй половины этой книги (Главы 4-6), так это то, что классы - необязательный паттерн проектирования кода (не является необходимым). Более того, зачастую, их неудобно реализовывать в «прототипном» языке вроде JS.
 
-This awkwardness is *not* just about syntax, although that's a big part of it. Chapters 4 and 5 examined quite a bit of syntactic ugliness, from verbosity of `.prototype` references cluttering the code, to *explicit pseudo-polymorphism* (see Chapter 4) when you give methods the same name at different levels of the chain and try to implement a polymorphic reference from a lower-level method to a higher-level method. `.constructor` being wrongly interpreted as "was constructed by" and yet being unreliable for that definition is yet another syntactic ugly.
+Это неудобство связано *не* только с синтаксисом, хоть он и играет значительную роль. В главах 4 и 5 мы рассмотрели некоторые синтаксические уродства: от многословных ссылок `.prototype`, загромождающих код, до *явного псевдо-полиморфизма* (см. главу 4), когда вы называете метод одним и тем же именем на разных уровнях цепочки и пытаетесь реализовать полиморфные отсылки из методов низкого уровня к методам высокого уровня. Еще одно синтаксическое уродство - `.constructor`, который ошибочно интерпретируется как «был сконструирован с помощью» и тем не менее ненадёжен из-за такого определения.
 
-But the problems with class design are much deeper. Chapter 4 points out that classes in traditional class-oriented languages actually produce a *copy* action from parent to child to instance, whereas in `[[Prototype]]`, the action is **not** a copy, but rather the opposite -- a delegation link.
+Но проблема с дизайном классов намного глубже. Глава 4 указывает, что классы в традиционных класс-ориентированных языках на самом деле выполняют *копирование* от родительского к дочернему экземпляру, в то время как в `[[Prototype]]` выполняется не копирование, а скорее наоборот — связывающее делегирование.
 
-When compared to the simplicity of OLOO-style code and behavior delegation (see Chapter 6), which embrace `[[Prototype]]` rather than hide from it, classes stand out as a sore thumb in JS.
+По сравнению с простотой кода в OLOO-стиле и делегированием поведения (см. главу 6), которые принимает `[[Prototype]]`, а не прячет, классы торчат из JS как сломанный палец.
 
 ## `class`
 
-But we *don't* need to re-argue that case again. I re-mention those issues briefly only so that you keep them fresh in your mind now that we turn our attention to the ES6 `class` mechanism. We'll demonstrate here how it works, and look at whether or not `class` does anything substantial to address any of those "class" concerns.
+Но нам *не нужно* повторять всё это. Я кратко упомянул эти проблемы только чтобы вы держали их в голове пока мы переключаем всё внимание на механизм `class` в ES6. Здесь мы покажем как они работают и посмотрим дает ли `class` что-то существенное для решения всех этих «классовых» проблем.
 
-Let's revisit the `Widget` / `Button` example from Chapter 6:
+Давайте вспомним пример `Widget` / `Button` из главы 6:
 
 ```js
 class Widget {
@@ -48,23 +48,25 @@ class Button extends Widget {
 }
 ```
 
-Beyond this syntax *looking* nicer, what problems does ES6 solve?
+Кроме того, что синтаксис *выглядит* приятнее, какую проблему решает ES6?
 
-1. There's no more (well, sorta, see below!) references to `.prototype` cluttering the code.
-2. `Button` is declared directly to "inherit from" (aka `extends`) `Widget`, instead of needing to use `Object.create(..)` to replace a `.prototype` object that's linked, or having to set with `.__proto__` or `Object.setPrototypeOf(..)`.
-3. `super(..)` now gives us a very helpful **relative polymorphism** capability, so that any method at one level of the chain can refer relatively one level up the chain to a method of the same name. This includes a solution to the note from Chapter 4 about the weirdness of constructors not belonging to their class, and so being unrelated -- `super()` works inside constructors exactly as you'd expect.
-4. `class` literal syntax has no affordance for specifying properties (only methods). This might seem limiting to some, but it's expected that the vast majority of cases where a property (state) exists elsewhere but the end-chain "instances", this is usually a mistake and surprising (as it's state that's implicitly "shared" among all "instances"). So, one *could* say the `class` syntax is protecting you from mistakes.
-5. `extends` lets you extend even built-in object (sub)types, like `Array` or `RegExp`, in a very natural way. Doing so without `class .. extends` has long been an exceedingly complex and frustrating task, one that only the most adept of framework authors have ever been able to accurately tackle. Now, it will be rather trivial!
+1. Больше нет (ну, типа того, см. ниже) отсылок к `.prototype`, загромождающих код.
+2. `Button` объявляется напрямую чтобы «унаследовать» (`extends`) `Widget`, вместо использования `Object.create(..)` для замены привязанного `.prototype` или установки через `.__proto__` или `Object.setPrototypeOf(..)`.
+3. `super(..)` теперь дает нам полезную функцию — **относительный полиморфизм**, так что любой метод одного уровня цепочки может обратиться к методу с тем же именем на другой уровень выше по цепочке. Сюда входит решение к заметке из главы 4 о странностях конструкторов, не принадлежащих к их классу и не связанных друг с другом — `super()` работает внутри конструкторов именно так как вы ожидаете.
+4. Литеральный синтаксис `class` не позволяет указать свойства (только методы). Для кого-то это покажется ограничением, но, скорее всего, большинство ситуаций, в которых свойство (состояние) существует где-либо, кроме конечных экземпляров, являются ошибочными и неожиданными (поскольку это состояние, которе явно «распространяется» по всем «экземплярам»).
+В общем, *можно* сказать, что синтаксис `class` защищает вас от ошибок.
+5. `extends` позволяет вам расширить даже встроенные (под)типы объектов, вроде `Array` или `RegExp` очень естественным способом. Такие действия без `class .. extends` долгое время оставались избыточно сложной и удручающей задачей.
 
-In all fairness, those are some substantial solutions to many of the most obvious (syntactic) issues and surprises people have with classical prototype-style code.
+Справедливости ради, это лишь некоторые из важных решений множества наиболее очевидных (синтаксических) проблем и сюрпризов, которые встречают люди с кодом в классическом прототипном стиле.
 
-## `class` Gotchas
+## Глюки `class`
 
-It's not all bubblegum and roses, though. There are still some deep and profoundly troubling issues with using "classes" as a design pattern in JS.
+Но не всё так радужно. До сих пор существуют некоторые глубокие и тревожащие проблемы с использованием «классов» в качестве паттерна проектирования на JS.
 
-Firstly, the `class` syntax may convince you a new "class" mechanism exists in JS as of ES6. **Not so.** `class` is, mostly, just syntactic sugar on top of the existing `[[Prototype]]` (delegation!) mechanism.
+Во-первых, синтаксис `class` может убедить вас, что в JS существует новый механизм «классов» ES6. **Нет**. `class` — это, в основном, синтаксический сахар поверх существующего механизма (делегирования!) `[[Prototype]]`.
 
-That means `class` is not actually copying definitions statically at declaration time the way it does in traditional class-oriented languages. If you change/replace a method (on purpose or by accident) on the parent "class", the child "class" and/or instances will still be "affected", in that they didn't get copies at declaration time, they are all still using the live-delegation model based on `[[Prototype]]`:
+Это означает, что `class` на самом деле не копирует содержимое статически во время объявления, как это происходит в традиционных класс-ориентированных языках. Если вы измените/замените метод (намеренно или случайно) родительского «класса», дочерний «класс» и/или экземпляр тоже будет затронут, поскольку они не копируются при объявлении, а всё еще используют модель делегирования, основанного на `[[Prototype]]`:
+
 
 ```js
 class C {
@@ -75,166 +77,148 @@ class C {
 		console.log( "Random: " + this.num );
 	}
 }
-
 var c1 = new C();
 c1.rand(); // "Random: 0.4324299..."
-
 C.prototype.rand = function() {
 	console.log( "Random: " + Math.round( this.num * 1000 ));
 };
-
 var c2 = new C();
 c2.rand(); // "Random: 867"
-
-c1.rand(); // "Random: 432" -- oops!!!
+c1.rand(); // "Random: 432" -- Ой!!!
 ```
 
-This only seems like reasonable behavior *if you already know* about the delegation nature of things, rather than expecting *copies* from "real classes". So the question to ask yourself is, why are you choosing `class` syntax for something fundamentally different from classes?
+Такое поведение только кажется разумным *если вы уже знаете* о делегирующей природе вещей и не ожидаете *копий* из «настоящих классов». Поэтому задайте себе вопрос: почему вы выбираете синтаксис `class` для чего-то фундаментально отличающегося от классов?
 
-Doesn't the ES6 `class` syntax **just make it harder** to see and understand the difference between traditional classes and delegated objects?
+Может быть синтаксис `class` в ES6 **просто мешает** увидеть и понять разницу между традиционными классами и делегированными объектами?
 
-`class` syntax *does not* provide a way to declare class member properties (only methods). So if you need to do that to track shared state among instances, then you end up going back to the ugly `.prototype` syntax, like this:
+Синтаксис `class` *не предоставляет* способа объявить свойства экземпляра класса (только методы). Поэтому если вам нужно это для отслеживания состояния между экземплярами, вы вернётесь обратно к некрасивому синтаксису `.prototype`, вроде такого:
 
 ```js
 class C {
 	constructor() {
-		// make sure to modify the shared state,
-		// not set a shadowed property on the
-		// instances!
+		// убедитесь, что изменяете общее состояние,
+		// а не добавляете затеняющее свойство
+		// к экземплярам!
 		C.prototype.count++;
-
-		// here, `this.count` works as expected
-		// via delegation
+		// Здесь, `this.count` работает как и ожидается
+		// через делегирование
 		console.log( "Hello: " + this.count );
 	}
 }
-
-// add a property for shared state directly to
-// prototype object
+// добавим свойство для общего состояния напрямую
+// к объекту-прототипу
 C.prototype.count = 0;
-
 var c1 = new C();
 // Hello: 1
-
 var c2 = new C();
 // Hello: 2
-
 c1.count === 2; // true
 c1.count === c2.count; // true
 ```
 
-The biggest problem here is that it betrays the `class` syntax by exposing (leakage!) `.prototype` as an implementation detail.
+Самая большая проблема здесь в том, что он предаёт синтаксис `class`, выставляя (утечка!) `.prototype` как часть реализации.
 
-But, we also still have the surprise gotcha that `this.count++` would implicitly create a separate shadowed `.count` property on both `c1` and `c2` objects, rather than updating the shared state. `class` offers us no consolation from that issue, except (presumably) to imply by lack of syntactic support that you shouldn't be doing that *at all*.
+Но у нас всё еще остался неожиданный глюк, когда `this.count++` неявно создает затеняющее свойство `.count` в обоих объектах `c1` и `c2`, вместо того, чтобы обновить общее состояние. `class` не предлагает нам решения этой проблемы, кроме, кажется, предположения, что вы не должны так делать *вообще*, в виду слабой поддержки синтаксиса.
 
-Moreover, accidental shadowing is still a hazard:
+Более того, случайное затенение всё еще представляет угрозу:
 
 ```js
 class C {
 	constructor(id) {
-		// oops, gotcha, we're shadowing `id()` method
-		// with a property value on the instance
+		// Ой, блин, мы затеняем метод `id()`
+		// значением свойства в экземпляре
 		this.id = id;
 	}
 	id() {
-		console.log( "Id: " + this.id );
+	console.log( "Id: " + this.id );
 	}
 }
-
 var c1 = new C( "c1" );
-c1.id(); // TypeError -- `c1.id` is now the string "c1"
+c1.id(); // TypeError -- `c1.id` стала строкой "c1"
 ```
 
-There's also some very subtle nuanced issues with how `super` works. You might assume that `super` would be bound in an analogous way to how `this` gets bound (see Chapter 2), which is that `super` would always be bound to one level higher than whatever the current method's position in the `[[Prototype]]` chain is.
+Существует еще один тонкий нюанс, связанный с работой `super`. Вы могли предположить, что `super` будет привязан по аналогии с привязкой `this` (см. главу 2), что `super` всегда будет привязан на уровень выше, вне зависимости от текущего положения метода в цепочке `[[Prototype]]`.
 
-However, for performance reasons (`this` binding is already expensive), `super` is not bound dynamically. It's bound sort of "statically", as declaration time. No big deal, right?
+Тем не менее, в целях повышения производительности (привязка `this` и так дорого стоит), `super` не привязывается динамически. Его привязка вроде как «статичная», как и момент вызова. Не так уж страшно, верно?
 
-Ehh... maybe, maybe not. If you, like most JS devs, start assigning functions around to different objects (which came from `class` definitions), in various different ways, you probably won't be very aware that in all those cases, the `super` mechanism under the covers is having to be re-bound each time.
+Эх... может быть, а может и нет. Если вы как и большинство разработчиков на JS начинаете назначать функции различным объектам (что следует из определения `class`) различными способами, вас, возможно, не очень обеспокоит, что под капотом механизм `super` вынужден каждый раз привязывать себя заново.
 
-And depending on what sorts of syntactic approaches you take to these assignments, there may very well be cases where the `super` can't be properly bound (at least, not where you suspect), so you may (at time of writing, TC39 discussion is ongoing on the topic) have to manually bind `super` with `toMethod(..)` (kinda like you have to do `bind(..)` for `this` -- see Chapter 2).
+И в зависимости выбранного синтаксического подхода к присваиванию возможны случаи, когда `super` не может быть корректно привязан (по крайней мере не там, где вы ожидаете), поэтому вам может понадобиться (на момент написания обсуждение TC39 продолжается) привязать `super` вручную через `toMethod(..)` (наподобие того как вы делаете `bind(..)` для `this` -- см. главу 2).
 
-You're used to being able to assign around methods to different objects to *automatically* take advantage of the dynamism of `this` via the *implicit binding* rule (see Chapter 2). But the same will likely not be true with methods that use `super`.
+Вы привыкли к возможности присваивать методы различным объектам чтобы *автоматически* получать выгоду от динамизма `this` через *скрытое привязывание* (см. главу 2). Но, похоже, всё это не сработает для методов, использующих `super`.
 
-Consider what `super` should do here (against `D` and `E`):
+Рассмотрим что `super` должен делать здесь (напротив `D` и `E`):
 
 ```js
 class P {
 	foo() { console.log( "P.foo" ); }
 }
-
 class C extends P {
 	foo() {
 		super();
 	}
 }
-
 var c1 = new C();
 c1.foo(); // "P.foo"
 
 var D = {
 	foo: function() { console.log( "D.foo" ); }
 };
-
 var E = {
 	foo: C.prototype.foo
 };
-
 // Link E to D for delegation
 Object.setPrototypeOf( E, D );
-
 E.foo(); // "P.foo"
 ```
 
-If you were thinking (quite reasonably!) that `super` would be bound dynamically at call-time, you might expect that `super()` would automatically recognize that `E` delegates to `D`, so `E.foo()` using `super()` should call to `D.foo()`.
+Если вы думали (вполне обоснованно!), что `super` будет привязан динамически во время вызова, вы могли ожидать, что `super` автоматически распознает, что `E` делегирует к `D`, поэтому `E.foo()`, используя `super()`, должен вызвать `D.foo()`.
 
-**Not so.** For performance pragmatism reasons, `super` is not *late bound* (aka, dynamically bound) like `this` is. Instead it's derived at call-time from `[[HomeObject]].[[Prototype]]`, where `[[HomeObject]]` is statically bound at creation time.
+**Нет.** В целях производительности, `super` не использует *отложенную привязку* (динамическую привязку) как это делает `this`. На самом деле он получен во время вызова из `[[HomeObject]].[[Prototype]]`, где `[[HomeObject]]` статично привязан в момент создания.
 
-In this particular case, `super()` is still resolving to `P.foo()`, since the method's `[[HomeObject]]` is still `C` and `C.[[Prototype]]` is `P`.
+В данном конкретном примере `super()` всё еще разрешается в `P.foo()`, поскольку `[[HomeObject]]` этого метода всё еще `C`, а `C.[[Prototype]]` является `P`.
 
-There will *probably* be ways to manually address such gotchas. Using `toMethod(..)` to bind/rebind a method's `[[HomeObject]]` (along with setting the `[[Prototype]]` of that object!) appears to work in this scenario:
+*Возможно*, найдутся и пути решения таких проблем. Использование `toMethod(..)` чтобы привязать/перепривязать `[[HomeObject]]` для метода (вместе с заданием `[[Prototype]]` этого объекта!), кажется, сработает:
 
 ```js
 var D = {
 	foo: function() { console.log( "D.foo" ); }
 };
-
-// Link E to D for delegation
+// Привязать E к D для делегирования
 var E = Object.create( D );
-
-// manually bind `foo`s `[[HomeObject]]` as
-// `E`, and `E.[[Prototype]]` is `D`, so thus
-// `super()` is `D.foo()`
+// вручную связать `[[HomeObject]]` из `foo` в виде
+// `E`, а `E.[[Prototype]]` — это `D`, так что
+// `super()` — это `D.foo()`
 E.foo = C.prototype.foo.toMethod( E, "foo" );
-
 E.foo(); // "D.foo"
 ```
 
-**Note:** `toMethod(..)` clones the method, and takes `homeObject` as its first parameter (which is why we pass `E`), and the second parameter (optionally) sets a `name` for the new method (which keep at "foo").
+**Примечание:** `toMethod(..)` клонирует метод и принимает `homeObject` в качестве первого параметра (поэтому мы передаём `E`), а второй параметр (необязательный) задаёт `name` для нового метода (который хранится в «foo»).
 
-It remains to be seen if there are other corner case gotchas that devs will run into beyond this scenario. Regardless, you will have to be diligent and stay aware of which places the engine automatically figures out `super` for you, and which places you have to manually take care of it. **Ugh!**
+Осталось увидеть нет ли глюков в других крайних случаях, которые разрабы встретят за пределами описанного сценария. Как бы то ни было, вам нужно быть начеку и замечать места, где движок автоматически разбирается с `super` за вас, и места, где вам нужно самим об этом позаботиться. **Ох!**
 
-# Static > Dynamic?
+# Статический > Динамический?
 
-But the biggest problem of all about ES6 `class` is that all these various gotchas mean `class` sorta opts you into a syntax which seems to imply (like traditional classes) that once you declare a `class`, it's a static definition of a (future instantiated) thing. You completely lose sight of the fact `C` is an object, a concrete thing, which you can directly interact with.
+Но самая большая проблема `class` ES6 в том, что все эти глюки означают, что `class` как бы навязывает вам синтаксис, который, якобы, подразумевает (как традиционные классы), что однажды объявленный `class` является статическим определением чего-либо (наследуемого в будущем). Вы полностью теряете осознание факта, что `C` — это объект, конкретная вещь, с который вы можете взаимодействовать напрямую.
 
-In traditional class-oriented languages, you never adjust the definition of a class later, so the class design pattern doesn't suggest such capabilities. But **one of the most powerful parts** of JS is that it *is* dynamic, and the definition of any object is (unless you make it immutable) a fluid and mutable *thing*.
+В традиционных класс-ориентированных языках вы никогда не измените определение класса в дальнейшем, поэтому классы как паттерн проектирования не предлагают таких возможностей. Но **одна из самых мощных особенностей** JS состоит в том, что он является *динамическим*, а определение любого объекта (пока вы не сделаете его иммутабельным) — это *вещь* подвижная и мутабельная.
 
-`class` seems to imply you shouldn't do such things, by forcing you into the uglier `.prototype` syntax to do so, or forcing you think about `super` gotchas, etc. It also offers *very little* support for any of the pitfalls that this dynamism can bring.
+`class` вроде подразумевает, что вы не должны делать такие штуки, склоняя вас использовать уродливый синтаксис `.prototype` или заставляя вас думать о подвохах `super` и т.д. Он также предоставляет *очень слабую* поддержку на случай подводных камней, которые может принести такой динамизм.
 
-In other words, it's as if `class` is telling you: "dynamic is too hard, so it's probably not a good idea. Here's a static-looking syntax, so code your stuff statically."
+Другими словами, `class` как бы говорит вам: «Динамика — это сильно сложно, так что, возможно, это не лучшая идея». Вот вам синтаксис, который выглядит как статический, так что пишите свой код статически.»
 
-What a sad commentary on JavaScript: **dynamic is too hard, let's pretend to be (but not actually be!) static**.
+Какой грустный комментарий к JS: **динамика слишком сложная, давайте притворимся (но на самом деле не будем) статикой**
 
-These are the reasons why ES6 `class` is masquerading as a nice solution to syntactic headaches, but it's actually muddying the waters further and making things worse for JS and for clear and concise understanding.
+Это причины, по которым `class` в ES6 маскируется под красивое решение синтаксической головной боли, но на самом деле еще сильней мутит воду и ухудшает четкость и краткость понимания JS и его особенностей.
 
-**Note:** If you use the `.bind(..)` utility to make a hard-bound function (see Chapter 2), the function created is not subclassable with ES6 `extend` like normal functions are.
+*Примечание:** Если вы используете инструмент `.bind(..)`, чтобы создать жестко привязанную функцию (см. главу 2), эта функция не может быть наследована с помощью `extend` из ES6, в отличие от обычных функций.
 
-## Review (TL;DR)
+## Обзор (TL;DR)
 
-`class` does a very good job of pretending to fix the problems with the class/inheritance design pattern in JS. But it actually does the opposite: **it hides many of the problems, and introduces other subtle but dangerous ones**.
+`class` очень хорошо притворяется, что решает проблемы с паттерном класс/наследование в JS. Но на самом деле делает обратное: **он скрывает многие проблемы, но приносит другие, незаметные, но опасные**.
 
-`class` contributes to the ongoing confusion of "class" in JavaScript which has plagued the language for nearly two decades. In some respects, it asks more questions than it answers, and it feels in totality like a very unnatural fit on top of the elegant simplicity of the `[[Prototype]]` mechanism.
+`class` способствует постоянной путанице с «классами» в JS, которая преследует язык около двух десятков лет. Во многом он вызывает больше вопросов, чем ответов и в целом чувствуется, что он противоестественно расположился над элегантной простотой механизма `[[Prototype]]`.
 
-Bottom line: if ES6 `class` makes it harder to robustly leverage `[[Prototype]]`, and hides the most important nature of the JS object mechanism -- **the live delegation links between objects** -- shouldn't we see `class` as creating more troubles than it solves, and just relegate it to an anti-pattern?
+Итоги: в ES6 `class` затрудняет надёжное использование `[[Prototype]]` и скрывает самую важную особенность механизма объектов в JS -- **живое делегирование связей между объектами** -- не лучше ли рассматривать `class` как создающий больше проблем, чем решающий и просто отнести его к анти-паттерну?
 
-I can't really answer that question for you. But I hope this book has fully explored the issue at a deeper level than you've ever gone before, and has given you the information you need *to answer it yourself*.
+На самом деле я не могу ответить за вас. Но я надеюсь, что эта книга для вас полностью раскрыла проблему на более глубоком уровне, чем когда-либо ранее и дала вам необходимую информацию чтобы *вы сами смогли ответить*.
