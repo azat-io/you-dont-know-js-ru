@@ -67,7 +67,6 @@ class Button extends Widget {
 
 Это означает, что `class` на самом деле не копирует содержимое статически во время объявления, как это происходит в традиционных класс-ориентированных языках. Если вы измените/замените метод (намеренно или случайно) родительского «класса», дочерний «класс» и/или экземпляр тоже будет затронут, поскольку они не копируются при объявлении, а всё еще используют модель делегирования, основанного на `[[Prototype]]`:
 
-
 ```js
 class C {
 	constructor() {
@@ -77,13 +76,17 @@ class C {
 		console.log( "Random: " + this.num );
 	}
 }
+
 var c1 = new C();
 c1.rand(); // "Random: 0.4324299..."
+
 C.prototype.rand = function() {
 	console.log( "Random: " + Math.round( this.num * 1000 ));
 };
+
 var c2 = new C();
 c2.rand(); // "Random: 867"
+
 c1.rand(); // "Random: 432" -- Ой!!!
 ```
 
@@ -100,18 +103,23 @@ class C {
 		// а не добавляете затеняющее свойство
 		// к экземплярам!
 		C.prototype.count++;
+
 		// Здесь, `this.count` работает как и ожидается
 		// через делегирование
 		console.log( "Hello: " + this.count );
 	}
 }
+
 // добавим свойство для общего состояния напрямую
 // к объекту-прототипу
 C.prototype.count = 0;
+
 var c1 = new C();
 // Hello: 1
+
 var c2 = new C();
 // Hello: 2
+
 c1.count === 2; // true
 c1.count === c2.count; // true
 ```
@@ -130,9 +138,10 @@ class C {
 		this.id = id;
 	}
 	id() {
-	console.log( "Id: " + this.id );
+		console.log( "Id: " + this.id );
 	}
 }
+
 var c1 = new C( "c1" );
 c1.id(); // TypeError -- `c1.id` стала строкой "c1"
 ```
@@ -153,22 +162,27 @@ c1.id(); // TypeError -- `c1.id` стала строкой "c1"
 class P {
 	foo() { console.log( "P.foo" ); }
 }
+
 class C extends P {
 	foo() {
 		super();
 	}
 }
+
 var c1 = new C();
 c1.foo(); // "P.foo"
 
 var D = {
 	foo: function() { console.log( "D.foo" ); }
 };
+
 var E = {
 	foo: C.prototype.foo
 };
-// Link E to D for delegation
+
+// Ссылка от E к D для делегирования
 Object.setPrototypeOf( E, D );
+
 E.foo(); // "P.foo"
 ```
 
@@ -184,12 +198,15 @@ E.foo(); // "P.foo"
 var D = {
 	foo: function() { console.log( "D.foo" ); }
 };
+
 // Привязать E к D для делегирования
 var E = Object.create( D );
+
 // вручную связать `[[HomeObject]]` из `foo` в виде
 // `E`, а `E.[[Prototype]]` — это `D`, так что
 // `super()` — это `D.foo()`
 E.foo = C.prototype.foo.toMethod( E, "foo" );
+
 E.foo(); // "D.foo"
 ```
 
