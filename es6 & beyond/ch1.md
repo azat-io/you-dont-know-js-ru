@@ -1,65 +1,66 @@
-# You Don't Know JS: ES6 & Beyond
-# Chapter 1: ES? Now & Future
+# Вы не знаете JS: ES6 и не только
+# Глава 1: ES: современность и будущее
 
-Before you dive into this book, you should have a solid working proficiency over JavaScript up to the most recent standard (at the time of this writing), which is commonly called *ES5* (technically ES 5.1). Here, we plan to talk squarely about the upcoming *ES6*, as well as cast our vision beyond to understand how JS will evolve moving forward.
+Для чтения этой книги вы должны хорошо владеть языком JavaScript вплоть до последнего (на момент написания книги) стандарта, который называется ES5 (точнее, ES5.1), поскольку мы с вами будем рассматривать новый стандарт ES6, попутно пытаясь понять, какие перспективы ждут JS.
 
-If you are still looking for confidence with JavaScript, I highly recommend you read the other titles in this series first:
+Если вы не очень уверены в своих знаниях JavaScript, рекомендую предварительно ознакомиться с предшествующими книгами серии You Don’t Know JS.
 
-* *Up & Going*: Are you new to programming and JS? This is the roadmap you need to consult as you start your learning journey.
-* *Scope & Closures*: Did you know that JS lexical scope is based on compiler (not interpreter!) semantics? Can you explain how closures are a direct result of lexical scope and functions as values?
-* *this & Object Prototypes*: Can you recite the four simple rules for how `this` is bound? Have you been muddling through fake "classes" in JS instead of adopting the simpler "behavior delegation" design pattern? Ever heard of *objects linked to other objects* (OLOO)?
-* *Types & Grammar*: Do you know the built-in types in JS, and more importantly, do you know how to properly and safely use coercion between types? How comfortable are you with the nuances of JS grammar/syntax?
-* *Async & Performance*: Are you still using callbacks to manage your asynchrony? Can you explain what a promise is and why/how it solves "callback hell"? Do you know how to use generators to improve the legibility of async code? What exactly constitutes mature optimization of JS programs and individual operations?
+* *Up & Going*: Вы только начинаете изучать программирование и JS? Перед вами карта, которая поможет вам в путешествии по новой области знаний.
+* *Scope & Closures*: Известно ли вам, что в основе лексического контекста JS лежит семантика компилятора (а не интерпретатора)? Можете ли вы объяснить, каким образом замыкания являются прямым результатом лексической области видимости и функций как значений?
+* *this & Object Prototypes*: Можете ли вы назвать четыре варианта значения ключевого слова this в зависимости от контекста вызова? Приходилось ли вам путаться в псевдоклассах JS, вместо того чтобы воспользоваться более простым шаблоном проектирования behavior delegation? А слышали ли вы когда-нибудь про объекты, связанные с другими объектами (OLOO)?
+* *Types & Grammar*: Знакомы ли вы со встроенными типами в JS и, что более важно, знаете ли способы корректного и безопасного приведения типов? Насколько уверенно вы разбираетесь в нюансах грамматики и синтаксиса этого языка?
+* *Async & Performance*: Вы все еще используете обратные вызовы для управления асинхронными действиями? А можете ли вы объяснить, что такое объект promise и как он позволяет избежать ситуации, когда каждая фоновая операция возвращает свой результат (или ошибку) в обратном вызове? Знаете ли вы, как с помощью генераторов улучшить читабельность асинхронного кода? Наконец, известно ли вам, что представляет собой полноценная оптимизация JS-программи отдельных операций?
 
-If you've already read all those titles and you feel pretty comfortable with the topics they cover, it's time we dive into the evolution of JS to explore all the changes coming not only soon but farther over the horizon.
+Если вы уже прочитали все эти книги и освоили рассматриваемые там темы, значит, пришло время погрузиться в эволюцию языка JS и исследовать перемены, которые ждут нас как в ближайшее время, так и в отдаленной перспективе.
 
-Unlike ES5, ES6 is not just a modest set of new APIs added to the language. It incorporates a whole slew of new syntactic forms, some of which may take quite a bit of getting used to. There's also a variety of new organization forms and new API helpers for various data types.
+В отличие от предыдущего стандарта, ES6 нельзя назвать еще одним скромным набором добавленных к языку API. Он принес с собой
+множество новых синтаксических форм, и к некоторым из них, вполне возможно, будет не так-то просто привыкнуть. Появились также новые структуры и новые вспомогательные модули API для различных типов данных.
 
-ES6 is a radical jump forward for the language. Even if you think you know JS in ES5, ES6 is full of new stuff you *don't know yet*, so get ready! This book explores all the major themes of ES6 that you need to get up to speed on, and even gives you a glimpse of future features coming down the track that you should be aware of.
+ES6 — это шаг далеко вперед. Даже если вы считаете, что хорошо знаете JS стандарта ES5, вы столкнетесь с множеством незнакомых
+вещей, так что будьте готовы! В книге рассмотрены все основные нововведения ES6, без которых невозможно войти в курс дела, а также дан краткий обзор планируемых функций — о них имеет смысл знать уже сейчас.
 
-**Warning:** All code in this book assumes an ES6+ environment. At the time of this writing, ES6 support varies quite a bit in browsers and JS environments (like Node.js), so your mileage may vary.
+**Внимание:** Весь приведенный в книге код рассчитан на среду исполнения ES6+. На момент написания этих строк уровень поддержки ES6 в браузерах и в JS-средах (таких, как Node.js) несколько разнился, так что вы можете обнаружить, что полученный вами результат отличается от описанного..
 
-## Versioning
+## Поддержка версий
 
-The JavaScript standard is referred to officially as "ECMAScript" (abbreviated "ES"), and up until just recently has been versioned entirely by ordinal number (i.e., "5" for "5th edition").
+Стандарт JavaScript официально называется ECMAScript (или сокращенно ES), и до недавнего времени все его версии обозначались только целыми числами. ES1 и ES2 не получили известности и массовой реализации. Первой широко распространившейся основой для JavaScript стал ES3 — стандарт этого языка для браузеров Internet Explorer с 6-й по 8-ю версию и для мобильных браузеров Android 2.x. По политическим причинам, о которых я умолчу, злополучная версия ES4 так и не увидела света.
 
-The earliest versions, ES1 and ES2, were not widely known or implemented. ES3 was the first widespread baseline for JavaScript, and constitutes the JavaScript standard for browsers like IE6-8 and older Android 2.x mobile browsers. For political reasons beyond what we'll cover here, the ill-fated ES4 never came about.
+В 2009 году был официально завершен ES5 (ES5.1 появился в 2011-м), получивший распространение в качестве стандарта для множества современных браузеров, таких как Firefox, Chrome, Opera, Safari и др.
 
-In 2009, ES5 was officially finalized (later ES5.1 in 2011), and settled as the widespread standard for JS for the modern revolution and explosion of browsers, such as Firefox, Chrome, Opera, Safari, and many others.
+Следующая версия JS (появление которой было перенесено с 2013-го сначала на 2014-й, а затем на 2015 год) в обсуждениях
+фигурировала под очевидным именем ES6. Но позднее стали поступать предложения перейти к схеме именования, основанной на годе выхода очередной версии, например ES2016 (она же ES7), которая будет закончена до конца 2016 года. Согласны с таким подходом далеко не все, но есть вероятность, что стандарт ES6 станет известен пользователям под названием ES2015. А появление версии ES2016 станет свидетельством окончательного перехода на
+новую схему именования.
 
-Leading up to the expected *next* version of JS (slipped from 2013 to 2014 and then 2015), the obvious and common label in discourse has been ES6.
+Кроме того, было отмечено, что скорость эволюции JS превышает одну версию в год. Как только в обсуждениях стандарта возникает новая идея, разработчики браузеров предлагают прототипы нового функционала, а программисты-первопроходцы принимаются экспериментировать с кодом.
 
-However, late into the ES6 specification timeline, suggestions have surfaced that versioning may in the future switch to a year-based schema, such as ES2016 (aka ES7) to refer to whatever version of the specification is finalized before the end of 2016. Some disagree, but ES6 will likely maintain its dominant mindshare over the late-change substitute ES2015. However, ES2016 may in fact signal the new year-based schema.
+Обычно задолго до официального одобрения новый функционал становится стандартом де-факто благодаря ранним прототипам движка и инструментария. Соответственно, имеет смысл рассматривать будущие версии JS как связанные с появлением нового функционала, а не с произвольным набором основных особенностей (как делается сейчас) или с годом (как планируется).
 
-It has also been observed that the pace of JS evolution is much faster even than single-year versioning. As soon as an idea begins to progress through standards discussions, browsers start prototyping the feature, and early adopters start experimenting with the code.
+В этом случае номер версии перестает иметь ту важность, которой обладал раньше, а JavaScript превращается в живой, постоянно
+меняющийся стандарт. И лучше не говорить о коде как о «написанном в соответствии с таким-то стандартом», а рассматривать его в зависимости от поддерживаемых функциональных особенностей.
 
-Usually well before there's an official stamp of approval, a feature is de facto standardized by virtue of this early engine/tooling prototyping. So it's also valid to consider the future of JS versioning to be per-feature rather than per-arbitrary-collection-of-major-features (as it is now) or even per-year (as it may become).
+## Транскомпиляция
 
-The takeaway is that the version labels stop being as important, and JavaScript starts to be seen more as an evergreen, living standard. The best way to cope with this is to stop thinking about your code base as being "ES6-based," for instance, and instead consider it feature by feature for support.
+Быстрая эволюция функционала ставит серьезную проблему перед разработчиками, желающими использовать новые возможности в ситуации, когда их сайты или приложения работают в более старых браузерах, не поддерживающих нововведения.
 
-## Transpiling
+По всей видимости, ES5 не прижился во многих местах, потому что в основном базу кода не приводили в соответствие с новым стандартом до тех пор, пока не прекратилась поддержка большинства, если не всех, предшествующих платформ. В результате многие разработчики только недавно начали пользоваться такими вещами, как, к примеру, строгий режим, появившийся в ES5 более пяти лет назад.
 
-Made even worse by the rapid evolution of features, a problem arises for JS developers who at once may both strongly desire to use new features while at the same time being slapped with the reality that their sites/apps may need to support older browsers without such support.
+Подобные многолетние промедления повсеместно считаются вредными для будущего экосистемы JS. Люди, занимающиеся развитием языка, мечтают, чтобы разработчики начинали создавать код с учетом новых функциональных особенностей и шаблонов, сразу же после того, как будет утверждена спецификация, и браузеры смогут все это реализовывать.
 
-The way ES5 appears to have played out in the broader industry, the typical mindset was that code bases waited to adopt ES5 until most if not all pre-ES5 environments had fallen out of their support spectrum. As a result, many are just recently (at the time of this writing) starting to adopt things like `strict` mode, which landed in ES5 over five years ago.
+Как же разрешить противоречие? Здесь на помощь приходят специальные инструменты, в частности техника транскомпиляции. Грубо говоря, вы посредством специального инструмента преобразуете код ES6 в эквивалент (или нечто близкое к таковому), работающий в окружениях ES5.
 
-It's widely considered to be a harmful approach for the future of the JS ecosystem to wait around and trail the specification by so many years. All those responsible for evolving the language desire for developers to begin basing their code on the new features and patterns as soon as they stabilize in specification form and browsers have a chance to implement them.
-
-So how do we resolve this seeming contradiction? The answer is tooling, specifically a technique called *transpiling* (transformation + compiling). Roughly, the idea is to use a special tool to transform your ES6 code into equivalent (or close!) matches that work in ES5 environments.
-
-For example, consider shorthand property definitions (see "Object Literal Extensions" in Chapter 2). Here's the ES6 form:
+В качестве примера возьмем сокращенные определения свойства (см. раздел «Расширения объектных литералов» в главе 2). Вот как это делается в ES6:
 
 ```js
 var foo = [1,2,3];
 
 var obj = {
-	foo		// means `foo: foo`
+	foo		// означает `foo: foo`
 };
 
 obj.foo;	// [1,2,3]
 ```
 
-But (roughly) here's how that transpiles:
+А вот каким образом (примерно) он транскомпилируется:
 
 ```js
 var foo = [1,2,3];
@@ -71,49 +72,47 @@ var obj = {
 obj.foo;	// [1,2,3]
 ```
 
-This is a minor but pleasant transformation that lets us shorten the `foo: foo` in an object literal declaration to just `foo`, if the names are the same.
+Такое небольшое, но удобное преобразование позволяет в случае одинаковых имен сократить объявление объектного литерала foo: foo до foo. Действия транскомпилятора в этом случае представляют собой встроенный рабочий процесс, аналогичный линтингу, минификации и другим подобным операциям.
 
-Transpilers perform these transformations for you, usually in a build workflow step similar to how you perform linting, minification, and other similar operations.
+### Библиотеки Shim (полизаполнения)
 
-### Shims/Polyfills
+Далеко не всем новым функциональным особенностям ES6 требуется транскомпилятор. Полизаполнения (polyfills), которые также называют библиотеками Shim, представляют собой шаблоны для определения поведений из новой среды для более старых сред. В синтаксисе полизаполнения недопустимы, но для различных API их вполне можно использовать.
 
-Not all new ES6 features need a transpiler. Polyfills (aka shims) are a pattern for defining equivalent behavior from a newer environment into an older environment, when possible. Syntax cannot be polyfilled, but APIs often can be.
-
-For example, `Object.is(..)` is a new utility for checking strict equality of two values but without the nuanced exceptions that `===` has for `NaN` and `-0` values. The polyfill for `Object.is(..)` is pretty easy:
+Давайте рассмотрим новый метод `Object.is(..)`, предназначенный для проверки строгой эквивалентности двух значений, но без подробных исключений, которые есть у оператора `===` для значений `NaN и -0`. Полизаполнение для метода `Object.is(..)` создается очень
+просто:
 
 ```js
 if (!Object.is) {
 	Object.is = function(v1, v2) {
-		// test for `-0`
+		// проверка для значения `-0`
 		if (v1 === 0 && v2 === 0) {
 			return 1 / v1 === 1 / v2;
 		}
-		// test for `NaN`
+		// проверка для значения `NaN`
 		if (v1 !== v1) {
 			return v2 !== v2;
 		}
-		// everything else
+		// все остальное
 		return v1 === v2;
 	};
 }
 ```
 
-**Tip:** Pay attention to the outer `if` statement guard wrapped around the polyfill. This is an important detail, which means the snippet only defines its fallback behavior for older environments where the API in question isn't already defined; it would be very rare that you'd want to overwrite an existing API.
+**Tip:** Обратите внимание на внешнее граничное условие оператора `if`, охватывающее полизаполнение. Это важная деталь, означающая, что резервное поведение данный фрагмент кода включает только в более старых контекстах, где рассматриваемый API еще не определен; необходимости переписывать существующий API практически никогда не возникает.
 
-There's a great collection of ES6 shims called "ES6 Shim" (https://github.com/paulmillr/es6-shim/) that you should definitely adopt as a standard part of any new JS project!
+Есть замечательная коллекция ES6 Shim (https://github.com/paulmillr/es6-shim/), которую стоит включать во все новые JS-проекты.
 
-It is assumed that JS will continue to evolve constantly, with browsers rolling out support for features continually rather than in large chunks. So the best strategy for keeping updated as it evolves is to just introduce polyfill shims into your code base, and a transpiler step into your build workflow, right now and get used to that new reality.
+Предполагается, что JS ждет непрерывное развитие и что поддержка в браузерах новых функций будет реализовываться постепенно по мере их появления, а не большими фрагментами. Так что самая лучшая стратегия сохранения актуальности — это добавление в базу кода полизаполнений, включение транскомпиляции в процесс сборки и постоянная готовность самого разработчика к изменениям.
 
-If you decide to keep the status quo and just wait around for all browsers without a feature supported to go away before you start using the feature, you're always going to be way behind. You'll sadly be missing out on all the innovations designed to make writing JavaScript more effective, efficient, and robust.
+Те же, кто мыслит консервативно и откладывает использование нового функционала, пока не исчезнут все работающие без него браузеры, всегда будут плестись далеко позади. Их обойдут стороной все инновации, позволяющие сделать написание кода на JavaScript более результативным, рациональным и надежным.
 
-## Review
+## Подводим итоги
 
-ES6 (some may try to call it ES2015) is just landing as of the time of this writing, and it has lots of new stuff you need to learn!
+На момент написания книги стандарт ES6 (кто-то называет его ES2015) только появился, поэтому вам предстоит многому научиться.
 
-But it's even more important to shift your mindset to align with the new way that JavaScript is going to evolve. It's not just waiting around for years for some official document to get a vote of approval, as many have done in the past.
+Однако куда важнее перестроить свое мировоззрение в соответствии с новым вариантом развития языка JavaScript. Обыкновение годами ждать официальных документов, одобряющих смену стандарта, должно остаться в прошлом.
 
-Now, JavaScript features land in browsers as they become ready, and it's up to you whether you'll get on the train early or whether you'll be playing costly catch-up games years from now.
+Теперь новые функциональные особенности JavaScript сразу же после своего появления реализуются в браузерах, и только от вас
+зависит, начнете вы пользоваться ими немедленно или же продолжите действовать неэффективно в попытках запрыгнуть в уходящий поезд.
 
-Whatever labels that future JavaScript adopts, it's going to move a lot quicker than it ever has before. Transpilers and shims/polyfills are important tools to keep you on the forefront of where the language is headed.
-
-If there's any narrative important to understand about the new reality for JavaScript, it's that all JS developers are strongly implored to move from the trailing edge of the curve to the leading edge. And learning ES6 is where that all starts!
+Неважно, какие еще формы примет JavaScript, — теперь это будет происходить быстрее, чем когда-либо в прошлом. Транскомпиляторы и полизаполнения — вот инструменты, которые позволят вам все время оставаться на переднем крае развития языка. Вы должны принять новую реальность JavaScript, где разработчикам настоятельно рекомендуется перейти от выжидания к активной позиции. А начнется все с изучения ES6.
