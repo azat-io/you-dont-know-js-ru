@@ -1,40 +1,40 @@
-# You Don't Know JS
-# Preface
+# Вы не знаете JS
+# Введение
 
-I'm sure you noticed, but "JS" in the book series title is not an abbreviation for words used to curse about JavaScript, though cursing at the language's quirks is something we can probably all identify with!
+Я уверен, что вы заметили, но «JS» в названии серии книг — это не аббревиатура для слов, используемых для проклятий в адрес JavaScript, хотя проклинание причуд языка — это то, на чём, вероятно, мы все можем поймать себя!
 
-From the earliest days of the web, JavaScript has been a foundational technology that drives interactive experience around the content we consume. While flickering mouse trails and annoying pop-up prompts may be where JavaScript started, nearly 2 decades later, the technology and capability of JavaScript has grown many orders of magnitude, and few doubt its importance at the heart of the world's most widely available software platform: the web.
+С самых ранних дней Интернета JavaScript был основополагающей технологией, управляющей интерактивным взаимодействием с контентом, который мы потребляем. И хотя мерцающие шлейфы за курсором мыши и раздражающие всплывающие окна — это то, с чего JavaScript начинался, почти 2 десятилетия спустя технология и возможности JavaScript выросли на несколько порядков, и мало кто подвергает сомнению его роль в основе самой широко доступной программной платформы в мире: в вебе.
 
-But as a language, it has perpetually been a target for a great deal of criticism, owing partly to its heritage but even more to its design philosophy. Even the name evokes, as Brendan Eich once put it, "dumb kid brother" status next to its more mature older brother "Java". But the name is merely an accident of politics and marketing. The two languages are vastly different in many important ways. "JavaScript" is as related to "Java" as "Carnival" is to "Car".
+Но как язык он постоянно был объектом критики, отчасти благодаря своему наследию, но даже в большей степени — из-за философии своего устройства. Даже название напоминает, как сказал однажды Брендан Айк, о статусе «тупого младшего брата», по сравнению с более зрелым старшим братом «Java». Но это название — просто случайность, политический и маркетинговый ход. Эти два языка во многом отличаются друг от друга. «JavaScript» так же связан с «Java», как «вал» с «карнавалом».
 
-Because JavaScript borrows concepts and syntax idioms from several languages, including proud C-style procedural roots as well as subtle, less obvious Scheme/Lisp-style functional roots, it is exceedingly approachable to a broad audience of developers, even those with just little to no programming experience. The "Hello World" of JavaScript is so simple that the language is inviting and easy to get comfortable with in early exposure.
+Поскольку JavaScript заимствует концепции и синтаксические идиомы из нескольких языков, включая как гордые процедурные корни в стиле C, так и тонкие, менее очевидные функциональные корни в стиле Scheme / Lisp, он чрезвычайно доступен для широкой аудитории разработчиков, даже тех, у кого мало или совсем нет опыта программирования. "Hello World" на JavaScript настолько прост, что язык выглядит привлекательным и доступным на первых порах.
 
-While JavaScript is perhaps one of the easiest languages to get up and running with, its eccentricities make solid mastery of the language a vastly less common occurrence than in many other languages. Where it takes a pretty in-depth knowledge of a language like C or C++ to write a full-scale program, full-scale production JavaScript can, and often does, barely scratch the surface of what the language can do.
+Хотя JavaScript — это, возможно, один из самых простых языков в начале работы с ним, его эксцентричность делает твёрдое владение им гораздо менее обычным явлением, чем во многих других языках. Там, где для написания полноценной программы требуется довольно глубокое знание языка, как в C или C ++, полноценная программа на JavaScript может почти не проникать под поверхность того, на что способен язык.
 
-Sophisticated concepts which are deeply rooted into the language tend instead to surface themselves in *seemingly* simplistic ways, such as passing around functions as callbacks, which encourages the JavaScript developer to just use the language as-is and not worry too much about what's going on under the hood.
+Сложные концепции, которые глубоко укоренились в языке, стремятся вместо этого выглядеть *внешне* простыми, как передача функций в качестве обратных вызовов, что побуждает JavaScript-разработчика просто использовать язык как есть и не слишком беспокоиться о том, что происходит под капотом.
 
-It is simultaneously a simple, easy-to-use language that has broad appeal, and a complex and nuanced collection of language mechanics which without careful study will elude *true understanding* even for the most seasoned of JavaScript developers.
+Это одновременно и простой, лёгкий в использовании язык, имеющий широкое обращение, и сложный, полный нюансов набор языковых механик, который без тщательного изучения ускользнёт от *истинного понимания* даже для самых опытных JavaScript-разработчиков.
 
-Therein lies the paradox of JavaScript, the Achilles' Heel of the language, the challenge we are presently addressing. Because JavaScript *can* be used without understanding, the understanding of the language is often never attained.
+В этом парадокс JavaScript, ахиллесова пята языка, проблема, к которой мы сейчас обращаемся. Поскольку JavaScript *можно* использовать без понимания, это понимание зачастую никогда не достигается.
 
-## Mission
+## Миссия
 
-If at every point that you encounter a surprise or frustration in JavaScript, your response is to add it to the blacklist, as some are accustomed to doing, you soon will be relegated to a hollow shell of the richness of JavaScript.
+Если каждый раз, когда вы сталкиваетесь с какой-то неожиданностью или разочарованием в JavaScript, ваша реакция — добавить это в чёрный список, как некоторые привыкли делать, то вскоре от всего богатства JavaScript у вас останется только оболочка.
 
-While this subset has been famously dubbed "The Good Parts", I would implore you, dear reader, to instead consider it the "The Easy Parts", "The Safe Parts", or even "The Incomplete Parts".
+Хотя это подмножество известно под названием «Сильные стороны», умоляю вас, дорогой читатель, вместо этого считать его «Лёгкими сторонами», «Безопасными сторонами» или даже «Неполными сторонами».
 
-This *You Don't Know JavaScript* book series offers a contrary challenge: learn and deeply understand *all* of JavaScript, even and especially "The Tough Parts".
+Серия *Вы не знаете JavaScript* предлагает противоположный вызов: учиться и глубоко понимать *весь* JavaScript, включая (в особенности) «Тяжёлые стороны».
 
-Here, we address head on the tendency of JS developers to learn "just enough" to get by, without ever forcing themselves to learn exactly how and why the language behaves the way it does. Furthermore, we eschew the common advice to *retreat* when the road gets rough.
+Здесь мы обращаемся к стремлению JS-разработчиков выучить «достаточно», чтобы обходиться этим, даже не заставляя себя в точности выяснить, как и почему язык ведёт себя так, как он это делает. Кроме того, мы избегаем общего совета *отдыхать*, когда путь становится тяжёлым.
 
-I am not content, nor should you be, at stopping once something *just works*, and not really knowing *why*. I gently challenge you to journey down that bumpy "road less traveled" and embrace all that JavaScript is and can do. With that knowledge, no technique, no framework, no popular buzzword acronym of the week, will be beyond your understanding.
+Я не доволен, и вы не должны быть довольны, останавливаясь каждый раз, когда что-то *просто работает*, без полного понимания, *почему*. Я вежливо призываю вас отправиться по этой ухабистой непроторённой дороге и охватить всё, чем JavaScript является и на что он способен. С этими знаниями ни одна технология, фреймворк, или другой популярный тренд недели не останется за пределами вашего понимания.
 
-These books each take on specific core parts of the language which are most commonly misunderstood or under-understood, and dive very deep and exhaustively into them. You should come away from reading with a firm confidence in your understanding, not just of the theoretical, but the practical "what you need to know" bits.
+Каждая из этих книг берёт конкретные ключевые части языка, которые чаще всего неправильно понимаются или недооцениваются, и погружается в них глубоко и исчерпывающе. Вам стоит отбросить твёрдую уверенность в своём понимании не только теоретических, но и практических составляющих.
 
-The JavaScript you know *right now* is probably *parts* handed down to you by others who've been burned by incomplete understanding. *That* JavaScript is but a shadow of the true language. You don't *really* know JavaScript, *yet*, but if you dig into this series, you *will*. Read on, my friends. JavaScript awaits you.
+JavaScript, который вы знаете *прямо сейчас* — вероятно, *стороны*, переданные вам другими, кто перегорел от неполного понимания. *Этот* JavaScript — всего лишь тень истинного языка. Вы не знаете JavaScript *по-настоящему*, *пока что*, но если вы вникнете в эту серию, вы *будете*. Продолжайте читать, друзья. JavaScript ждёт вас.
 
-## Summary
+## Резюме
 
-JavaScript is awesome. It's easy to learn partially, and much harder to learn completely (or even *sufficiently*). When developers encounter confusion, they usually blame the language instead of their lack of understanding. These books aim to fix that, inspiring a strong appreciation for the language you can now, and *should*, deeply *know*.
+JavaScript потрясающий. Легко учиться частично, и гораздо труднее учиться полностью (или хотя бы *достаточно*). Когда разработчики сталкиваются с затруднениями, они обычно обвиняют язык вместо нехватки собственных знаний о нём. Цель этих книг — исправить это, вдохновляя на высокую оценку языка, который вы можете сейчас и *должны* глубоко *знать*.
 
-Note: Many of the examples in this book assume modern (and future-reaching) JavaScript engine environments, such as ES6. Some code may not work as described if run in older (pre-ES6) engines.
+Примечание. Многие примеры в этой книге предполагают использование современных (и будущих) JavaScript-сред, таких как ES6. Какой-то код может не работать так, как описано, если он запускается на старых (до ES6) платформах.
