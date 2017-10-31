@@ -1,20 +1,20 @@
-# You Don't Know JS: Types & Grammar
-# Foreword
+# Вы не знаете JS: Типы и грамматика
+# Предисловие
 
-It was once said, "JavaScript is the only language developers don't learn to use before using it."
+Как было однажды сказано, "JavaScript — это единственный язык, который разработчики не учат перед тем, как работать с ним."
 
-I laugh each time I hear that quote because it was true for me and I suspect it was for many other developers. JavaScript, and maybe even CSS and HTML, were not a core computer science language taught at college in the Internet's early days, so personal development was very much based on the budding developer's search and "view source" abilities to piece together these basic web languages.
+Я смеюсь каждый раз, когда слышу эту цитату, потому что так было у меня, и, я подозреваю, у многих других разработчиков. JavaScript и, возможно, даже CSS и HTML не были основными языками компьютерных наук, преподававшимися в колледжах в первые дни Интернета, поэтому личное развитие было в значительной степени основано на поиске толкового разработчика и возможности посмотреть исходный код, чтобы собрать воедино эти основные веб-языки.
 
-I still remember my first high school website project. The task was to create any type of web store, and me being a James Bond fan, I decided to create a Goldeneye store. It had everything: the Goldeneye midi theme song playing in the background, a JavaScript-powered crosshairs following the mouse around the screen, and a gunshot sound that played upon every click. Q would have been proud of this masterpiece of a website.
+Я до сих пор помню свой первый проект веб-сайта из средней школы. Задача заключалась в создании любого интернет-магазина, и я, будучи поклонником Джеймса Бонда, решил создать магазин «Золотой глаз». В нём было всё: заглавная midi-песня из «Золотого глаза», играющая на фоне, мишень на JavaScript, двигающаяся за мышью по экрану и звук выстрела, который воспроизводился при каждом клике. Q гордился бы этим шедевром.
 
-I tell that story because I did back then what many developers are doing today: I copied and pasted chunks of JavaScript code into my project without having a clue what's actually happening. The widespread use of JavaScript toolkits like jQuery have, in their own small way, perpetuated this pattern of nonlearning of core JavaScript.
+Я рассказываю эту историю, потому что я сделал тогда то, что делают многие разработчики сегодня: я скопировал и вставил куски JavaScript-кода в свой проект, не имея понятия, что там на самом деле происходит. Широкое использование JavaScript-инструментов, таких как jQuery, некоторым образом увековечило эту модель незнания основ JavaScript.
 
-I'm not disparaging JavaScript toolkit use; after all, I'm a member of the MooTools JavaScript team! But the reason JavaScript toolkits are as powerful as they are is because their developers know the fundamentals, and their "gotchas," and apply them magnificently. As useful as these toolkits are, it's still incredibly important to know the basics of the language, and with books like Kyle Simpson's *You Don't Know JS* series, there's no excuse not to learn them.
+Я не пренебрегаю использованием JavaScript-инструментов; в конце концов, я являюсь членом команды MooTools! Но причина, по которой инструменты для JavaScript настолько сильны, в том, что их разработчики знают основы и их подводные камни и великолепно их применяют. Как бы ни были полезны эти инструменты, всё ещё невероятно важно знать основы языка, а с такими книгами, как серия *Вы не знаете JS* Кайла Симпсона, нет оправдания, чтобы не изучать их.
 
-*Types and Grammar*, the third installment of the series, is an excellent look at the core JavaScript fundamentals that copy and paste and JavaScript toolkits don't and could never teach you. Coercion and its pitfalls, natives as constructors, and the whole gamut of JavaScript basics are thoroughly explained with focused code examples. Like the other books in this series, Kyle cuts straight to the point: no fluff and word-smithing -- exactly the type of tech book I love.
+*Типы и грамматика*, третий выпуск серии — это отличный взгляд на основы JavaScript, которым копипаст и сторонние библиотеки не учат и никогда не смогут вас научить. Приведение типов и его подводные камни, примитивы как конструкторы и весь диапазон основ JavaScript подробно объясняются детальными примерами кода. Как и в других книгах этой серии, Кайл объясняет чётко и по делу: никакой воды и пустословия — та самая категория технических книг, которую я люблю.
 
-Enjoy Types and Grammar and don't let it get too far away from your desk!
+Наслаждайтесь "Типами и грамматикой" и держите её поближе к вашему рабочему столу!
 
-David Walsh<br>
+Дэвид Уолш<br>
 [http://davidwalsh.name](http://davidwalsh.name), [@davidwalshblog](http://twitter.com/davidwalshblog)<br>
 Senior Web Developer, Mozilla
