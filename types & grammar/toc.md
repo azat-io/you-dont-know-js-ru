@@ -1,13 +1,13 @@
-# You Don't Know JS: Types & Grammar
+# Вы не знаете JS: Типы и грамматика
 
-## Table of Contents
+## Содержание
 
-* Foreword
-* Preface
-* Chapter 1: Types
-	* A Type By Any Other Name...
-	* Built-in Types
-	* Values as Types
+* Предисловие
+* Введение
+* Глава 1: Типы
+	* Тип, как бы он ни назывался...
+	* Встроенные типы
+	* Значения как типы
 * Chapter 2: Values
 	* Arrays
 	* Strings

@@ -12,7 +12,7 @@
 
 * [Предисловие](foreword.md) (от [Дэвида Уолша](http://davidwalsh.name))
 * [Введение](../preface.md)
-* [Chapter 1: Types](ch1.md)
+* [Глава 1: Типы](ch1.md)
 * [Chapter 2: Values](ch2.md)
 * [Chapter 3: Natives](ch3.md)
 * [Chapter 4: Coercion](ch4.md)
