@@ -1,11 +1,11 @@
-# You Don't Know JS: Async & Performance
-# Chapter 1: Asynchrony: Now & Later
+# Вы не знаете JS: Асинхронность и Выполнение
+# Глава 1: Асинхронность: Сейчас и Потом
 
 Управление программой в течении её времени выполнения является глубокой и, в тоже время, важной темой для понимания Javascript. 
 
-Имеется ввиду не только то, что происходит от начала `for` цикла и до его завершения, выполнение которого занимает, в основном, небольшой промежуток времени (от микро до милисекунд), но и, то, что случается между запуском одной части программы *сейчас* и другой *позже* --в этом промежутке, когда она не в активном исполнении.
+Имеется ввиду не только то, что происходит от начала `for` цикла и до его завершения, выполнение которого занимает, в основном, небольшой промежуток времени (от микро- до миллисекунд), но и, то, что случается между запуском одной части программы *сейчас* и другой *позже* -- в этом промежутке, когда она не в активном исполнении.
 
-Practically all nontrivial programs ever written (especially in JS) have in some way or another had to manage this gap, whether that be in waiting for user input, requesting data from a database or file system, sending data across the network and waiting for a response, or performing a repeated task at a fixed interval of time (like animation). In all these various ways, your program has to manage state across the gap in time. As they famously say in London (of the chasm between the subway door and the platform): "mind the gap."
+Практически, все нетривиальные программы (особенно, написанные на Javascript) управляют выше упомянутым промежутком, будто ожидание ввода данных пользователем, запрос информации с базы данных или файловой системы, отправка данных по сети и ожидание ответа, или выполнение повторяющихся действий в заданном интервале (анимация). Во всех этих случаях, ваша программа должна управлять своим состоянием во время этой "паузы" в ходе своего исполнения. Как говорят в Лондоне "Mind the gap!"(дословно -- "Помни о разрыве") -- надпись на платформе, предупреждающая о расстоянии между её краем и дверью поезда.
 
 In fact, the relationship between the *now* and *later* parts of your program is at the heart of asynchronous programming.
 
