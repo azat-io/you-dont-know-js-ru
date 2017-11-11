@@ -7,9 +7,11 @@
 
 Практически, все нетривиальные программы (особенно, написанные на Javascript) управляют выше упомянутым промежутком, будто ожидание ввода данных пользователем, запрос информации с базы данных или файловой системы, отправка данных по сети и ожидание ответа, или выполнение повторяющихся действий в заданном интервале (анимация). Во всех этих случаях, ваша программа должна управлять своим состоянием во время этой "паузы" в ходе своего исполнения. Как говорят в Лондоне "Mind the gap!"(дословно -- "Помни о разрыве") -- надпись на платформе, предупреждающая о расстоянии между её краем и дверью поезда.
 
-In fact, the relationship between the *now* and *later* parts of your program is at the heart of asynchronous programming.
+На самом деле, отношение *сейчас* и *потом* частей вашей программы является сердцем асинхронного программирования.
 
 Asynchronous programming has been around since the beginning of JS, for sure. But most JS developers have never really carefully considered exactly how and why it crops up in their programs, or explored various *other* ways to handle it. The *good enough* approach has always been the humble callback function. Many to this day will insist that callbacks are more than sufficient.
+
+Асинхронное программирование существовало в JS изначально. Но многие разработчики не вдавались в подробности как именно оно работатет в их программах, или находили *другие* способы управления им. *Почти хорошим* подходом считалась скромная callback функция. Многие до сих пор считают, что callback'и являются эффективным решением.
 
 But as JS continues to grow in both scope and complexity, to meet the ever-widening demands of a first-class programming language that runs in browsers and servers and every conceivable device in between, the pains by which we manage asynchrony are becoming increasingly crippling, and they cry out for approaches that are both more capable and more reason-able.
 
