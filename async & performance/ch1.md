@@ -17,9 +17,9 @@
 
 Для этого нам надо разобраться во всех тонкостях асинхронности в JS.
 
-## A Program in Chunks
+## Программа в кусочках
 
-You may write your JS program in one *.js* file, but your program is almost certainly comprised of several chunks, only one of which is going to execute *now*, and the rest of which will execute *later*. The most common unit of *chunk* is the `function`.
+Даже, если вы пишете ваш код в одном *.js* файле, ваша программа почти наверняка состоит из нескольких *кусочков*, один из которых выполнится *сейчас*, а остальные *потом*. Наиболее распространенная единица *кусочка* - `function`.
 
 The problem most developers new to JS seem to have is that *later* doesn't happen strictly and immediately after *now*. In other words, tasks that cannot complete *now* are, by definition, going to complete asynchronously, and thus we will not have blocking behavior as you might intuitively expect or want.
 
