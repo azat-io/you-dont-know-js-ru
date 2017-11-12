@@ -21,29 +21,26 @@
 
 Даже, если вы пишете ваш код в одном *.js* файле, ваша программа почти наверняка состоит из нескольких *кусочков*, один из которых выполнится *сейчас*, а остальные *потом*. Наиболее распространенная единица *кусочка* - 'function'.
 
-The problem most developers new to JS seem to have is that *later* doesn't happen strictly and immediately after *now*. In other words, tasks that cannot complete *now* are, by definition, going to complete asynchronously, and thus we will not have blocking behavior as you might intuitively expect or want.
+Большинство, новоприбывших в JS, разработчиков, думают, что асинхронный код приостанавливается для выполнения, но это не так.
 
-Consider:
+Давайте посмотрим:
 
 ```js
-// ajax(..) is some arbitrary Ajax function given by a library
+// ajax(..) обычная ajax функция
 var data = ajax( "http://some.url.1" );
 
 console.log( data );
-// Oops! `data` generally won't have the Ajax results
+// Упс! `данные` не получены
 ```
 
-You're probably aware that standard Ajax requests don't complete synchronously, which means the `ajax(..)` function does not yet have any value to return back to be assigned to `data` variable. If `ajax(..)` *could* block until the response came back, then the `data = ..` assignment would work fine.
+Вы вероятно знаете, что Ajax запросы не выполняются синхронно, а это значит, что `ajax(..)` функция ещё не получила данных для присвоения в переменную `data`. Если бы `ajax(..)` запрос мог бы приостановить код для получения данных, тогда бы `data` не была пуста. 
 
-But that's not how we do Ajax. We make an asynchronous Ajax request *now*, and we won't get the results back until *later*.
-
-The simplest (but definitely not only, or necessarily even best!) way of "waiting" from *now* until *later* is to use a function, commonly called a callback function:
+Простейшая (но далеко не самая лучшая) реализация Ajax -- это использование функции callback. 
 
 ```js
-// ajax(..) is some arbitrary Ajax function given by a library
 ajax( "http://some.url.1", function myCallbackFunction(data){
 
-	console.log( data ); // Yay, I gots me some `data`!
+	console.log( data ); // Ура, Я получил `data`!
 
 } );
 ```
