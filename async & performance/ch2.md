@@ -1,5 +1,5 @@
-# You Don't Know JS: Async & Performance
-# Chapter 2: Callbacks
+# Вы не знаете JS: Асинхронность и Производительность
+# Глава 2: Функции обратного вызова (колбэки)
 
 In Chapter 1, we explored the terminology and concepts around asynchronous programming in JavaScript. Our focus is on understanding the single-threaded (one-at-a-time) event loop queue that drives all "events" (async function invocations). We also explored various ways that concurrency patterns explain the relationships (if any!) between *simultaneously* running chains of events, or "processes" (tasks, function calls, etc.).
 

@@ -1,5 +1,5 @@
-# You Don't Know JS: Async & Performance
-# Appendix A: *asynquence* Library
+# Вы не знаете JS: Асинхронность и Производительность
+# Приложение A: *Асинхронные* библиотеки
 
 Chapters 1 and 2 went into quite a bit of detail about typical asynchronous programming patterns and how they're commonly solved with callbacks. But we also saw why callbacks are fatally limited in capability, which led us to Chapters 3 and 4, with Promises and generators offering a much more solid, trustable, and reason-able base to build your asynchrony on.
 

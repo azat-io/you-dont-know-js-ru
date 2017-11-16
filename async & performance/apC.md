@@ -1,5 +1,5 @@
-# You Don't Know JS: Async & Performance
-# Appendix C: Acknowledgments
+# Вы не знаете JS: Асинхронность и Производительность
+# Приложение C: Благодарности
 
 I have many people to thank for making this book title and the overall series happen.
 
