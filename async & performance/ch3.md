@@ -1,5 +1,5 @@
-# You Don't Know JS: Async & Performance
-# Chapter 3: Promises
+# Вы не знаете JS: Асинхронность и Производительность
+# Глава 3: Обещания
 
 In Chapter 2, we identified two major categories of deficiencies with using callbacks to express program asynchrony and manage concurrency: lack of sequentiality and lack of trustability. Now that we understand the problems more intimately, it's time we turn our attention to patterns that can address them.
 

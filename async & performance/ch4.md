@@ -1,5 +1,5 @@
-# You Don't Know JS: Async & Performance
-# Chapter 4: Generators
+# Вы не знаете JS: Асинхронность и Производительность
+# Глава 4: Генераторы
 
 In Chapter 2, we identified two key drawbacks to expressing async flow control with callbacks:
 
