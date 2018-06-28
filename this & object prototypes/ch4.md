@@ -1,41 +1,41 @@
-# You Don't Know JS: *this* & Object Prototypes
-# Chapter 4: Mixing (Up) "Class" Objects
+# Вы не знаете JS: This и Прототипы Объектов
+# Глава 4: Смешивая объекты "классов"
 
-Following our exploration of objects from the previous chapter, it's natural that we now turn our attention to "object oriented (OO) programming", with "classes". We'll first look at "class orientation" as a design pattern, before examining the mechanics of "classes": "instantiation", "inheritance" and "(relative) polymorphism".
+Продолжая исследование объектов, начатое в предыдущей главе, вполне естественно, что теперь мы обратим внимание на «объектно-ориентированное (OO) программирование», с «классами».  Мы рассмотрим «класс-оринтированность» в качестве шаблона проектирования, прежде чем изучать механику «классов»: «создание экземпляров», «наследование» и «(относительный) полиморфизм».
 
-We'll see that these concepts don't really map very naturally to the object mechanism in JS, and the lengths (mixins, etc.) many JavaScript developers go to overcome such challenges.
+Мы увидим, что эти понятия на самом деле не очень хорошо соотносятся с механизмами работы с объектами в JS (mixins и т. д.), и многие разработчики JavaScript идут на преодоление подобных вызовов.
 
-**Note:** This chapter spends quite a bit of time (the first half!) on heavy "objected oriented programming" theory. We eventually relate these ideas to real concrete JavaScript code in the second half, when we talk about "Mixins". But there's a lot of concept and pseudo-code to wade through first, so don't get lost -- just stick with it!
+** Примечание: ** В этой главе уделяется довольно много внимания (первая половина!) тяжеловесной  теории «объективно-ориентированного программирования». В конце концов мы свяжем эти идеи с реальным JavaScript кодом во второй половине, где мы поговорим о «миксинах (mixins)». Но будет рассмотрено много концепций и псевдокода, чтобы продвинуться вперед, поэтому не теряйтесь - просто потерпите!
 
-## Class Theory
+## Теория классов
 
-"Class/Inheritance" describes a certain form of code organization and architecture -- a way of modeling real world problem domains in our software.
+"Классовое наследование" описывает определенный подход к архитектуре и организации кода - способ моделирования реальных проблемных областей в нашем программном обеспечении.
 
-OO or class oriented programming stresses that data intrinsically has associated behavior (of course, different depending on the type and nature of the data!) that operates on it, so proper design is to package up (aka, encapsulate) the data and the behavior together. This is sometimes called "data structures" in formal computer science.
+ОО или класс-ориентированное программирование делает акцент на том, что данные в действительности имеют схожее поведение (конечно, разное в зависимости от типа и природы данных!), влияющее на них, поэтому соответствующий дизайн должен упаковать (ака, инкапсулировать) данные и их поведение вместе. В формальной информатике это иногда называют "структурами данных".
 
-For example, a series of characters that represents a word or phrase is usually called a "string". The characters are the data. But you almost never just care about the data, you usually want to *do things* with the data, so the behaviors that can apply *to* that data (calculating its length, appending data, searching, etc.) are all designed as methods of a `String` class.
+Например, некая последовательность символов, представляющая сообой слово или фразу, обычно называется "строка". Данными здесь являются символы. Но вам почти никогда не интересны данные, обычно Вы хотите с этими данными *что-то делать*, поэтому все операции, которые могут  применяться *к* этим данным (вычисление длины, добавление данных, поиск и т. д.) разработаны как методы класса 'String'.
 
-Any given string is just an instance of this class, which means that it's a neatly collected packaging of both the character data and the functionality we can perform on it.
+Любая данная строка просто является экземпляром этого класса, что означает, что это аккуратно собранная упаковка как символьных данных, так и функциональности, которую мы можем к ним применить.
 
-Classes also imply a way of *classifying* a certain data structure. The way we do this is to think about any given structure as a specific variation of a more general base definition.
+Классы также несут в себе способ *классификации* определенной структуры данных. То, как мы это делаем, - это воспринимать любую заданную структуру как о конкретную вариации более общего базового определения.
 
-Let's explore this classification process by looking at a commonly cited example. A *car* can be described as a specific implementation of a more general "class" of thing, called a *vehicle*.
+Давайте рассмотрим этот процесс "классификации" на часто используемом примере: *автомобиль* можно описать как некую частную реализацию более общего "класса" предметов, называемого *транспортные средства*.
 
-We model this relationship in software with classes by defining a `Vehicle` class and a `Car` class.
+В программном обеспечении мы моделируем данную связь с помощью классов, определяя класс `транспортные средства` и класс `автомобиль`.
 
-The definition of `Vehicle` might include things like propulsion (engines, etc.), the ability to carry people, etc., which would all be the behaviors. What we define in `Vehicle` is all the stuff that is common to all (or most of) the different types of vehicles (the "planes, trains, and automobiles").
+Определение `транспортные средства` может включать в себя такие понятия, как силовая установка (ДВС и т. д.), способность перевозить людей, и так далее, все это будет неким поведением класса. Все, что мы определяем в "транспортном средстве", - это принципы, являющиеся общими для всех (или большинства) возможных типов транспортных средств ("самолеты, поезда и автомобили").
 
-It might not make sense in our software to re-define the basic essence of "ability to carry people" over and over again for each different type of vehicle. Instead, we define that capability once in `Vehicle`, and then when we define `Car`, we simply indicate that it "inherits" (or "extends") the base definition from `Vehicle`. The definition of `Car` is said to specialize the general `Vehicle` definition.
+Возможно, нет смысла снова и снова переопределять в нашей программе базовую сущность "способности перевозить людей" для каждого типа транспортного средства. Вместо этого мы определим данную возможность один раз в "транспортном средстве", а далее, описывая "автомобиль", мы просто укажем, что он "наследует" (или "расширяет") базовое определение от "транспортного средства". Определение "автомобиля", как говорят, уточняет, общее определение "транспортного средства".
 
-While `Vehicle` and `Car` collectively define the behavior by way of methods, the data in an instance would be things like the unique VIN of a specific car, etc.
+В то время как `транспортное средство` и `автомобиль` определяют поведение посредством методов, данными экземпляра будут такие вещи, как уникальный VIN конкретного автомобиля и т. д.
 
-**And thus, classes, inheritance, and instantiation emerge.**
+**Таким образом возникают классы, наследование и создание экземпляров.**
 
-Another key concept with classes is "polymorphism", which describes the idea that a general behavior from a parent class can be overridden in a child class to give it more specifics. In fact, relative polymorphism lets us reference the base behavior from the overridden behavior.
+Другим ключевым понятием касательно классов является "полиморфизм", который описывает идею о том, что общее поведение, описанное в родительском классе может быть переопределено в дочернем классе, чтобы придать ему больше конкретики. Фактически, относительный полиморфизм позволяет нам ссылаться на базовое поведение из переопределенного.
 
-Class theory strongly suggests that a parent class and a child class share the same method name for a certain behavior, so that the child overrides the parent (differentially). As we'll see later, doing so in your JavaScript code is opting into frustration and code brittleness.
+Теория классов предполагает, что родительский и дочерний классы разделяют название методов для описания определенного поведения, так что потомок переопределеят родительскую реализацию. Как мы увидим позже, подобные вещи в вашем JavaScript коде могут привести к разочарованию и хрупкости кода.
 
-### "Class" Design Pattern
+### Шаблон проектирования "Класс"
 
 You may never have thought about classes as a "design pattern", since it's most common to see discussion of popular "OO Design Patterns", like "Iterator", "Observer", "Factory", "Singleton", etc. As presented this way, it's almost an assumption that OO classes are the lower-level mechanics by which we implement all (higher level) design patterns, as if OO is a given foundation for *all* (proper) code.
 
