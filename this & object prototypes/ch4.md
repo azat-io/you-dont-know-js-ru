@@ -37,31 +37,31 @@
 
 ### Шаблон проектирования "Класс"
 
-You may never have thought about classes as a "design pattern", since it's most common to see discussion of popular "OO Design Patterns", like "Iterator", "Observer", "Factory", "Singleton", etc. As presented this way, it's almost an assumption that OO classes are the lower-level mechanics by which we implement all (higher level) design patterns, as if OO is a given foundation for *all* (proper) code.
+Возможно, вы никогда не смотрели на классы как на "шаблон проектирования", так как чаще всего обсуждаются популярные "OO шаблоны проектирования", такие как "итератор", "наблюдатель", "фабрика", "синглтон" и т.д. При этом сразу предполагается, что OO классы являются механизмами более низкого уровня, с помощью которых мы реализуем все шаблоны проектирования (более высокого уровня), как будто OO является единственно-верной основой для *всего* (правильного) кода.
 
-Depending on your level of formal education in programming, you may have heard of "procedural programming" as a way of describing code which only consists of procedures (aka, functions) calling other functions, without any higher abstractions. You may have been taught that classes were the *proper* way to transform procedural-style "spaghetti code" into well-formed, well-organized code.
+В зависимости от вашего уровня формального образования в области программирования, вы, возможно, слышали о "процедурном программировании" как способе описания кода, который состоит только из процедур (ака, функций), вызывающих другие функции, без каких-либо более высокоуровневых абстракций. Возможно, вас учили, что классы были *правильным* способом преобразования процедурного "спагетти-кода" в хорошо оформленный организованный код.
 
-Of course, if you have experience with "functional programming" (Monads, etc.), you know very well that classes are just one of several common design patterns. But for others, this may be the first time you've asked yourself if classes really are a fundamental foundation for code, or if they are an optional abstraction on top of code.
+Конечно, если у вас есть опыт в "функциональном программировании" (монады и др.), вы хорошо знаете, что классы являются лишь одним из нескольких распространенных шаблонов проектирования. Но другие, возможно, впервые спросят себя, а действительно ли классы являются фундаментальной основой для написания кода, или они являются необязательной абстракцией.
 
-Some languages (like Java) don't give you the choice, so it's not very *optional* at all -- everything's a class. Other languages like C/C++ or PHP give you both procedural and class-oriented syntaxes, and it's left more to the developer's choice which style or mixture of styles is appropriate.
+Некоторые языки (например, Java) не оставляют вам выбора, поэтому это восе не *опционально* - все это класс. Другие языки, такие как C/C++ или PHP, предоставляют вам как процедурные, так и классовые синтаксисы, и больше зависит от выбора разработчика, какой стиль или смесь стилей ему подойдет.
 
-### JavaScript "Classes"
+### "Классы" JavaScript
 
-Where does JavaScript fall in this regard? JS has had *some* class-like syntactic elements (like `new` and `instanceof`) for quite awhile, and more recently in ES6, some additions, like the `class` keyword (see Appendix A).
+Где JavaScript начинает иметь к этому всему отношение? JS имеет *некоторые* синтаксические элементы, подобные классу (например, `new` и `instanceof`) довольно давно, а в последнее время в ES6 появились некоторые дополнения, такие как ключевое слово `class` (см. приложение A).
 
-But does that mean JavaScript actually *has* classes? Plain and simple: **No.**
+Но значит ли это, что в JavaScript действительно *есть* классы? Строго и однозначно: **Нет.**
 
-Since classes are a design pattern, you *can*, with quite a bit of effort (as we'll see throughout the rest of this chapter), implement approximations for much of classical class functionality. JS tries to satisfy the extremely pervasive *desire* to design with classes by providing seemingly class-like syntax.
+Поскольку классы являются шаблоном проектирования, вы *можете*, приложив немало усилий (как мы увидим далее в этой главе), реализовать некоторое приближение для большей части классической функциональности класса. JS пытается удовлетворить чрезвычайно распространенное *желание* проектировать с классами, предоставляя, казалось бы, похожий на классы синтаксис.
 
-While we may have a syntax that looks like classes, it's as if JavaScript mechanics are fighting against you using the *class design pattern*, because behind the curtain, the mechanisms that you build on are operating quite differently. Syntactic sugar and (extremely widely used) JS "Class" libraries go a long way toward hiding this reality from you, but sooner or later you will face the fact that the *classes* you have in other languages are not like the "classes" you're faking in JS.
+Хотя у нас и может быть синтаксис, похожий на классы, это больше похоже на то, что механика JavaScript борется против того, чтобы вы использовали шаблон проектирования *class*. Так как под капотом механизмы, которые вы строите, работают совсем по-другому. Синтаксический сахар и (очень широко используемые) JS библиотеки для работы с "классами" проходят долгий путь скрывая эту реальности от вас, но рано или поздно вы столкнетесь с тем, что *классы* которые у вас есть в других языках не похожи на фейковые "классы", которые мы создаем себе в JS.
 
-What this boils down to is that classes are an optional pattern in software design, and you have the choice to use them in JavaScript or not. Since many developers have a strong affinity to class oriented software design, we'll spend the rest of this chapter exploring what it takes to maintain the illusion of classes with what JS provides, and the pain points we experience.
+Все это сводится к тому, что классы не являются обязательным шаблоном при разработке программного обеспечения, и у вас есть выбор, использовать их в JavaScript или нет. Поскольку многие разработчики имеют сильную тягу к класс-ориентированному дизайну программного обеспечения, мы посвятим оставшуюся часть этой главы расмотрению того, чего стоит поддержание иллюзии классов с использованием тех механизмов, что предоставляет JS, и тех проблем, которые мы при этом испытываем.
 
-## Class Mechanics
+## Механика Классов
 
-In many class-oriented languages, the "standard library" provides a "stack" data structure (push, pop, etc.) as a `Stack` class. This class would have an internal set of variables that stores the data, and it would have a set of publicly accessible behaviors ("methods") provided by the class, which gives your code the ability to interact with the (hidden) data (adding & removing data, etc.).
+Во многих классовых языках "стандартная библиотека" предоставляет "стековую" структуру данных (push, pop и др.) как класс `Stack`. Этот класс имеет внутренний набор переменных, которые хранят данные, и набор публичных методов, которые дают вашему коду возможность взаимодействовать со (скрытыми) данными (добавление и удаление данных и т. д.).
 
-But in such languages, you don't really operate directly on `Stack` (unless making a **Static** class member reference, which is outside the scope of our discussion). The `Stack` class is merely an abstract explanation of what *any* "stack" should do, but it's not itself *a* "stack". You must **instantiate** the `Stack` class before you have a concrete data structure *thing* to operate against.
+Но в подобных языках вы на самом деле не работаете непосредственно со `Stack` (если только речь не идет о **Static** члене класса, но это выходит за рамки нашего обсуждения). Класс `Stack` - это просто абстрактное описание того, что должен делать *любой* "стек", но это не *сам* "стек". Вы должны **создать экземпляр** класса `Stack`, прежде чем у вас будет конкретная структура данных *нечто* для работы с ней.
 
 ### Building
 
