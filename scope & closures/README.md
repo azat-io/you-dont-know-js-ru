@@ -4,14 +4,14 @@
 
 -----
 
-**[Приобрести электронную/печатную копию от O'Reilly](http://shop.oreilly.com/product/0636920026327.do)**
+**[Купить цифровую или печатную книгу от издательства O'Reilly (англ.)](http://shop.oreilly.com/product/0636920026327.do)**
 
 -----
 
-[Содержание](toc.md)
+[Оглавление](toc.md)
 
-* [Предисловие](https://shanehudson.net/2014/06/03/foreword-dont-know-js/) (by [Shane Hudson](https://github.com/shanehudson))
-* [Введение](../preface.md)
+* [Введение](https://shanehudson.net/2014/06/03/foreword-dont-know-js/) (by [Shane Hudson](https://github.com/shanehudson))
+* [Предисловие](../preface.md)
 * [Глава 1: Что такое область видимости?](ch1.md)
 * [Глава 2: Лексическая область видимости](ch2.md)
 * [Глава 3: Область видимости: функции против блоков](ch3.md)
@@ -20,4 +20,4 @@
 * [Приложение A: Динамическая область видимости](apA.md)
 * [Приложение B: Полифиллинг блочной области видимости](apB.md)
 * [Приложение C: Лексический this](apC.md)
-* [Приложение D: Благодарности](apD.md)
+* [Приложение D: Благодарности!](apD.md)

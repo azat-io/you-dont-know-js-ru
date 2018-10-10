@@ -8,10 +8,10 @@
 
 -----
 
-[Содержание](toc.md)
+[Оглавление](toc.md)
 
-* [Предисловие](foreword.md) (от [Jenn Lukas](http://jennlukas.com))
-* [Введение](../preface.md)
+* [Введение](foreword.md) (от [Jenn Lukas](http://jennlukas.com))
+* [Предисловие](../preface.md)
 * [Глава 1: Введение в программирование](ch1.md)
 * [Глава 2: Введение в JavaScript](ch2.md)
 * [Глава 3: Введение в "Вы не знаете JavaScript"](ch3.md)

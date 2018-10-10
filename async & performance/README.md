@@ -4,20 +4,20 @@
 
 -----
 
-**[Purchase digital/print copy from O'Reilly](http://shop.oreilly.com/product/0636920033752.do)**
+**[Купить цифровую или печатную книгу от издательства O'Reilly (англ.)](http://shop.oreilly.com/product/0636920033752.do)**
 
 -----
 
-[Table of Contents](toc.md)
+[Оглавление](toc.md)
 
-* [Предисловие](foreword.md) (от [Jake Archibald](http://jakearchibald.com))
-* [Preface](../preface.md)
-* [Chapter 1: Asynchrony: Now & Later](ch1.md)
-* [Chapter 2: Callbacks](ch2.md)
-* [Chapter 3: Promises](ch3.md)
-* [Chapter 4: Generators](ch4.md)
-* [Chapter 5: Program Performance](ch5.md)
-* [Chapter 6: Benchmarking & Tuning](ch6.md)
-* [Appendix A: Library: asynquence](apA.md)
-* [Appendix B: Advanced Async Patterns](apB.md)
-* [Appendix C: Thank You's!](apC.md)
+* [Введение](foreword.md) (от [Jake Archibald](http://jakearchibald.com))
+* [Предисловие](../preface.md)
+* [Глава 1: Асинхронность: Сейчас и Тогда](ch1.md)
+* [Глава 2: Колбеки](ch2.md)
+* [Глава 3: Обещания](ch3.md)
+* [Глава 4: Генераторы](ch4.md)
+* [Глава 5: Производительность программы](ch5.md)
+* [Глава 6: Бенчмаркинг и настройка](ch6.md)
+* [Приложение A: Библиотека: asynquence](apA.md)
+* [Приложение B: Расширенные асинхронные шаблоны](apB.md)
+* [Приложение C: Благодарности!](apC.md)

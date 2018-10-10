@@ -1,22 +1,22 @@
-# You Don't Know JS: *this* & Object Prototypes
+# Вы не знаете JS: *this* и Прототипы Объектов
 
 <img src="cover.jpg" width="300">
 
 -----
 
-**[Purchase digital/print copy from O'Reilly](http://shop.oreilly.com/product/0636920033738.do)**
+**[Купить цифровую или печатную книгу от издательства O'Reilly (англ.)](http://shop.oreilly.com/product/0636920033738.do)**
 
 -----
 
-[Table of Contents](toc.md)
+[Оглавление](toc.md)
 
-* [Foreword](foreword.md) (by [Nick Berardi](https://github.com/nberardi))
-* [Preface](../preface.md)
-* [Chapter 1: *this* Or That?](ch1.md)
-* [Chapter 2: *this* All Makes Sense Now!](ch2.md)
-* [Chapter 3: Objects](ch3.md)
-* [Chapter 4: Mixing (Up) "Class" Objects](ch4.md)
-* [Chapter 5: Prototypes](ch5.md)
-* [Chapter 6: Behavior Delegation](ch6.md)
-* [Appendix A: ES6 *class*](apA.md)
-* [Appendix B: Thank You's!](apB.md)
+* [Введение](foreword.md) (by [Nick Berardi](https://github.com/nberardi))
+* [Предисловие](../preface.md)
+* [Глава 1: *this* Or That?](ch1.md)
+* [Глава 2: *this* теперь приобретает смысл!](ch2.md)
+* [Глава 3: Объекты](ch3.md)
+* [Глава 4: Смешивая объекты "классов"](ch4.md)
+* [Глава 5: Прототипы](ch5.md)
+* [Глава 6: Делегирование поведения](ch6.md)
+* [Приложение A: ES6 *классы*](apA.md)
+* [Приложение B: Благодарности!](apB.md)
