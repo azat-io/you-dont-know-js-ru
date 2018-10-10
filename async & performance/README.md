@@ -10,8 +10,8 @@
 
 [Оглавление](toc.md)
 
-* [Предисловие](foreword.md) (от [Jake Archibald](http://jakearchibald.com))
-* [Введение](../preface.md)
+* [Введение](foreword.md) (от [Jake Archibald](http://jakearchibald.com))
+* [Предисловие](../preface.md)
 * [Глава 1: Асинхронность: Сейчас и Тогда](ch1.md)
 * [Глава 2: Колбеки](ch2.md)
 * [Глава 3: Обещания](ch3.md)
