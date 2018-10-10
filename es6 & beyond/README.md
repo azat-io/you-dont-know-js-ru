@@ -4,13 +4,13 @@
 
 -----
 
-**[Purchase digital/print copy from O'Reilly](http://shop.oreilly.com/product/0636920033769.do)**
+**[Купить цифровую или печатную книгу от издательства O'Reilly (англ.)](http://shop.oreilly.com/product/0636920033769.do)**
 
 -----
 
 [Оглавление](toc.md)
 
-* [Foreword](foreword.md) (by [Rick Waldron](http://bocoup.com/weblog/author/rick-waldron/))
+* [Введение](foreword.md) (by [Rick Waldron](http://bocoup.com/weblog/author/rick-waldron/))
 * [Предисловие](../preface.md)
 * [Глава 1: ES: современность и будущее](ch1.md)
 * [Глава 2: Синтаксис](ch2.md)
@@ -20,4 +20,4 @@
 * [Глава 6: Дополнения к API](ch6.md)
 * [Глава 7: Метапрограммирование](ch7.md)
 * [Глава 8: За пределами ES6](ch8.md)
-* [Appendix A: Thank You's!](apA.md)
+* [Приложение A: Благодарности!](apA.md)
