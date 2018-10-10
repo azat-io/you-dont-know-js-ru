@@ -8,7 +8,7 @@
 
 -----
 
-[Содержание](toc.md)
+[Оглавление](toc.md)
 
 * [Введение](foreword.md) (от [Jenn Lukas](http://jennlukas.com))
 * [Предисловие](../preface.md)
