@@ -1,1 +1,6 @@
-.idea
+# Ignore everything
+*
+
+# But not these files...
+!.gitignore
+!/types & grammar/ch2.md
