@@ -1,13 +1,13 @@
-# You Don't Know JS: Types & Grammar
-# Chapter 2: Values
+# Вы не знаете JS: Типы и грамматика
+# Глава 2: Типы
 
-`array`s, `string`s, and `number`s are the most basic building-blocks of any program, but JavaScript has some unique characteristics with these types that may either delight or confound you.
+`array`, `string`, и `number` являются основными составными элементами любой программы, но в JavaScript, при работе с этими типами данных, есть несколько особенностей, которые могут смутить или запутать вас.
 
-Let's look at several of the built-in value types in JS, and explore how we can more fully understand and correctly leverage their behaviors.
+Давайте посмотрим на несколько встроенных типов JS, и разберемся как мы можем полностью понять и корректно использовать их поведение.
 
-## Arrays
+## Массивы
 
-As compared to other type-enforced languages, JavaScript `array`s are just containers for any type of value, from `string` to `number` to `object` to even another `array` (which is how you get multidimensional `array`s).
+Если сравнивать с другими строго-типизированными языками, в JavaScript массивы - всего  лишь контейнеры для любых типов значений, начиная от  `string` до `number` , `object` и даже других `array` (с помощью которых можно создавать многомерные массивы).
 
 ```js
 var a = [ 1, "2", [3] ];
@@ -17,7 +17,7 @@ a[0] === 1;		// true
 a[2][0] === 3;	// true
 ```
 
-You don't need to presize your `array`s (see "Arrays" in Chapter 3), you can just declare them and add values as you see fit:
+Вам не нужно предварительно устанавливать размер `array` (подробнее в "Массивы" Глава 3), вы можете просто объявить их и добавлять значения когда вам нужно:
 
 ```js
 var a = [ ];
@@ -31,15 +31,15 @@ a[2] = [ 3 ];
 a.length;	// 3
 ```
 
-**Warning:** Using `delete` on an `array` value will remove that slot from the `array`, but even if you remove the final element, it does **not** update the `length` property, so be careful! We'll cover the `delete` operator itself in more detail in Chapter 5.
+**Предупреждение:** Используя `delete` для значения `array` будет удалена ячейка `array` с этим значением, но даже если вы удалите последний элемент таким способом, это **НЕ** обновит свойство `length` , так что будьте осторожны! Работа оператора `delete` более детально будет рассмотрена в Главе 5.
 
-Be careful about creating "sparse" `array`s (leaving or creating empty/missing slots):
+Будьте осторожны при создании "разрозненных" массивов (оставляя или создавая пустые/пропущенные ячейки):
 
 ```js
 var a = [ ];
 
 a[0] = 1;
-// no `a[1]` slot set here
+// ячейка `a[1]` отсутствует
 a[2] = [ 3 ];
 
 a[1];		// undefined
@@ -47,9 +47,9 @@ a[1];		// undefined
 a.length;	// 3
 ```
 
-While that works, it can lead to some confusing behavior with the "empty slots" you leave in between. While the slot appears to have the `undefined` value in it, it will not behave the same as if the slot is explicitly set (`a[1] = undefined`). See "Arrays" in Chapter 3 for more information.
+Такой код может привести к странному поведению "пустых ячеек" оставленных между элементами массива. Пустой слот со значением `undefined` внутри, ведет себя не так же как явно объявленный эдемент массива (`a[1] = undefined`). Подробнее в главе 3 "Массивы".
 
-`array`s are numerically indexed (as you'd expect), but the tricky thing is that they also are objects that can have `string` keys/properties added to them (but which don't count toward the `length` of the `array`):
+Массивы `array`s проиндексированы числами (как и ожидается), но хитрость в том, что они могут иметь индекс в виде  строки `string` ключ/свойство могут быть добавлены к массиву (но такие свойства не будут посчитаны в длине массива `length`):
 
 ```js
 var a = [ ];
@@ -62,7 +62,7 @@ a["foobar"];	// 2
 a.foobar;		// 2
 ```
 
-However, a gotcha to be aware of is that if a `string` value intended as a key can be coerced to a standard base-10 `number`, then it is assumed that you wanted to use it as a `number` index rather than as a `string` key!
+Как бы там ни было, нужно быть осторожнее при использовании индексов массива в виде `string` , т.к. это значение может быть преобразовано в тип `number`, потому что использование индекса `number` для массива предпочтительнее чем `string`!
 
 ```js
 var a = [ ];
@@ -72,15 +72,15 @@ a["13"] = 42;
 a.length; // 14
 ```
 
-Generally, it's not a great idea to add `string` keys/properties to `array`s. Use `object`s for holding values in keys/properties, and save `array`s for strictly numerically indexed values.
+В общем, это не самая лучшая идея использовать пару `string` ключ/свойство как элемент массива `array`. Используйте `object` для хранения пар ключ/свойство, а массивы `array`s приберегите для хранения значений в ячейках с числовыми индексами.
 
-### Array-Likes
+### Массивоподобные
 
-There will be occasions where you need to convert an `array`-like value (a numerically indexed collection of values) into a true `array`, usually so you can call array utilities (like `indexOf(..)`, `concat(..)`, `forEach(..)`, etc.) against the collection of values.
+Бывают случаи когда нужно преобразовать  массивоподобное значение (пронумерованную коллекцию значений) в настоящий массив `array`, обычно таким образом вы сможете применить методы массива (такие как `indexOf(..)`, `concat(..)`, `forEach(..)`, etc.) к коллекции значений.
 
-For example, various DOM query operations return lists of DOM elements that are not true `array`s but are `array`-like enough for our conversion purposes. Another common example is when functions expose the `arguments` (`array`-like) object (as of ES6, deprecated) to access the arguments as a list.
+Например, различные DOM запросы возвращают список DOM элементов который не является настоящим массивом `array`, но, при этом он достаточно похож на массив для преобразования. Другой общеизвестный пример - когда функция предоставляет свои аргументы `arguments` в виде массивоподобного объекта (в ES6, считается устаревшим), чтобы получить доступ к списку аргументов.
 
-One very common way to make such a conversion is to borrow the `slice(..)` utility against the value:
+Один из самых распространенных способов осуществить такое преобразование одолжить метод `slice(..)` для значения:
 
 ```js
 function foo() {
@@ -92,9 +92,9 @@ function foo() {
 foo( "bar", "baz" ); // ["bar","baz","bam"]
 ```
 
-If `slice()` is called without any other parameters, as it effectively is in the above snippet, the default values for its parameters have the effect of duplicating the `array` (or, in this case, `array`-like).
+Если `slice()` вызван без каких-либо параметров, как в примере выше, стандартные значения его параметров позволят продублировать массив `array` (а в нашем случае , массивоподобное значение).
 
-As of ES6, there's also a built-in utility called `Array.from(..)` that can do the same task:
+В ES6, есть встроенный метод `Array.from(..)` который при вызове выполнит то же самое:
 
 ```js
 ...
@@ -102,20 +102,20 @@ var arr = Array.from( arguments );
 ...
 ```
 
-**Note:** `Array.from(..)` has several powerful capabilities, and will be covered in detail in the *ES6 & Beyond* title of this series.
+**Примечание:** `Array.from(..)` имеет несколько мощных возможностей, детально о них рассказано в книге *ES6 и не только* данной серии.
 
-## Strings
+## Строки
 
-It's a very common belief that `string`s are essentially just `array`s of characters. While the implementation under the covers may or may not use `array`s, it's important to realize that JavaScript `string`s are really not the same as `array`s of characters. The similarity is mostly just skin-deep.
+Есть общее мнение, что строки `string` являются всего лишь массивами `array` из символов. Пока мы решаем можно или нельзя использовать `array`, важно осознавать что JavaScript `string`на самом деле не то же самое что массивы `array` символов. Это сходство по большей части поверхностное.
 
-For example, let's consider these two values:
+Например, давайте сравним два значения:
 
 ```js
 var a = "foo";
 var b = ["f","o","o"];
 ```
 
-Strings do have a shallow resemblance to `array`s -- `array`-likes, as above -- for instance, both of them having a `length` property, an `indexOf(..)` method (`array` version only as of ES5), and a `concat(..)` method:
+Строки имеют поверхностные сходства по отношению к массивам и массивоподобным, такие как -- например, оба из них имеют свойство `length`,метод `indexOf(..)` (`array` только в ES5), и метод `concat(..)`:
 
 ```js
 a.length;							// 3
@@ -134,7 +134,7 @@ a;									// "foo"
 b;									// ["f","o","o"]
 ```
 
-So, they're both basically just "arrays of characters", right? **Not exactly**:
+Итак строки по большей части это "массивы символов", верно? **НЕ совсем**:
 
 ```js
 a[1] = "O";
@@ -144,9 +144,9 @@ a; // "foo"
 b; // ["f","O","o"]
 ```
 
-JavaScript `string`s are immutable, while `array`s are quite mutable. Moreover, the `a[1]` character position access form was not always widely valid JavaScript. Older versions of IE did not allow that syntax (but now they do). Instead, the *correct* approach has been `a.charAt(1)`.
+В JavaScript строки `string` неизменяемы, тогда как массивы `array` достаточно изменяемы. Более того форма доступа к символу строки вида `a[1]`  не совсем правильный JavaScript. Старые версии IE не разрешают такой синтаксис (в новых версиях IE это работает). Вместо него нужно использовать *корректный* способ -  `a.charAt(1)`.
 
-A further consequence of immutable `string`s is that none of the `string` methods that alter its contents can modify in-place, but rather must create and return new `string`s. By contrast, many of the methods that change `array` contents actually *do* modify in-place.
+Еще одним подследствием неизменяемости строк `string` является то что ни один метод строки `string` меняющий ее содержимое не может делать это по месту, скорее метод создаст и вернет новые строки. И напротив, большинство методов изменяющих содержимое массива `array` действительно *делают* изменения по месту.
 
 ```js
 c = a.toUpperCase();
@@ -158,7 +158,7 @@ b.push( "!" );
 b;			// ["f","O","o","!"]
 ```
 
-Also, many of the `array` methods that could be helpful when dealing with `string`s are not actually available for them, but we can "borrow" non-mutation `array` methods against our `string`:
+Также многие из методов массива `array`, которые могут быть полезны при работе со строками `string` вообще для них недоступны, но мы можем "одолжить" неизменяющие методы массива `array` для нашей строки `string`:
 
 ```js
 a.join;			// undefined
@@ -173,7 +173,7 @@ c;				// "f-o-o"
 d;				// "F.O.O."
 ```
 
-Let's take another example: reversing a `string` (incidentally, a common JavaScript interview trivia question!). `array`s have a `reverse()` in-place mutator method, but `string`s do not:
+Давайте возьмем другой пример: реверсируем строку `string` (кстати, это довольно тривиальный общий вопрос на  JavaScript собеседованиях!). У массивов `array`есть метод `reverse()` осуществляюший изменение по месту, но для строки `string`такого метода нет:
 
 ```js
 a.reverse;		// undefined
@@ -182,70 +182,70 @@ b.reverse();	// ["!","o","O","f"]
 b;				// ["!","o","O","f"]
 ```
 
-Unfortunately, this "borrowing" doesn't work with `array` mutators, because `string`s are immutable and thus can't be modified in place:
+К несчастью, это "одалживание" не сработает с методами изменяющими массив `array`, потому что строки `string` неизменяемы и поэтому не могут быть изменены по месту:
 
 ```js
 Array.prototype.reverse.call( a );
-// still returns a String object wrapper (see Chapter 3)
-// for "foo" :(
+// все еще возвращаем объект-обертку String (подробнее в Главе 3)
+// для "foo" :(
 ```
 
-Another workaround (aka hack) is to convert the `string` into an `array`, perform the desired operation, then convert it back to a `string`.
+Другое временное решение (хак) отконвертировать строку `string` в массив `array`, выполнить желаемое действие, и затем отконвертировать обратно в строку `string`.
 
 ```js
 var c = a
-	// split `a` into an array of characters
+	// разбиваем `a` на массив символов
 	.split( "" )
-	// reverse the array of characters
+	// реверсируем массив символов
 	.reverse()
-	// join the array of characters back to a string
+	// объединяем массив символов обратно в строку
 	.join( "" );
 
 c; // "oof"
 ```
 
-If that feels ugly, it is. Nevertheless, *it works* for simple `string`s, so if you need something quick-n-dirty, often such an approach gets the job done.
+Если кажется, что это выглядит безобразно, так и есть. Тем не менее, *это работает* для простых строк `string`, так что, если вам нужно "склепать" что-нибудь по быстрому, часто такой подход позволит выполнить работу.
 
-**Warning:** Be careful! This approach **doesn't work** for `string`s with complex (unicode) characters in them (astral symbols, multibyte characters, etc.). You need more sophisticated library utilities that are unicode-aware for such operations to be handled accurately. Consult Mathias Bynens' work on the subject: *Esrever* (https://github.com/mathiasbynens/esrever).
+**Предупреждение:** Будьте осторожны! Этот подход **не работает** для строк `string` со сложными (unicode) символами в них (astral symbols, multibyte characters, etc.). Вам потребуются более сложные библиотеки которые распознают unicode символы для правильного выполнения подобных операций. Подробнее можно посмотреть в работе Mathias Bynens': *Esrever* (https://github.com/mathiasbynens/esrever).
 
-The other way to look at this is: if you are more commonly doing tasks on your "strings" that treat them as basically *arrays of characters*, perhaps it's better to just actually store them as `array`s rather than as `string`s. You'll probably save yourself a lot of hassle of converting from `string` to `array` each time. You can always call `join("")` on the `array` *of characters* whenever you actually need the `string` representation.
+Хотя с другой стороны: если вы чаще работаете с вашими "строками",  интерпритируя их как *массивы символов*, возможно лучше просто записывать их в массив `array`вместо строк `string`.Возможно вы избавите себя от хлопот при переводе строки `string` в массив `array`каждый раз. Вы всегда можете вызвать `join("")` для массива `array` *символов* когда вам понадобится представление в ивде строки `string`.
 
-## Numbers
+## Числа
 
-JavaScript has just one numeric type: `number`. This type includes both "integer" values and fractional decimal numbers. I say "integer" in quotes because it's long been a criticism of JS that there are not true integers, as there are in other languages. That may change at some point in the future, but for now, we just have `number`s for everything.
+В JavaScript есть один числовой тип: `number`. Этот тип включает в себя как "целые" ("integer") значения так и десятичные дробные числа. Я заключил "целые" ("integer") в кавычки, потому что в JS это понятие подвергается критике, поскольку здесь нет реально целых значений, как в других языках программирования. Возможно в будущем это изменится, но сейчас, у нас просто есть тип `number`для всего.
 
-So, in JS, an "integer" is just a value that has no fractional decimal value. That is, `42.0` is as much an "integer" as `42`.
+Итак, в JS, "целое" ("integer") это просто числовое значение, которое не имеет десятичной составляющей после запятой . Так нпаример, `42.0` более может считаться "целым"("integer"), чем `42`.
 
-Like most modern languages, including practically all scripting languages, the implementation of JavaScript's `number`s is based on the "IEEE 754" standard, often called "floating-point." JavaScript specifically uses the "double precision" format (aka "64-bit binary") of the standard.
+Как и в большинстве современных языков, включая практически все скриптовые языки, реализация чисел `number` в JavaScript'основана на стандарте "IEEE 754", котороый часто называют "числа с плавающей точкой" ("floating-point"). JavaScript особенно использует формат "двойной степени точности" (как "64-битные в бинарном формате") этого стандарта.
 
-There are many great write-ups on the Web about the nitty-gritty details of how binary floating-point numbers are stored in memory, and the implications of those choices. Because understanding bit patterns in memory is not strictly necessary to understand how to correctly use `number`s in JS, we'll leave it as an exercise for the interested reader if you'd like to dig further into IEEE 754 details.
+В интернете есть множество статей о подробных деталях того, как бинарные числа с плавющей точкой записываются в память, и последствия выбора таких чисел. Т.к. понимание того как работает запись в память не строго необходимо для того чтобы корректно использовать числа `number` в JS, мы оставим это упражнение для заинтересованного читателя, если вы захотите более детально разобраться со стандартом IEEE 754.
 
-### Numeric Syntax
+### Числовой синтаксис
 
-Number literals are expressed in JavaScript generally as base-10 decimal literals. For example:
+Чичловые литералы в JavaScript в большинстве представлены как литералы десятичных дробей. Например:
 
 ```js
 var a = 42;
 var b = 42.3;
 ```
 
-The leading portion of a decimal value, if `0`, is optional:
+Если целая часть дробного числа - `0`, можно ее опустить:
 
 ```js
 var a = 0.42;
 var b = .42;
 ```
 
-Similarly, the trailing portion (the fractional) of a decimal value after the `.`, if `0`, is optional:
+Аналогично, если дробная часть после точки `.`, - `0`, можно ее опустить:
 
 ```js
 var a = 42.0;
 var b = 42.;
 ```
 
-**Warning:** `42.` is pretty uncommon, and probably not a great idea if you're trying to avoid confusion when other people read your code. But it is, nevertheless, valid.
+**Предупреждение:** `42.` выглядит достаточно необычно, и возможно это не лучшая идея если вы хотите избежать недопонимания со стороны других людей при работе с вашим кодом. Но, в любом случае, это корректная запись.
 
-By default, most `number`s will be outputted as base-10 decimals, with trailing fractional `0`s removed. So:
+По умолчанию, большинство чисел `number` выводятся как десятичные дроби, с удаленными нулями `0` в конце дробной части. Так:
 
 ```js
 var a = 42.300;
@@ -255,7 +255,7 @@ a; // 42.3
 b; // 42
 ```
 
-Very large or very small `number`s will by default be outputted in exponent form, the same as the output of the `toExponential()` method, like:
+Очень большие или очень маленькие числа `number` по умолчанию выводятся в экспоненциальной форме, также как и результат метода `toExponential()`, например:
 
 ```js
 var a = 5E10;
@@ -269,7 +269,7 @@ var c = 1 / a;
 c;					// 2e-11
 ```
 
-Because `number` values can be boxed with the `Number` object wrapper (see Chapter 3), `number` values can access methods that are built into the `Number.prototype` (see Chapter 3). For example, the `toFixed(..)` method allows you to specify how many fractional decimal places you'd like the value to be represented with:
+Т.к. числовые значения `number` могут быть помещены в объект - обертку `Number` (подробнее Глава 3), числовые значения `number` могут получать методы встроенные в `Number.prototype` (подробнее Глава 3). Например, метод `toFixed(..)` позволяет вам определить с точностью до скольки знаков после запятой вывести дробную часть:
 
 ```js
 var a = 42.59;
@@ -281,9 +281,9 @@ a.toFixed( 3 ); // "42.590"
 a.toFixed( 4 ); // "42.5900"
 ```
 
-Notice that the output is actually a `string` representation of the `number`, and that the value is `0`-padded on the right-hand side if you ask for more decimals than the value holds.
+Заметьте что результат - строковлое `string` представление числа `number`, и таким образом `0`- будет добавлено справа если вам понадобится больше знаков после запятой, чем есть сейчас.
 
-`toPrecision(..)` is similar, but specifies how many *significant digits* should be used to represent the value:
+`toPrecision(..)` похожий метод, но он определяет сколько *цифровых знаков* должно использоваться в выводимом значении:
 
 ```js
 var a = 42.59;
@@ -296,87 +296,87 @@ a.toPrecision( 5 ); // "42.590"
 a.toPrecision( 6 ); // "42.5900"
 ```
 
-You don't have to use a variable with the value in it to access these methods; you can access these methods directly on `number` literals. But you have to be careful with the `.` operator. Since `.` is a valid numeric character, it will first be interpreted as part of the `number` literal, if possible, instead of being interpreted as a property accessor.
+Вам не обязательно использовать переменные для хранения чисел, чтобы применить эти методы; вы можете применять методы прямо к числовым литералам `number`. Но, будьте осторожны с оператором `.`. Т.к. `.` это еще и числовой оператор, и, если есть такая  возможность, он в первую очередь будет интепритирован как часть числового литерала `number`, вместо того чтобы получать доступ к свойству.
 
 ```js
-// invalid syntax:
+// неправильный ситнтакс:
 42.toFixed( 3 );	// SyntaxError
 
-// these are all valid:
+// это корректное обращение к методам:
 (42).toFixed( 3 );	// "42.000"
 0.42.toFixed( 3 );	// "0.420"
 42..toFixed( 3 );	// "42.000"
 ```
 
-`42.toFixed(3)` is invalid syntax, because the `.` is swallowed up as part of the `42.` literal (which is valid -- see above!), and so then there's no `.` property operator present to make the `.toFixed` access.
+`42.toFixed(3)` неверный синтакс, потому что `.` станет частью числового литерала `42.` (такая запись корректна -- смотрите выше!), и тогда оператор `.` который должен получить доступ к методу `.toFixed` отсутствует.
 
-`42..toFixed(3)` works because the first `.` is part of the `number` and the second `.` is the property operator. But it probably looks strange, and indeed it's very rare to see something like that in actual JavaScript code. In fact, it's pretty uncommon to access methods directly on any of the primitive values. Uncommon doesn't mean *bad* or *wrong*.
+`42..toFixed(3)` работает т.к. первый оператор `.` часть чилового литерала `number` второая `.` оператор доступа к свойству. Но, возможно это выглядит странно, и на самом деле очень редко можно увидеть что-то подобное в реальном JavaScript коде. Фактически, это нестандартно -- применять методы прямо к примитивным значениям. Нестандартно не значит *плохо* или *неправильно*.
 
-**Note:** There are libraries that extend the built-in `Number.prototype` (see Chapter 3) to provide extra operations on/with `number`s, and so in those cases, it's perfectly valid to use something like `10..makeItRain()` to set off a 10-second money raining animation, or something else silly like that.
+**Примечание:** Есть библиотеки расширяющие встроенные методы `Number.prototype` (подробнее Глава 3) для поддержки операций над/с числами `number`, и в этих случаях, совершенно правильно использовать `10..makeItRain()` чтобы отключить 10-секундную анимацию денежного дождя, или еще что-нибудь такое же глупое.
 
-This is also technically valid (notice the space):
+Также технически корректной будет такая запись (заметьте пробел):
 
 ```js
 42 .toFixed(3); // "42.000"
 ```
 
-However, with the `number` literal specifically, **this is particularly confusing coding style** and will serve no other purpose but to confuse other developers (and your future self). Avoid it.
+Тем не менее, с числовыми литералами `number` особенно, **это черезвычайно запутанный стиль кода** и он не преследует иных цедей кроме как запутать разработчиков при работе с кодом (в том числе и вас в будущем). Избегайте этого.
 
-`number`s can also be specified in exponent form, which is common when representing larger `number`s, such as:
+Числа `number` также могут быть представлены в экспоненциальной форме, которую обычно используют для представления больших чисел `number` таких как:
 
 ```js
 var onethousand = 1E3;						// means 1 * 10^3
 var onemilliononehundredthousand = 1.1E6;	// means 1.1 * 10^6
 ```
 
-`number` literals can also be expressed in other bases, like binary, octal, and hexadecimal.
+Числовые литералы `number` могут быть также выражены в других формах, таких как, двоичная, восьмеричная, и шестнадцатиричная.
 
-These formats work in current versions of JavaScript:
-
-```js
-0xf3; // hexadecimal for: 243
-0Xf3; // ditto
-
-0363; // octal for: 243
-```
-
-**Note:** Starting with ES6 + `strict` mode, the `0363` form of octal literals is no longer allowed (see below for the new form). The `0363` form is still allowed in non-`strict` mode, but you should stop using it anyway, to be future-friendly (and because you should be using `strict` mode by now!).
-
-As of ES6, the following new forms are also valid:
+Эти форматы работают в текущей версии JavaScript:
 
 ```js
-0o363;		// octal for: 243
-0O363;		// ditto
+0xf3; // шестнадцатиричная для: 243
+0Xf3; // то же самое
 
-0b11110011;	// binary for: 243
-0B11110011; // ditto
+0363; // восьмеричная для: 243
 ```
 
-Please do your fellow developers a favor: never use the `0O363` form. `0` next to capital `O` is just asking for confusion. Always use the lowercase predicates `0x`, `0b`, and `0o`.
+**Примечание:** Начиная с ES6 с включенным `strict` режимом, восьмеричная форма `0363` больше не разрешена (смотрите ниже новую форму). Форма `0363` все еще разрешена в `non-strict` режиме, но в любом случае нужно прекратить ее использовать, чтобы использовать современный подход (и потому что пора бы использовать `strict` режим уже сейчас!).
 
-### Small Decimal Values
+Для ES6, доступны новые формы записи:
 
-The most (in)famous side effect of using binary floating-point numbers (which, remember, is true of **all** languages that use IEEE 754 -- not *just* JavaScript as many assume/pretend) is:
+```js
+0o363;		// восьмеричная для: 243
+0O363;		// то же самое
+
+0b11110011;	// двоичная для: 243
+0B11110011; // то же самое
+```
+
+И пожалуйста окажите вашим коллегам - разработчикам услугу: никогда не используйте форму вида `0O363`. `0` перед заглавной `O` может лишь вызвать затруднение при чтении кода. Всегда используйте нижний регистр в подобных формах: `0x`, `0b`, и `0o`.
+
+### Маленькие дробные числа
+
+Самый известный побочный эффект от использования бинарной формы чисел с плавающей точкой (которая, как мы помним, справедлива для **всех** языков использующих стандарт IEEE 754 -- не *только* JavaScript как многие привыкли предполагать) это:
 
 ```js
 0.1 + 0.2 === 0.3; // false
 ```
 
-Mathematically, we know that statement should be `true`. Why is it `false`?
+Математически, что результатом выражения должно быть `true`. Почему же в результате получается `false`?
 
-Simply put, the representations for `0.1` and `0.2` in binary floating-point are not exact, so when they are added, the result is not exactly `0.3`. It's **really** close: `0.30000000000000004`, but if your comparison fails, "close" is irrelevant.
+Если по простому, представления чисел `0.1` и `0.2` в бинарном виде с плавающей точкой не совсем точные, поэтому когда мы их складываем, результат не совсем `0.3`. Это **действительно** близко: `0.30000000000000004`, но если сравнение не прошло, "близко" уже не имеет значения.
 
-**Note:** Should JavaScript switch to a different `number` implementation that has exact representations for all values? Some think so. There have been many alternatives presented over the years. None of them have been accepted yet, and perhaps never will. As easy as it may seem to just wave a hand and say, "fix that bug already!", it's not nearly that easy. If it were, it most definitely would have been changed a long time ago.
+**Примечание:** Должен ли JavaScript перейти на другую реализацию числового типа `number` которая имеет точные представления для всех значений? Некоторые так думают. За все годы появлялось много альтернатив. Никакие из них до сих пор не были утверждены, и возможно никогда не будут. Кажется что это также легко, как просто поднять руку и сказать "Да исправьте вы уже этот баг!", но это вовсе не так. Если бы это было легко, это определенно было бы имправлено намного раньше.
 
-Now, the question is, if some `number`s can't be *trusted* to be exact, does that mean we can't use `number`s at all? **Of course not.**
+Сейчас, вопрос в том, что если есть числа `number` для которых нельзя быть *уверенным* в их точности, может нам совсем не стоит испльзовать числа `number`? **Конечно нет.**
 
-There are some applications where you need to be more careful, especially when dealing with fractional decimal values. There are also plenty of (maybe most?) applications that only deal with whole numbers ("integers"), and moreover, only deal with numbers in the millions or trillions at maximum. These applications have been, and always will be, **perfectly safe** to use numeric operations in JS.
+Есть несколько случаев применения чисел, где нужно быть осторожными, особенно имея дело с дробными числами. Также есть достаточно (возможно большинство?) случаев когда мы имеем дело только с целыми числами ("integers"), и более того, работаем только с числами максимум до миллиона или триллиона. Такие случаи применения чисел всегда были, и будут, **превосходно безопасными** для проведения числовых операций в JS.
 
-What if we *did* need to compare two `number`s, like `0.1 + 0.2` to `0.3`, knowing that the simple equality test fails?
+Ео что если нам *было* нужно сравнить два числа `number` таких как `0.1 + 0.2` и `0.3`, зная что обычный тест на равенство не сработает?
 
-The most commonly accepted practice is to use a tiny "rounding error" value as the *tolerance* for comparison. This tiny value is often called "machine epsilon," which is commonly `2^-52` (`2.220446049250313e-16`) for the kind of `number`s in JavaScript.
+Самая общепринятая практикаиспользование миниатюрной "ошибки округления" как *допуска* для сравнения. Это малюсенькое значение часто называют "машинной эпсилон," которое составляет `2^-52` (`2.220446049250313e-16`) для числового типа `number` в JavaScript.
 
-As of ES6, `Number.EPSILON` is predefined with this tolerance value, so you'd want to use it, but you can safely polyfill the definition for pre-ES6:
+В ES6, `Number.EPSILON` определено заранее этим пороговым значением, так что если вы хотите его использовать, нужно применить полифилл для определения порогового значения для стандартов до-ES6:
 
 ```js
 if (!Number.EPSILON) {
@@ -384,7 +384,7 @@ if (!Number.EPSILON) {
 }
 ```
 
-We can use this `Number.EPSILON` to compare two `number`s for "equality" (within the rounding error tolerance):
+Мы можем использовать это значение `Number.EPSILON` для проверки двух чисел `number`на "равенство" (с учетом допуска ошибки округления):
 
 ```js
 function numbersCloseEnoughToEqual(n1,n2) {
@@ -398,23 +398,23 @@ numbersCloseEnoughToEqual( a, b );					// true
 numbersCloseEnoughToEqual( 0.0000001, 0.0000002 );	// false
 ```
 
-The maximum floating-point value that can be represented is roughly `1.798e+308` (which is really, really, really huge!), predefined for you as `Number.MAX_VALUE`. On the small end, `Number.MIN_VALUE` is roughly `5e-324`, which isn't negative but is really close to zero!
+Максимальное значение числа с плавающей точкой приблизительно `1.798e+308` (реально огромное число!), определено как `Number.MAX_VALUE`. Минимальное значение, `Number.MIN_VALUE` приблизительно `5e-324`, оно положительное, но очень близко к нулю!
 
-### Safe Integer Ranges
+### Безопасные диапазоны целых чисел
 
-Because of how `number`s are represented, there is a range of "safe" values for the whole `number` "integers", and it's significantly less than `Number.MAX_VALUE`.
+Из-за представления чисел `number`в JS, существует диапазон "безопасных" значений для всех чисел `number` "integers", и он существенно меньше значения `Number.MAX_VALUE`.
 
-The maximum integer that can "safely" be represented (that is, there's a guarantee that the requested value is actually representable unambiguously) is `2^53 - 1`, which is `9007199254740991`. If you insert your commas, you'll see that this is just over 9 quadrillion. So that's pretty darn big for `number`s to range up to.
+Максимальное целое число, которое может быть "безопасно" представлено (это означает гарантию того, что запрашиваемое значение будет представлено совершенно определенно) это `2^53 - 1`, что составляет `9007199254740991`. Если вы добавите запятые, то увидите что это немного больше 9 квадридллионов. Так что это чертовски много для верхнего диапазона чисел `number`.
 
-This value is actually automatically predefined in ES6, as `Number.MAX_SAFE_INTEGER`. Unsurprisingly, there's a minimum value, `-9007199254740991`, and it's defined in ES6 as `Number.MIN_SAFE_INTEGER`.
+Это значение автоматически предопределенно в ES6, как `Number.MAX_SAFE_INTEGER`. Ожидаемо, минимальное значение, `-9007199254740991`, соответственно предопрелено в ES6 как `Number.MIN_SAFE_INTEGER`.
 
-The main way that JS programs are confronted with dealing with such large numbers is when dealing with 64-bit IDs from databases, etc. 64-bit numbers cannot be represented accurately with the `number` type, so must be stored in (and transmitted to/from) JavaScript using `string` representation.
+Чаще всего JS программы могут столкнуться с такими большими чилами, когда имеют дело с 64-битными ID баз данных, и т.п.. 64-битные не могут быть точно представлены типом `number`, так что они должны быть записаны (и переданы в/из) JavaScript с помощью строкового `string` представления.
 
-Numeric operations on such large ID `number` values (besides comparison, which will be fine with `string`s) aren't all that common, thankfully. But if you *do* need to perform math on these very large values, for now you'll need to use a *big number* utility. Big numbers may get official support in a future version of JavaScript.
+Математические операции с ID `number` значениями (кроме сравнения, которое отлично пройдет со строками `string`) обычно не выполняются, к счастью. Но если вам *необходимо* выполнить математическую операцию с очень большими числами, сейчас вы можете использовать утилиту *big number*. Поддержка больших чисел может быть реализована в будущих стандартах JavaScript.
 
-### Testing for Integers
+### Проверяем является ли число целым
 
-To test if a value is an integer, you can use the ES6-specified `Number.isInteger(..)`:
+Чтобы проверить,является ли число целым, вы можете использовать специальный ES6-метод `Number.isInteger(..)`:
 
 ```js
 Number.isInteger( 42 );		// true
@@ -422,7 +422,7 @@ Number.isInteger( 42.000 );	// true
 Number.isInteger( 42.3 );	// false
 ```
 
-To polyfill `Number.isInteger(..)` for pre-ES6:
+Полифилл для `Number.isInteger(..)` для стандартов до-ES6:
 
 ```js
 if (!Number.isInteger) {
@@ -432,7 +432,7 @@ if (!Number.isInteger) {
 }
 ```
 
-To test if a value is a *safe integer*, use the ES6-specified `Number.isSafeInteger(..)`:
+Для проверки на нахождение числа в безопасном диапазоне *safe integer*, используется ES6-метод  `Number.isSafeInteger(..)`:
 
 ```js
 Number.isSafeInteger( Number.MAX_SAFE_INTEGER );	// true
@@ -440,7 +440,7 @@ Number.isSafeInteger( Math.pow( 2, 53 ) );			// false
 Number.isSafeInteger( Math.pow( 2, 53 ) - 1 );		// true
 ```
 
-To polyfill `Number.isSafeInteger(..)` in pre-ES6 browsers:
+Полифилл для `Number.isSafeInteger(..)` для стандартов до-ES6:
 
 ```js
 if (!Number.isSafeInteger) {
@@ -451,43 +451,43 @@ if (!Number.isSafeInteger) {
 }
 ```
 
-### 32-bit (Signed) Integers
+### 32-битные целые числа (со знаком)
 
-While integers can range up to roughly 9 quadrillion safely (53 bits), there are some numeric operations (like the bitwise operators) that are only defined for 32-bit `number`s, so the "safe range" for `number`s used in that way must be much smaller.
+Пока целые числа могут быть приблизительно до 9 квадриллионов (53 бита), есть несколько числовых операторов (например побитовые операторы), которые определены для 32-битных чисел `number`, так "безопасный диапазон" для чисел `number` используемый в таких случаях намного меньше.
 
-The range then is `Math.pow(-2,31)` (`-2147483648`, about -2.1 billion) up to `Math.pow(2,31)-1` (`2147483647`, about +2.1 billion).
+Диапазоном является от `Math.pow(-2,31)` (`-2147483648`, около -2.1 милллиардов) до `Math.pow(2,31)-1` (`2147483647`, около +2.1 миллиардов).
 
-To force a `number` value in `a` to a 32-bit signed integer value, use `a | 0`. This works because the `|` bitwise operator only works for 32-bit integer values (meaning it can only pay attention to 32 bits and any other bits will be lost). Then, "or'ing" with zero is essentially a no-op bitwise speaking.
+Чтобы записать число `number` из переменной `a` в 32-битное целое число, используем `a | 0`. Это сработает т.к.  `|` побитовый оператор и работает только с 32-битными целыми числами (это означает что он будет работать только с 32 битами, а остальные биты будут утеряны). Ну, а "ИЛИ" с нулем побитовый оператор, который не проводит операций с битами.
 
-**Note:** Certain special values (which we will cover in the next section) such as `NaN` and `Infinity` are not "32-bit safe," in that those values when passed to a bitwise operator will pass through the abstract operation `ToInt32` (see Chapter 4) and become simply the `+0` value for the purpose of that bitwise operation.
+**Примечание:** Определенные специальные значения (о которых будет расказано далее) такие как `NaN` и  `Infinity` не являются "32-битными безопасными значениями" и в случае передачи этих значений побитовому оператору, будет применен абстрактный оператор  `ToInt32` (смотрите главу 4) результатом которого будет значение`+0` для последующего применения побитового оператора.
 
-## Special Values
+## Специальные значения
 
-There are several special values spread across the various types that the *alert* JS developer needs to be aware of, and use properly.
+Есть несколько специальных значений, которые распространяются на все типы, и с которыми *внимательный* JS разработчик должен быть осторожен, и использовать их по назначению.
 
-### The Non-value Values
+### Отстуствие значения
 
-For the `undefined` type, there is one and only one value: `undefined`. For the `null` type, there is one and only one value: `null`. So for both of them, the label is both its type and its value.
+Для типа `undefined`, есть только одно значение: `undefined`. Для типа `null`, есть только одно значение: `null`. Итак для них обоих, есть свой тип и свое значение.
 
-Both `undefined` and `null` are often taken to be interchangeable as either "empty" values or "non" values. Other developers prefer to distinguish between them with nuance. For example:
+И `undefined` и `null` часто считаются взаимозаменяемыми, как либо "пустое" значение, либо его "отсутствие". Другие разработчики различают их в соответствиис их особенностями. Например:
 
-* `null` is an empty value
-* `undefined` is a missing value
+* `null` пустое значение
+* `undefined` остуствующее значение
 
-Or:
+Или:
 
-* `undefined` hasn't had a value yet
-* `null` had a value and doesn't anymore
+* `undefined` значение пока не присвоено
+* `null` значение есть и там ничего не содержится
 
-Regardless of how you choose to "define" and use these two values, `null` is a special keyword, not an identifier, and thus you cannot treat it as a variable to assign to (why would you!?). However, `undefined` *is* (unfortunately) an identifier. Uh oh.
+Независимо от того, как вы "определяете" и используете эти два значения, `null` это специальное ключевое слово, не является идентификатором, и таким образом нельзя его использовать для назначения переменной (зачем вообще это делать!?). Как бы там ни было, `undefined` *является* (к несчастью) идентификатором. Увы и ах.
 
 ### Undefined
 
-In non-`strict` mode, it's actually possible (though incredibly ill-advised!) to assign a value to the globally provided `undefined` identifier:
+В нестрогом режиме non-`strict`, действительно есть возможность (хоть это и срезвчайно плохая идея!) присваивать значение глобальному идентификатору `undefined` :
 
 ```js
 function foo() {
-	undefined = 2; // really bad idea!
+	undefined = 2; // очень плохая идея!
 }
 
 foo();
@@ -502,7 +502,7 @@ function foo() {
 foo();
 ```
 
-In both non-`strict` mode and `strict` mode, however, you can create a local variable of the name `undefined`. But again, this is a terrible idea!
+Как в нестрогом non-`strict` так и в строгом `strict` режимах, тем не менее, вы можете создать локальную переменную `undefined`. Но, еше раз, это ужасная идея!
 
 ```js
 function foo() {
@@ -514,13 +514,13 @@ function foo() {
 foo();
 ```
 
-**Friends don't let friends override `undefined`.** Ever.
+**Настоящие друзья никогда не позволят друзьям переназначить `undefined`.** Никогда.
 
-#### `void` Operator
+#### Оператор `void`
 
-While `undefined` is a built-in identifier that holds (unless modified -- see above!) the built-in `undefined` value, another way to get this value is the `void` operator.
+Пока `undefined` является встроенным идентификатором который содержит (если только кто-нибудь это не изменил -- см. выше!) встроенное значение `undefined`, другой способ получить это значение - оператор `void`.
 
-The expression `void ___` "voids" out any value, so that the result of the expression is always the `undefined` value. It doesn't modify the existing value; it just ensures that no value comes back from the operator expression.
+Выражение `void ___` "аннулирует" любое значение, так что результатом выражения всегда будет являться значение `undefined`. Это выражение не изменяет действующее значение; оно просто дает нам уверенность в том, что мы не получим назад другого значения после применения оператора.
 
 ```js
 var a = 42;
@@ -528,57 +528,57 @@ var a = 42;
 console.log( void a, a ); // undefined 42
 ```
 
-By convention (mostly from C-language programming), to represent the `undefined` value stand-alone by using `void`, you'd use `void 0` (though clearly even `void true` or any other `void` expression does the same thing). There's no practical difference between `void 0`, `void 1`, and `undefined`.
+По соглашению (большей частью из C-языка прогаммирования), для получения только самого значения `undefined` вместо использования `void`, вы можете использовать `void 0` (хотя и понятно что даже `void true` или любое другое `void` выражение выполнит то же самое). На практике нет никакой разницы между `void 0`, `void 1`, и `undefined`.
 
-But the `void` operator can be useful in a few other circumstances, if you need to ensure that an expression has no result value (even if it has side effects).
+Но, оператор `void` может быть полезен в некоторых других обстоятельствах, например, если нужно быть уверенным, что выражение не вернет никакого результата (даже если оно имеет побочный эффект).
 
-For example:
+Например:
 
 ```js
 function doSomething() {
-	// note: `APP.ready` is provided by our application
+	// примечание: `APP.ready` поддерживается нашим приложением
 	if (!APP.ready) {
-		// try again later
+		// попробуйте еще раз позже
 		return void setTimeout( doSomething, 100 );
 	}
 
 	var result;
 
-	// do some other stuff
+	// делаем что - нибудь другое
 	return result;
 }
 
-// were we able to do it right away?
+// есть возможность выполнить задачу прямо сейчас?
 if (doSomething()) {
-	// handle next tasks right away
+	// выполняем следующие задания немедленно right away
 }
 ```
 
-Here, the `setTimeout(..)` function returns a numeric value (the unique identifier of the timer interval, if you wanted to cancel it), but we want to `void` that out so that the return value of our function doesn't give a false-positive with the `if` statement.
+Здесь, функция `setTimeout(..)` возвращает числовое значение (уникальный идентификатор интервала таймера, если вы захотите его отменить), но нам нужно применить оператор `void` чтобы значение, которое вернет функция не было  ложно-положительным  с инструкцией `if`.
 
-Many devs prefer to just do these actions separately, which works the same but doesn't use the `void` operator:
+Многие разработчики  предпочитают выполнять действия по отдельности, что в результате работает так же, но не требует применения оператора `void`:
 
 ```js
 if (!APP.ready) {
-	// try again later
+	// попробуйте еще раз позже
 	setTimeout( doSomething, 100 );
 	return;
 }
 ```
 
-In general, if there's ever a place where a value exists (from some expression) and you'd find it useful for the value to be `undefined` instead, use the `void` operator. That probably won't be terribly common in your programs, but in the rare cases you do need it, it can be quite helpful.
+Итак, если есть место где существует значение (как результат выражения) , и вы находите полезным получить вместо него `undefined`, используйте оператор `void`. Возможно это не должно часто встречаться в ваших программах, но в редких случах, когда это понадобится, это может быть довольно полезным.
 
-### Special Numbers
+### Специальные числа
 
-The `number` type includes several special values. We'll take a look at each in detail.
+Тип `number` включает в себя несколько специальных значений. Рассмотрим каждое более подробно.
 
-#### The Not Number, Number
+#### НЕ Число, Число
 
-Any mathematic operation you perform without both operands being `number`s (or values that can be interpreted as regular `number`s in base 10 or base 16) will result in the operation failing to produce a valid `number`, in which case you will get the `NaN` value.
+Любая математическая операция которую выполняют с операндами не являющимися числами `number` (или значениями которые могут быть интерпритированы как числа `number`в десятчиной или шестнадцатиричной форме) приведет к ошибке при попытке получить значение чилового типа `number`, в этом случае вы получите значение `NaN`.
 
-`NaN` literally stands for "not a `number`", though this label/description is very poor and misleading, as we'll see shortly. It would be much more accurate to think of `NaN` as being "invalid number," "failed number," or even "bad number," than to think of it as "not a number."
+`NaN` буквально означает "not a `number` ("НЕ число"), хотя это название/описание довольно скудное и обманчивое, как мы скоро увидим. Было бы правильнее думать о  `NaN` как о "неправильном числе," "ошибочном числе," или даже "плохом числе," чем думать о нем как о  "НЕ числе."
 
-For example:
+Например:
 
 ```js
 var a = 2 / "foo";		// NaN
@@ -586,11 +586,11 @@ var a = 2 / "foo";		// NaN
 typeof a === "number";	// true
 ```
 
-In other words: "the type of not-a-number is 'number'!" Hooray for confusing names and semantics.
+Другими словами: "Типом НЕ-числа явдяется число 'number'!" Ура запутывающим именам и семантике.
 
-`NaN` is a kind of "sentinel value" (an otherwise normal value that's assigned a special meaning) that represents a special kind of error condition within the `number` set. The error condition is, in essence: "I tried to perform a mathematic operation but failed, so here's the failed `number` result instead."
+`NaN` навроде "сторожевого значения" (другими словами нормальное значение, которое несет специальный смысл) которое определяет сбой при проведении операции назначения числа `number`. Эта ошибка, по сути означает следующее: "Я попробовал выполнить математическую операция и произошла ошибка, поэтому, вместо результата, здесь ошибочное число `number`."
 
-So, if you have a value in some variable and want to test to see if it's this special failed-number `NaN`, you might think you could directly compare to `NaN` itself, as you can with any other value, like `null` or `undefined`. Nope.
+Итак, если у вас есть значение в какой-нибудь переменной, и вы хотите проверить, не является ли оно ошибочным числом `NaN`, вы должно быть думаете что можно просто его сравнить пямо с `NaN`, как с любым другим значением, например `null` или `undefined`. Неа.
 
 ```js
 var a = 2 / "foo";
@@ -599,9 +599,9 @@ a == NaN;	// false
 a === NaN;	// false
 ```
 
-`NaN` is a very special value in that it's never equal to another `NaN` value (i.e., it's never equal to itself). It's the only value, in fact, that is not reflexive (without the Identity characteristic `x === x`). So, `NaN !== NaN`. A bit strange, huh?
+`NaN` очень особенное значение и оно никогда не будет равно другому значению `NaN` (т.е., оно не равно самому себе). Фактически, это всего лишь значение, которое не рефлексивно (без возможности идентификации `x === x`). Итак, `NaN !== NaN`. Немного странно, да?
 
-So how *do* we test for it, if we can't compare to `NaN` (since that comparison would always fail)?
+Так как мы *можем* его проверить, если нельзя сравнить с `NaN` (т.к. сравнение не сработает)?
 
 ```js
 var a = 2 / "foo";
@@ -609,11 +609,11 @@ var a = 2 / "foo";
 isNaN( a ); // true
 ```
 
-Easy enough, right? We use the built-in global utility called `isNaN(..)` and it tells us if the value is `NaN` or not. Problem solved!
+Достаточно просто, верно? мы использовали встроенную глобальную функцию, которая называется `isNaN(..)` и она сообщила нам является значение `NaN` или нет. Проблема решена!
 
-Not so fast.
+Не так быстро.
 
-The `isNaN(..)` utility has a fatal flaw. It appears it tried to take the meaning of `NaN` ("Not a Number") too literally -- that its job is basically: "test if the thing passed in is either not a `number` or is a `number`." But that's not quite accurate.
+У функции `isNaN(..)` есть большой недостаток. Он появляется при попытках воспринимать значение `NaN` ("НЕ-Число") слишком буквально -- вот, вкратце, как это работает: "проверяем то, что нам передали -- либо это не является числом `number`, либо -- это число `number`." Но это не совсем правильно.
 
 ```js
 var a = 2 / "foo";
@@ -623,12 +623,12 @@ a; // NaN
 b; // "foo"
 
 window.isNaN( a ); // true
-window.isNaN( b ); // true -- ouch!
+window.isNaN( b ); // true -- упс!
 ```
 
-Clearly, `"foo"` is literally *not a `number`*, but it's definitely not the `NaN` value either! This bug has been in JS since the very beginning (over 19 years of *ouch*).
+Понятно, `"foo"` буквально *НЕ-Число*, но и определенно не яляется значением `NaN`! Этот баг был в JS с самого начала (более 19 лет *упс*).
 
-As of ES6, finally a replacement utility has been provided: `Number.isNaN(..)`. A simple polyfill for it so that you can safely check `NaN` values *now* even in pre-ES6 browsers is:
+В ES6, наконец была представлена функция: `Number.isNaN(..)`. Простым полифиллом, чтобы вы могли проверить на значение `NaN` *прямо сейчас*, даже в браузерах не поддерживающих-ES6, будет:
 
 ```js
 if (!Number.isNaN) {
@@ -644,12 +644,12 @@ var a = 2 / "foo";
 var b = "foo";
 
 Number.isNaN( a ); // true
-Number.isNaN( b ); // false -- phew!
+Number.isNaN( b ); // false -- фуух!
 ```
 
-Actually, we can implement a `Number.isNaN(..)` polyfill even easier, by taking advantage of that peculiar fact that `NaN` isn't equal to itself. `NaN` is the *only* value in the whole language where that's true; every other value is always **equal to itself**.
+Вообще,  мы можем реализовать полифилл `Number.isNaN(..)` даже проще, если воспользоваться специфической особенностью `NaN`, которое не равно самому себе. `NaN` *единственное* для котрого это справедливо; любое другое значение всегда **равно самому себе**.
 
-So:
+Итак:
 
 ```js
 if (!Number.isNaN) {
@@ -659,32 +659,32 @@ if (!Number.isNaN) {
 }
 ```
 
-Weird, huh? But it works!
+Странно, правда? Но это работает!
 
-`NaN`s are probably a reality in a lot of real-world JS programs, either on purpose or by accident. It's a really good idea to use a reliable test, like `Number.isNaN(..)` as provided (or polyfilled), to recognize them properly.
+`NaN`могут появляться во многих действующих JS программах, намеренно или случайно. Это действительно хорошая идея проводить надежную проверку, например `Number.isNaN(..)` если это поддерживается (или полифилл), чтобы распознать их должным образом.
 
-If you're currently using just `isNaN(..)` in a program, the sad reality is your program *has a bug*, even if you haven't been bitten by it yet!
+Если вы все еще используете `isNaN(..)` в своей программе, плохая новость: в вашей программе *есть баг*, даже если вы с ним еще не столкнулись!
 
-#### Infinities
+#### Бесконечности
 
-Developers from traditional compiled languages like C are probably used to seeing either a compiler error or runtime exception, like "Divide by zero," for an operation like:
+Разработчик пришедшие из традиционных компилируемых языков вроде C, возможно, привыкли видеть ошибку компилирования ли выполнения, например "деление на ноль," для подобных операций:
 
 ```js
 var a = 1 / 0;
 ```
 
-However, in JS, this operation is well-defined and results in the value `Infinity` (aka `Number.POSITIVE_INFINITY`). Unsurprisingly:
+Как бы там ни было, в JS, эта операция четко определена, и ее результатом будет являться -- бесконечность `Infinity` (ну или `Number.POSITIVE_INFINITY`). Как и ожидается:
 
 ```js
 var a = 1 / 0;	// Infinity
 var b = -1 / 0;	// -Infinity
 ```
 
-As you can see, `-Infinity` (aka `Number.NEGATIVE_INFINITY`) results from a divide-by-zero where either (but not both!) of the divide operands is negative.
+Как вы видите, `-Infinity` (или `Number.NEGATIVE_INFINITY`) получается при делении-на-ноль где один из операторов (но не оба!) является отрицательным.
 
-JS uses finite numeric representations (IEEE 754 floating-point, which we covered earlier), so contrary to pure mathematics, it seems it *is* possible to overflow even with an operation like addition or subtraction, in which case you'd get `Infinity` or `-Infinity`.
+JS использует вещественное представление чисел (IEEE 754 числа с плавающей точкой, о котором было рассказано ранее), вразрез с чистой математикой, похоже что *есть* возможность переполнения при выполнении таких операций как сложение или вычитание, и в этом случае результатом будет `Infinity` или `-Infinity`.
 
-For example:
+Например:
 
 ```js
 var a = Number.MAX_VALUE;	// 1.7976931348623157e+308
@@ -693,49 +693,49 @@ a + Math.pow( 2, 970 );		// Infinity
 a + Math.pow( 2, 969 );		// 1.7976931348623157e+308
 ```
 
-According to the specification, if an operation like addition results in a value that's too big to represent, the IEEE 754 "round-to-nearest" mode specifies what the result should be. So, in a crude sense, `Number.MAX_VALUE + Math.pow( 2, 969 )` is closer to `Number.MAX_VALUE` than to `Infinity`, so it "rounds down," whereas `Number.MAX_VALUE + Math.pow( 2, 970 )` is closer to `Infinity` so it "rounds up".
+Согласно спецификации, если, в результате операции вроде сложения, получается число, превышающее максимальное число, которое может быть представлено, функция IEEE 754 "округления-до-ближайшего" определит, каким должен быть результат. Итак, если проще, `Number.MAX_VALUE + Math.pow( 2, 969 )` ближе к `Number.MAX_VALUE` чем к бесконечности `Infinity`, так что его "округляем вниз," тогда как `Number.MAX_VALUE + Math.pow( 2, 970 )` ближе к бесконечности `Infinity`, поэтому его "округляем вверх".
 
-If you think too much about that, it's going to make your head hurt. So don't. Seriously, stop!
+Если слишком много об этом думать, то у вас так скоро голова заболит. Не нужно. Серьезно, перестаньте!
 
-Once you overflow to either one of the *infinities*, however, there's no going back. In other words, in an almost poetic sense, you can go from finite to infinite but not from infinite back to finite.
+Если однажды вы перешагнете одну из *бесконечностей*, в любом случае, назад пути уже не будет. Другими словами, в почти литературной форме, вы можете прийти из действительности в бесконечность, но не из бесконечности в действительность.
 
-It's almost philosophical to ask: "What is infinity divided by infinity". Our naive brains would likely say "1" or maybe "infinity." Turns out neither is true. Both mathematically and in JavaScript, `Infinity / Infinity` is not a defined operation. In JS, this results in `NaN`.
+Это фактически философский вопрос: "Что если бесконечность разделить на бесконечность". Наш наивный мозг скажет что-нибудь вроде "1", или, может, "бесконечность." Но ни то, ни другое, не будет верным. И в математике, и в JavaScript, операция `Infinity / Infinity` не определена. В JS, результатом будет `NaN`.
 
-But what about any positive finite `number` divided by `Infinity`? That's easy! `0`. And what about a negative finite `number` divided by `Infinity`? Keep reading!
+Но, что если любое вещественное положительное число `number`, разделить на бесконечность `Infinity`? Это легко! `0`. А что если вещественное отрицательное число `number`, разделить на бесконечность `Infinity`? Об этом в следующей серии, продолжайте читать!
 
-#### Zeros
+#### Нули
 
-While it may confuse the mathematics-minded reader, JavaScript has both a normal zero `0` (otherwise known as a positive zero `+0`) *and* a negative zero `-0`. Before we explain why the `-0` exists, we should examine how JS handles it, because it can be quite confusing.
+Это может смутить математически-думающего читателя, но в JavaScript есть два значения `0` нормальный ноль (также известных как положительный ноль `+0`) *и* отрицательный ноль `-0`. Прежде чем объяснять почему существует `-0` , мы должны посмотреть как это работает в JS, потому что это может сбить с толку.
 
-Besides being specified literally as `-0`, negative zero also results from certain mathematic operations. For example:
+Кроме того что значение `-0` может быть буквально присвоено, отрицательный ноль может быть результатом математических операций. Например:
 
 ```js
 var a = 0 / -3; // -0
 var b = 0 * -3; // -0
 ```
 
-Addition and subtraction cannot result in a negative zero.
+Отрицательный ноль не может быть получен в результате сложения или вычитания.
 
-A negative zero when examined in the developer console will usually reveal `-0`, though that was not the common case until fairly recently, so some older browsers you encounter may still report it as `0`.
+Отрицательный ноль при выводе в консоль разработчика обычно покажет `-0`, хотя до недавнего времени это не было общепринятым, вы можете узнать что некоторые старые браузеры до сих пор выводят `0`.
 
-However, if you try to stringify a negative zero value, it will always be reported as `"0"`, according to the spec.
+Как бы там ни было, при попытке преобразования отрицательного нуля в строку, всегда будет выведено `"0"`, согласно спецификации.
 
 ```js
 var a = 0 / -3;
 
-// (some browser) consoles at least get it right
+// (некоторые браузеры) выводят в консоль правильное значение
 a;							// -0
 
-// but the spec insists on lying to you!
+// но спецификация лжет вам на каждом шагу!
 a.toString();				// "0"
 a + "";						// "0"
 String( a );				// "0"
 
-// strangely, even JSON gets in on the deception
+// странно, даже JSON введен в заблуждение
 JSON.stringify( a );		// "0"
 ```
 
-Interestingly, the reverse operations (going from `string` to `number`) don't lie:
+Интересно,что обратная операция (преобразование из строки `string` в число `number`) не врет:
 
 ```js
 +"-0";				// -0
@@ -743,9 +743,9 @@ Number( "-0" );		// -0
 JSON.parse( "-0" );	// -0
 ```
 
-**Warning:** The `JSON.stringify( -0 )` behavior of `"0"` is particularly strange when you observe that it's inconsistent with the reverse: `JSON.parse( "-0" )` reports `-0` as you'd correctly expect.
+**Предупреждение:** Поведение `JSON.stringify( -0 )` по отношению к `"0"` странное лишь частично, если вы заметите то обратная операция: `JSON.parse( "-0" )` выведет `-0` как вы и ожидаете.
 
-In addition to stringification of negative zero being deceptive to hide its true value, the comparison operators are also (intentionally) configured to *lie*.
+В дополнение к тому что преобразование в строку скрывает реальное значение отрицательного нуля, операторы сравнения также (намеренно) настроены *лгать*.
 
 ```js
 var a = 0;
@@ -761,7 +761,7 @@ a === b;	// true
 a > b;		// false
 ```
 
-Clearly, if you want to distinguish a `-0` from a `0` in your code, you can't just rely on what the developer console outputs, so you're going to have to be a bit more clever:
+Очевидно, если вы хотите различать `-0` от `0` в вашем коде, вы не можете просто полагаться на то,что выведет консоль разработчика, так что придется поступить немного хитрее:
 
 ```js
 function isNegZero(n) {
@@ -774,13 +774,13 @@ isNegZero( 0 / -3 );	// true
 isNegZero( 0 );			// false
 ```
 
-Now, why do we need a negative zero, besides academic trivia?
+Итак, зачем нам нужен отрицательный ноль, вместо обычного значения?
 
-There are certain applications where developers use the magnitude of a value to represent one piece of information (like speed of movement per animation frame) and the sign of that `number` to represent another piece of information (like the direction of that movement).
+Есть определенные случаи где разработчики используют величину значения для определения одних данных (например скорость перемещения анимации в кадре) а знак этого числа `number` для представления других данных (например направление перемещения).
 
-In those applications, as one example, if a variable arrives at zero and it loses its sign, then you would lose the information of what direction it was moving in before it arrived at zero. Preserving the sign of the zero prevents potentially unwanted information loss.
+В этих случаях, как в примере выше, если переменная достигнет нуля и потеряет знак, тогда, вы потеряете информацию о том, откуда она пришла, до того как достигла нулевого значения. Сохранение знака нуля предупреждает потерю этой информации.
 
-### Special Equality
+### Специальное равенство
 
 As we saw above, the `NaN` value and the `-0` value have special behavior when it comes to equality comparison. `NaN` is never equal to itself, so you have to use ES6's `Number.isNaN(..)` (or a polyfill). Simlarly, `-0` lies and pretends that it's equal (even `===` strict equal -- see Chapter 4) to regular positive `0`, so you have to use the somewhat hackish `isNegZero(..)` utility we suggested above.
 
