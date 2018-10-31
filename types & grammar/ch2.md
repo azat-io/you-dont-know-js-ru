@@ -1,13 +1,13 @@
-# You Don't Know JS: Types & Grammar
-# Chapter 2: Values
+# Вы не знаете JS: Типы и грамматика
+# Глава 2: Значения
 
-`array`s, `string`s, and `number`s are the most basic building-blocks of any program, but JavaScript has some unique characteristics with these types that may either delight or confound you.
+Массивы, строки и числа - главные "кирпичики" любой программы, но в JavaScript у этих типов есть особенности, которые могут вам понравится или наоборот.
 
-Let's look at several of the built-in value types in JS, and explore how we can more fully understand and correctly leverage their behaviors.
+Давайте посмотрим на некоторые встроенные в JS значения и попытаемся как можно лучше понять их поведение.
 
-## Arrays
+## Массивы
 
-As compared to other type-enforced languages, JavaScript `array`s are just containers for any type of value, from `string` to `number` to `object` to even another `array` (which is how you get multidimensional `array`s).
+В сравнении с другими языками с типами, массив в JavaScript - всего лишь контейнер, содержащий значения любых типов, будь то строки, числа, объекты или даже другие массивы (так вы можете получить многомерный массив).
 
 ```js
 var a = [ 1, "2", [3] ];
@@ -17,7 +17,7 @@ a[0] === 1;		// true
 a[2][0] === 3;	// true
 ```
 
-You don't need to presize your `array`s (see "Arrays" in Chapter 3), you can just declare them and add values as you see fit:
+Нет необходимости указывать размерность массива (см. "Массивы" в главе 3), вы можете просто описать его и добавить значения на своё усмотрение.
 
 ```js
 var a = [ ];
@@ -31,9 +31,9 @@ a[2] = [ 3 ];
 a.length;	// 3
 ```
 
-**Warning:** Using `delete` on an `array` value will remove that slot from the `array`, but even if you remove the final element, it does **not** update the `length` property, so be careful! We'll cover the `delete` operator itself in more detail in Chapter 5.
+**Осторожно** Применив оператор `delete` к элементу массива, вы удалите его оттуда, но даже удалив таким образом все элементы, вы не измените значения свойства `length`, будьте осторожны! Мы рассмотрим `delete` как следует в главе 5.
 
-Be careful about creating "sparse" `array`s (leaving or creating empty/missing slots):
+Будьте осторожны, создавая массивы с пустыми слотами:
 
 ```js
 var a = [ ];
