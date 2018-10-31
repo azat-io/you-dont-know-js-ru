@@ -2,57 +2,57 @@
 
 ## Table of Contents
 
-* Foreword
-* Preface
-* Chapter 1: ES? Now & Future
-	* Versioning
-	* Transpiling
-* Chapter 2: Syntax
-	* Block-Scoped Declarations
-	* Spread / Rest
-	* Default Parameter Values
-	* Destructuring
-	* Object Literal Extensions
-	* Template Literals
-	* Arrow Functions
-	* `for..of` Loops
-	* Regular Expression Extensions
-	* Number Literal Extensions
-	* Unicode
-	* Symbols
-* Chapter 3: Organization
-	* Iterators
-	* Generators
-	* Modules
-	* Classes
-* Chapter 4: Async Flow Control
-	* Promises
-	* Generators + Promises
-* Chapter 5: Collections
-	* TypedArrays
-	* Maps
-	* WeakMaps
-	* Sets
-	* WeakSets
-* Chapter 6: API Additions
+* Предисловие
+* Введение
+* Глава 1: ES? Настоящее и Будущее
+	* Версионирование
+	* Транспиляция
+* Глава 2: Синтаксис
+	* Блочная область видимости
+	* Spread / Rest операторы
+	* Параметры со значениями по умолчанию
+	* Деструктуризация
+	* Расширения объектных литералов
+	* Шаблонные литералы
+	* Стрелочные функции
+	* Цикл `for..of`
+	* Расширения регулярных выражений
+	* Расширения числовых литералов
+	* Юникод
+	* Тип данных Symbol
+* Глава 3: Организация кода
+	* Итераторы
+	* Геренаторы
+	* Модули
+	* Классы
+* Глава 4: Асинхронный поток исполнения
+	* Промисы
+	* Геренаторы + Промисы
+* Глава 5: Коллекции
+	* Типизированные массивы
+	* Объекты Map
+	* Объекты WeakMap
+	* Объекты Set
+	* Объекты WeakSet
+* Глава 6: Нововведения API
 	* `Array`
 	* `Object`
 	* `Math`
 	* `Number`
 	* `String`
-* Chapter 7: Meta Programming
-	* Function Names
-	* Meta Properties
-	* Well Known Symbols
-	* Proxies
+* Глава 7: Метапрограммирование
+	* Имена функций
+	* Метасвойства
+	* Уже знакомые символы (`Symbol`)
+	* Объекты Proxi
 	* `Reflect` API
-	* Feature Testing
-	* Tail Call Optimization (TCO)
-* Chapter 8: Beyond ES6
-	* `async function`s
+	* Тестирование
+	* Оптимизация хвостовой рекурсии (Tail Call Optimization - TCO)
+* Глава 8: За пределами ES6
+	* Функции `async`
 	* `Object.observe(..)`
-	* Exponentiation Operator
-	* Object Properties and `...`
+	* Оператор возведения в степень
+	* Свойства объектов и `...`
 	* `Array#includes(..)`
 	* SIMD
 * Appendix A: Acknowledgments
