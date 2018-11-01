@@ -782,9 +782,9 @@ isNegZero( 0 );			// false
 
 ### Специальное равенство
 
-As we saw above, the `NaN` value and the `-0` value have special behavior when it comes to equality comparison. `NaN` is never equal to itself, so you have to use ES6's `Number.isNaN(..)` (or a polyfill). Simlarly, `-0` lies and pretends that it's equal (even `===` strict equal -- see Chapter 4) to regular positive `0`, so you have to use the somewhat hackish `isNegZero(..)` utility we suggested above.
+Как мы увидели выше, значения `NaN` и `-0` ведут себя по--особенному при попытке проверки на равенство. `NaN` никогда не равно самому себе, так что вы должны использовать метод ES6 `Number.isNaN(..)` (или полифилл). Аналогично, `-0` обманывает и притворяется (даже при использовании `===` строгого равенства -- подробнее в Главе 4) обычным положительным `0`, так что приходится использовать что-то вроде хаков типа `isNegZero(..)` как предлогалось выше.
 
-As of ES6, there's a new utility that can be used to test two values for absolute equality, without any of these exceptions. It's called `Object.is(..)`:
+Для ES6, есть новый метод для проверки двух значений на абсолютное равенство, без всех этих исключений. Он называется `Object.is(..)`:
 
 ```js
 var a = 2 / "foo";
@@ -796,64 +796,64 @@ Object.is( b, -0 );		// true
 Object.is( b, 0 );		// false
 ```
 
-There's a pretty simple polyfill for `Object.is(..)` for pre-ES6 environments:
+Есть достаточно простой полифилл для `Object.is(..)` если ES6 не поддерживается:
 
 ```js
 if (!Object.is) {
 	Object.is = function(v1, v2) {
-		// test for `-0`
+		// проверка на `-0`
 		if (v1 === 0 && v2 === 0) {
 			return 1 / v1 === 1 / v2;
 		}
-		// test for `NaN`
+		// проверка на `NaN`
 		if (v1 !== v1) {
 			return v2 !== v2;
 		}
-		// everything else
+		// любые другие значения
 		return v1 === v2;
 	};
 }
 ```
 
-`Object.is(..)` probably shouldn't be used in cases where `==` or `===` are known to be *safe* (see Chapter 4 "Coercion"), as the operators are likely much more efficient and certainly are more idiomatic/common. `Object.is(..)` is mostly for these special cases of equality.
+`Object.is(..)`, возможно, не должен быть использован в случаях, когда известно что `==` или `===` являются *безопасными* (подробнее в Главе 4 "Преобразование"), как операторы, они, вероятно, более эффективны и просты в применении. `Object.is(..)` по большей части применяется в специальных случаях проверки на равенство.
 
-## Value vs. Reference
+## Значение против Ссылки
 
-In many other languages, values can either be assigned/passed by value-copy or by reference-copy depending on the syntax you use.
+Какт во многих других языках, значения могут быть присвоены/переданы либо с помощью копирования-по-значению,либо с помощью копирования-по-ссылке oв зависимости от синтаксиса, который вы используете.
 
-For example, in C++ if you want to pass a `number` variable into a function and have that variable's value updated, you can declare the function parameter like `int& myNum`, and when you pass in a variable like `x`, `myNum` will be a **reference to `x`**; references are like a special form of pointers, where you obtain a pointer to another variable (like an *alias*). If you don't declare a reference parameter, the value passed in will *always* be copied, even if it's a complex object.
+Например, в C++ если вы хотите передать число `number` переменной в функции и иметь обновленное значение переменной, вы можете объявить параметр функции например `int& myNum`, и когда вы передадите ему переменную например `x`, `myNum` будет **ссылаться на `x`**; ссылки -- это как особые формы указателей, когда вы получаете указатель на другую переменную (как *алиас (псевдоним)*). Если вы не объявляете ссылочный параметр, переданное значение  *всегда* будет скопировано, Даэе если это сложный объект.
 
-In JavaScript, there are no pointers, and references work a bit differently. You cannot have a reference from one JS variable to another variable. That's just not possible.
+В JavaScript, нет указателей, и ссылки работают немного по-другому. вы не можете получить ссылку от одной JS переменной на другую. Это просто невозможно.
 
-A reference in JS points at a (shared) **value**, so if you have 10 different references, they are all always distinct references to a single shared value; **none of them are references/pointers to each other.**
+ССылки в JS указывают на (общее) **значение**, так если у вас есть 10 разных ссылок, они всегда будут разными ссылками на одно общее значение; **ни одна из этих ссылок/указателей tне будет указывать друг на друга.**
 
-Moreover, in JavaScript, there are no syntactic hints that control value vs. reference assignment/passing. Instead, the *type* of the value *solely* controls whether that value will be assigned by value-copy or by reference-copy.
+Более того, в JavaScript, нет никахих синтаксических подсказок которые контролируют как будет происходить присовение/передача по значению или по ссылке. Вместо этого, *тип* значения *полностью* контролирует будет ли это значение присвоено с помощью копирования-по-значению,либо с помощью копирования-по-ссылке.
 
-Let's illustrate:
+Давайте продемонстрируем:
 
 ```js
 var a = 2;
-var b = a; // `b` is always a copy of the value in `a`
+var b = a; // `b` всегда копирует значение из `a`
 b++;
 a; // 2
 b; // 3
 
 var c = [1,2,3];
-var d = c; // `d` is a reference to the shared `[1,2,3]` value
+var d = c; // `d` это ссылка на общее значение `[1,2,3]`
 d.push( 4 );
 c; // [1,2,3,4]
 d; // [1,2,3,4]
 ```
 
-Simple values (aka scalar primitives) are *always* assigned/passed by value-copy: `null`, `undefined`, `string`, `number`, `boolean`, and ES6's `symbol`.
+Простые значения (примитивы) *всегда* назаначаются/передаются копированием-по-значению: `null`, `undefined`, `string`, `number`, `boolean`,и ES6 `symbol`.
 
-Compound values -- `object`s (including `array`s, and all boxed object wrappers -- see Chapter 3) and `function`s -- *always* create a copy of the reference on assignment or passing.
+Сложные значения -- объекты `object` (включая массивы `array`, и все объекты-обертки -- подробнее в Главе 3) и функции `function` -- *всегда* всегда делают копию по ссылке при назначении или передаче.
 
-In the above snippet, because `2` is a scalar primitive, `a` holds one initial copy of that value, and `b` is assigned another *copy* of the value. When changing `b`, you are in no way changing the value in `a`.
+В примере выше, т.к. `2` это примитив, `a` содержит начальную копию этого значения, а переменной `b` присвоена другая *копия* значения. При изменении `b`, вы никоим образом не меняете значение в переменной `a`.
 
-But **both `c` and `d`** are separate references to the same shared value `[1,2,3]`, which is a compound value. It's important to note that neither `c` nor `d` more "owns" the `[1,2,3]` value -- both are just equal peer references to the value. So, when using either reference to modify (`.push(4)`) the actual shared `array` value itself, it's affecting just the one shared value, and both references will reference the newly modified value `[1,2,3,4]`.
+Но **оба`c` и `d`** отдельные ссылки на одно общее значение `[1,2,3]`, которое является сложным значением. Важно понимать что никто из переменных: ни `c` ни  `d` не "обладает" значением `[1,2,3]` в большей степени -- они оба всего лишь равноправные ссылки на значение. Таким образом, когда мы используем любую ссылку для изменения (`.push(4)`) актуального общего значения `array` самого по себе, это влияет только на это общее значение, и обе ссылки будут указываьб на новое измененное значение `[1,2,3,4]`.
 
-Since references point to the values themselves and not to the variables, you cannot use one reference to change where another reference is pointed:
+Раз уж ссылки указывают на сами значения, а не на переменные, вы не можете использовать одну ссылку, чтобы изменить место, куда будет указывать другая ссылка:
 
 ```js
 var a = [1,2,3];
@@ -861,22 +861,22 @@ var b = a;
 a; // [1,2,3]
 b; // [1,2,3]
 
-// later
+// позже
 b = [4,5,6];
 a; // [1,2,3]
 b; // [4,5,6]
 ```
 
-When we make the assignment `b = [4,5,6]`, we are doing absolutely nothing to affect *where* `a` is still referencing (`[1,2,3]`). To do that, `b` would have to be a pointer to `a` rather than a reference to the `array` -- but no such capability exists in JS!
+Когда мы делаем присвоение `b = [4,5,6]`, мы не делаем абсолютно ничего,что могло бы повлиять на то, *куда* `a` все еще ссылается (`[1,2,3]`). Чтобы это выполнить, `b`  должно указывать на `a` вместо того,чтобы ссылаться на массив `array` -- но такой возможности в JS нет!
 
-The most common way such confusion happens is with function parameters:
+Самым распространненым случаем при котором может возникнуть путаница, является использование параметров функции:
 
 ```js
 function foo(x) {
 	x.push( 4 );
 	x; // [1,2,3,4]
 
-	// later
+	// позже
 	x = [4,5,6];
 	x.push( 7 );
 	x; // [4,5,6,7]
@@ -886,22 +886,22 @@ var a = [1,2,3];
 
 foo( a );
 
-a; // [1,2,3,4]  not  [4,5,6,7]
+a; // [1,2,3,4]  а не  [4,5,6,7]
 ```
 
-When we pass in the argument `a`, it assigns a copy of the `a` reference to `x`. `x` and `a` are separate references pointing at the same `[1,2,3]` value. Now, inside the function, we can use that reference to mutate the value itself (`push(4)`). But when we make the assignment `x = [4,5,6]`, this is in no way affecting where the initial reference `a` is pointing -- still points at the (now modified) `[1,2,3,4]` value.
+Когда мы передаем в аргументе переменную `a`, функция принимает копию `a` по ссылке для `x`. `x` и `a` разные ссылки на одно общее значение `[1,2,3]`. Теперь, внутри функции, мы можем использовать ссылку для изменения самого значения (`push(4)`). Но, когда мы делаем присвоение `x = [4,5,6]`, мы никак не влияем на то значение, на которое изначально указывала переменная `a` -- значит, она все еще указывает на (теперь измененное) значение `[1,2,3,4]`.
 
-There is no way to use the `x` reference to change where `a` is pointing. We could only modify the contents of the shared value that both `a` and `x` are pointing to.
+Нельзя с помощью ссылки `x` изменить место, куда ссылается `a`. Мы можем лишь изменить содержимое общего значения, на которое указывют `a` и `x`.
 
-To accomplish changing `a` to have the `[4,5,6,7]` value contents, you can't create a new `array` and assign -- you must modify the existing `array` value:
+Чтобы добиться изменения содержимого переменной `a` на значение `[4,5,6,7]`, вы не можете создать и назначить новый массив `array` -- вы должны изменить существующее значение массива `array`:
 
 ```js
 function foo(x) {
 	x.push( 4 );
 	x; // [1,2,3,4]
 
-	// later
-	x.length = 0; // empty existing array in-place
+	// позже
+	x.length = 0; // обнуляем массив по месту
 	x.push( 4, 5, 6, 7 );
 	x; // [4,5,6,7]
 }
@@ -910,22 +910,22 @@ var a = [1,2,3];
 
 foo( a );
 
-a; // [4,5,6,7]  not  [1,2,3,4]
+a; // [4,5,6,7]  а не  [1,2,3,4]
 ```
 
-As you can see, `x.length = 0` and `x.push(4,5,6,7)` were not creating a new `array`, but modifying the existing shared `array`. So of course, `a` references the new `[4,5,6,7]` contents.
+Как вы можете видеть, `x.length = 0` и `x.push(4,5,6,7)` не создавали но массив `array`, а изменяли существующий общий массив `array`. Таким образом, конечно, `a` ссылается на новое значение `[4,5,6,7]`.
 
-Remember: you cannot directly control/override value-copy vs. reference -- those semantics are controlled entirely by the type of the underlying value.
+Помните: вы не можете напрямую управлять/переопределять тип копирования: по-значению или по-ссылке -- эти правила полностью контролируются типом основного значения.
 
-To effectively pass a compound value (like an `array`) by value-copy, you need to manually make a copy of it, so that the reference passed doesn't still point to the original. For example:
+Чтобы эффективно передать сложное значение (например массив`array`) с помощью копирования по-значению, вам понадобится вручную создать его копию, так чтобы переданная ссылка больше не указывала на оригинал. Например:
 
 ```js
 foo( a.slice() );
 ```
 
-`slice(..)` with no parameters by default makes an entirely new (shallow) copy of the `array`. So, we pass in a reference only to the copied `array`, and thus `foo(..)` cannot affect the contents of `a`.
+`slice(..)` без параметров по умолчанию делает полностью новую (поверхностую) копию массива `array`. Таким образом, мы передаем ссылку только на скопированный массив `array`, а значит `foo(..)` не может повлиять на содержимое `a`.
 
-To do the reverse -- pass a scalar primitive value in a way where its value updates can be seen, kinda like a reference -- you have to wrap the value in another compound value (`object`, `array`, etc) that *can* be passed by reference-copy:
+Чтобы выполнить обратное действие -- передать примитивное значение таким способом, что его изменения будут, навроде как ссылка -- вам понадобится обернуть значение в другое сложное значение (`object`, `array`, и т.п.), которое *может* быть передано копированием по-ссылке:
 
 ```js
 function foo(wrapper) {
@@ -941,11 +941,11 @@ foo( obj );
 obj.a; // 42
 ```
 
-Here, `obj` acts as a wrapper for the scalar primitive property `a`. When passed to `foo(..)`, a copy of the `obj` reference is passed in and set to the `wrapper` parameter. We now can use the `wrapper` reference to access the shared object, and update its property. After the function finishes, `obj.a` will see the updated value `42`.
+Здесь, `obj` действует как обертка для примитивного значения в свойстве `a`. когда мы передаем `foo(..)`, копия объекта `obj` передана по ссылке и назначена параметру `wrapper`. Теперь мы можем использовать ссылку `wrapper` для доступа к общему объекту, и обновить его свойство. После выполнения функции, при запросе `obj.a` будет выведено обновленое значение `42`.
 
-It may occur to you that if you wanted to pass in a reference to a scalar primitive value like `2`, you could just box the value in its `Number` object wrapper (see Chapter 3).
+Если вы захотите передать ссылку на примитивное значение например `2`, вы можете просто обернуть его в объект-обертку `Number` (подробнее в Главе 3).
 
-It *is* true a copy of the reference to this `Number` object *will* be passed to the function, but unfortunately, having a reference to the shared object is not going to give you the ability to modify the shared primitive value, like you may expect:
+Это *является* настоящим копированием по-ссылке для объекта `Number`, который *будет* передан функции, но, к несчастью, получение ссылки на общий объект не дает права на изменение общего примитивного значения, как ожидалось:
 
 ```js
 function foo(x) {
@@ -954,32 +954,32 @@ function foo(x) {
 }
 
 var a = 2;
-var b = new Number( a ); // or equivalently `Object(a)`
+var b = new Number( a ); // эквивалентно `Object(a)`
 
 foo( b );
-console.log( b ); // 2, not 3
+console.log( b ); // 2, не 3
 ```
 
-The problem is that the underlying scalar primitive value is *not mutable* (same goes for `String` and `Boolean`). If a `Number` object holds the scalar primitive value `2`, that exact `Number` object can never be changed to hold another value; you can only create a whole new `Number` object with a different value.
+Проблема в том, что лежащее в основе примитивное значение *неизменно* (то же самое справедливо для `String` и `Boolean`). Если объект `Number` содержит примитивное значение `2`, это означает, что объект `Number` не может быть изменен для хранения другого значения; вы можете лишь создать новый объект `Number` с другим значением.
 
-When `x` is used in the expression `x + 1`, the underlying scalar primitive value `2` is unboxed (extracted) from the `Number` object automatically, so the line `x = x + 1` very subtly changes `x` from being a shared reference to the `Number` object, to just holding the scalar primitive value `3` as a result of the addition operation `2 + 1`. Therefore, `b` on the outside still references the original unmodified/immutable `Number` object holding the value `2`.
+Когда `x` использовано в выражении `x + 1`, лежащее в основе примитивное значение `2` распаковано (извлечено) из объекта `Number` автоматически, значит строка `x = x + 1` очень незаметно меняет `x` и вместо ссылки на общий объект `Number`, переменная `x` просто содержит примитивное значение `3` являющееся результатом математического действия `2 + 1`. Таким образом, `b` снаружи все еще ссылается на оригинальный неизмененный/неизменный объект `Number` содержащий значение `2`.
 
-You *can* add properties on top of the `Number` object (just not change its inner primitive value), so you could exchange information indirectly via those additional properties.
+Вы *можете* добавить свойство поверх объекта `Number` (не изменяя его примитивного значения), так вы сможете обменимваться информацией косвенно через дополнительные свойства.
 
-This is not all that common, however; it probably would not be considered a good practice by most developers.
+В любом случае, это не является общепринятым; и, возможно, большинство разработчиков не считают это хорошей практикой.
 
-Instead of using the wrapper object `Number` in this way, it's probably much better to use the manual object wrapper (`obj`) approach in the earlier snippet. That's not to say that there's no clever uses for the boxed object wrappers like `Number` -- just that you should probably prefer the scalar primitive value form in most cases.
+Вместо использования объекта-обертки `Number` таким способом, возможно, гораздо удобнее использовать обычный, созданный вручную, объект (`obj`), о котором говорилось в примере ранее. Никто не говорит, что нет разумного использования объекта-обертки `Number` -- просто возможно предпочтительнее будет использовать примитивное значение в большинстве случаев.
 
-References are quite powerful, but sometimes they get in your way, and sometimes you need them where they don't exist. The only control you have over reference vs. value-copy behavior is the type of the value itself, so you must indirectly influence the assignment/passing behavior by which value types you choose to use.
+Ссылки достаточно мощные, но иногда они есть там где вам нужно, а иногда они нужны вам там, где их нет. Единственное влияние которое у вас есть при выборе типа копирования по-ссылке или по-значению это выбор типа самого значения, так что вы должны косвенно влиять на поведение присвоения/передачи путем выбора типа значений.
 
-## Review
+## Обзор
 
-In JavaScript, `array`s are simply numerically indexed collections of any value-type. `string`s are somewhat "`array`-like", but they have distinct behaviors and care must be taken if you want to treat them as `array`s. Numbers in JavaScript include both "integers" and floating-point values.
+В JavaScript, массивы `array` -- простые коллекции значений любого типа с пронумерованными ячейками. Строки `string` что-то "подобное массивам `array`", но у них есть различия в поведении и нужно быть осторожными при использовании строк как массивов `array`. Числа в JavaScript включают в себя как "целые" значения так и значения с плавющей точкой.
 
-Several special values are defined within the primitive types.
+Среди примитивнх значений есть некоторые специальные значения.
 
-The `null` type has just one value: `null`, and likewise the `undefined` type has just the `undefined` value. `undefined` is basically the default value in any variable or property if no other value is present. The `void` operator lets you create the `undefined` value from any other value.
+Тип `null` имеет только одно значение: `null`, также как и тип `undefined` имеет только одно значение -- `undefined`. `undefined` -- изначальное стандартное значение в любой переменной или свойстве, если никакое другое значение не представлено. Оператор `void` позволяет вам получить значение `undefined` от любого другого значения.
 
-`number`s include several special values, like `NaN` (supposedly "Not a Number", but really more appropriately "invalid number"); `+Infinity` and `-Infinity`; and `-0`.
+Числа `number` включают в себя несколько специальных значений, например `NaN` (по идее "Не-Число", но на самом деле более предпочтительно "неправильное число"); бесконечности `+Infinity` и `-Infinity`; и `-0`.
 
-Simple scalar primitives (`string`s, `number`s, etc.) are assigned/passed by value-copy, but compound values (`object`s, etc.) are assigned/passed by reference-copy. References are not like references/pointers in other languages -- they're never pointed at other variables/references, only at the underlying values.
+Простые примитивные изначения (строки `string`, числа `number`, и т.п.) назначаются/передаются копированием по-значению, но сложные значения (объекты `object`, и т.п.) назначаются/передаются копированием по-ссылке. Ссылки в JS не такие как ссылки/указатели в других языках -- они никогда не указывают на другие переменные/ссылки, только на сами значения.
