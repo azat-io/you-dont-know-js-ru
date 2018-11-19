@@ -118,6 +118,6 @@ console.log( a ); // ReferenceError
 
 В итоге, вопрос превращается в такой: нужна ли вам блочная область видимости или нет. Если нужна, эти утилиты дадут вам такую возможность. Если нет, продолжайте использовать `var` и кодировать!
 
-[Google Traceur](http://traceur-compiler.googlecode.com/git/demo/repl.html)
+[Google Traceur](https://google.github.io/traceur-compiler/demo/repl.html)
 
 [let-er](https://github.com/getify/let-er)
