@@ -63,31 +63,31 @@
 
 Но в подобных языках вы на самом деле не работаете непосредственно со `Stack` (если только речь не идет о **Static** члене класса, но это выходит за рамки нашего обсуждения). Класс `Stack` - это просто абстрактное описание того, что должен делать *любой* "стек", но это не *сам* "стек". Вы должны **создать экземпляр** класса `Stack`, прежде чем у вас будет конкретная структура данных *нечто* для работы с ней.
 
-### Building
+### Строительство
 
-The traditional metaphor for "class" and "instance" based thinking comes from a building construction.
+Традиционная метафора для мышления, основанного на «классе» и «экземпляре» это постройка здания.
 
-An architect plans out all the characteristics of a building: how wide, how tall, how many windows and in what locations, even what type of material to use for the walls and roof. She doesn't necessarily care, at this point, *where* the building will be built, nor does she care *how many* copies of that building will be built.
+Архитектор определяет все характеристики здания: его ширину, высоту, количество окон и их расположение, а также материалы из которых будут изготовлены стены и крыша. На данном этапе ему вовсе не важно где будет построено здание, равно как и количество возводимых копий.
 
-She also doesn't care very much about the contents of the building -- the furniture, wall paper, ceiling fans, etc. -- only what type of structure they will be contained by.
+Также архитектору не важно и содержание здания - мебель, обои, кондиционеры и т.д. - важно лишь понимание того, какой "тип вещей", предположительно, будет содержать это здание.
 
-The architectural blue-prints she produces are only *plans* for a building. They don't actually constitute a building we can walk into and sit down. We need a builder for that task. A builder will take those plans and follow them, exactly, as he *builds* the building. In a very real sense, he is *copying* the intended characteristics from the plans to the physical building.
+Проект, который прорабатывает архитектор это всего лишь *чертеж* постройки. Это не готовое здание здание, в которое мы можем войти. Для решения этой задачи нам понадобится строитель. Он возьмет *чертеж* у архитектора и начнет *строить* здание, в точности соблюдая все характеристики. Строитель в буквальном смысле «копирует» все характеристики из чертежа в реальное физическое здание.
 
-Once complete, the building is a physical instantiation of the blue-print plans, hopefully an essentially perfect *copy*. And then the builder can move to the open lot next door and do it all over again, creating yet another *copy*.
+По завершению строительства это будет физическое воплощение чертежа, которое, как мы надеемся, станет идеальной копией. После этого застройщик может перейти к территории по соседству чтобы повторить, создав еще одну копию здания.
 
-The relationship between building and blue-print is indirect. You can examine a blue-print to understand how the building was structured, for any parts where direct inspection of the building itself was insufficient. But if you want to open a door, you have to go to the building itself -- the blue-print merely has lines drawn on a page that *represent* where the door should be.
+Строительство, в каком-то смысле, имеет лишь косвенное отношение к чертежу. Вы можете взять чертеж и изучить его, поняв особенности здания которые не видны при визуальном осмотре. Но если вы захотите открыть дверь, вы должны будете пойти непосредственно к самому зданию - на чертеже всего лишь линии, условное обозначение, *представление* того где она должна быть.
 
-A class is a blue-print. To actually *get* an object we can interact with, we must build (aka, "instantiate") something from the class. The end result of such "construction" is an object, typically called an "instance", which we can directly call methods on and access any public data properties from, as necessary.
+`сlass` это чертеж. Для того чтобы в действительности получить `get` реальный объект с которым мы можем взаимодействовать, мы должны построить (aka, "создать экземпляр") чего-то из этого класса. Конечным результатом такой «конструкции» является объект, обычно называемый «экземпляром», с помощью которого мы можем вызывать методы, обращаться к любым общедоступным свойствам и данным при необходимости.
 
-**This object is a *copy*** of all the characteristics described by the class.
+**Этот объект является *копией***  всех характеристик класса.
 
-You likely wouldn't expect to walk into a building and find, framed and hanging on the wall, a copy of the blue-prints used to plan the building, though the blue-prints are probably on file with a public records office. Similarly, you don't generally use an object instance to directly access and manipulate its class, but it is usually possible to at least determine *which class* an object instance comes from.
+Вы, вероятно, не ожидаете, что войдете в здание и найдете в рамке висящую на стене копию чертежа, используемого для постройки здания, хотя чертеж, вероятно, есть в здании и хранится в архиве. Точно так же экземпляр обычно не используется для прямого доступа к его классу и манипулирования им, но по крайней мере можно всегда определить экземпляр какого именно класса был создан.
 
-It's more useful to consider the direct relationship of a class to an object instance, rather than any indirect relationship between an object instance and the class it came from. **A class is instantiated into object form by a copy operation.**
+Будет полеезнее рассмотреть прямую связь класса с экземпляром, а не косвенные отношения между экземпляром и классом, из которого он получен. **Класс создается в форме объекта с помощью операции копирования. **
 
 <img src="fig1.png">
 
-As you can see, the arrows move from left to right, and from top to bottom, which indicates the copy operations that occur, both conceptually and physically.
+Как вы видите, стрелки перемещаются слева направо и сверху вниз, указывая на операции копирования, которые происходят как концептуально, так и физически.
 
 ### Constructor
 
