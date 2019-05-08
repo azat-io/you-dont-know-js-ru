@@ -1,49 +1,46 @@
-# You Don't Know JS: Async & Performance
-# Chapter 1: Asynchrony: Now & Later
+# Вы не знаете JS: Асинхронность и Выполнение
+# Глава 1: Асинхронность: Сейчас и Потом
 
-One of the most important and yet often misunderstood parts of programming in a language like JavaScript is how to express and manipulate program behavior spread out over a period of time.
+Управление программой в течении её времени выполнения является глубокой и, в то же время, важной темой для понимания Javascript.
 
-This is not just about what happens from the beginning of a `for` loop to the end of a `for` loop, which of course takes *some time* (microseconds to milliseconds) to complete. It's about what happens when part of your program runs *now*, and another part of your program runs *later* -- there's a gap between *now* and *later* where your program isn't actively executing.
+Имеется ввиду не только то, что происходит от начала 'for' цикла и до его завершения, выполнение которого занимает, в основном, небольшой промежуток времени (от микро до миллисекунд), но и, то, что случается между запуском одной части программы *сейчас* и другой *позже* -- в этом промежутке, когда она не в активном исполнении.
 
-Practically all nontrivial programs ever written (especially in JS) have in some way or another had to manage this gap, whether that be in waiting for user input, requesting data from a database or file system, sending data across the network and waiting for a response, or performing a repeated task at a fixed interval of time (like animation). In all these various ways, your program has to manage state across the gap in time. As they famously say in London (of the chasm between the subway door and the platform): "mind the gap."
+Практически, все нетривиальные программы (особенно, написанные на Javascript) управляют выше упомянутым промежутком, будто ожидание ввода данных пользователем, запрос информации с базы данных или файловой системы, отправка данных по сети и ожидание ответа, или выполнение повторяющихся действий в заданном интервале (анимация). Во всех этих случаях, ваша программа должна управлять своим состоянием во время этой "паузы" в ходе своего исполнения. Как говорят в Лондоне "Mind the gap!"(дословно -- "Помни о разрыве") -- надпись на платформе, предупреждающая о расстоянии между её краем и дверью поезда.
 
-In fact, the relationship between the *now* and *later* parts of your program is at the heart of asynchronous programming.
+На самом деле, отношение *сейчас* и *потом* частей вашей программы является сердцем асинхронного программирования.
 
-Asynchronous programming has been around since the beginning of JS, for sure. But most JS developers have never really carefully considered exactly how and why it crops up in their programs, or explored various *other* ways to handle it. The *good enough* approach has always been the humble callback function. Many to this day will insist that callbacks are more than sufficient.
+Асинхронное программирование существовало в JS изначально. Но многие разработчики не вдавались в подробности как именно оно работает в их программах, или находили *другие* способы управления им. *Почти хорошим* подходом считалась скромная callback функция. Многие до сих пор считают, что callback'и являются эффективным решением.
 
-But as JS continues to grow in both scope and complexity, to meet the ever-widening demands of a first-class programming language that runs in browsers and servers and every conceivable device in between, the pains by which we manage asynchrony are becoming increasingly crippling, and they cry out for approaches that are both more capable and more reason-able.
+Но с ростом масштаба и сложности JS, для удовлетворения постоянно расширяющихся требований первоклассного языка программирования, работающего как в браузерах так и на серверах, и на любых мыслимых устройствах, между прочим, росла и боль с которой приходилось управлять асинхронностью.
 
-While this all may seem rather abstract right now, I assure you we'll tackle it more completely and concretely as we go on through this book. We'll explore a variety of emerging techniques for async JavaScript programming over the next several chapters.
+Сейчас это все может показаться довольно абстрактным. Но я вас уверяю, что мы углубимся в детали и изучим множество новых методов для асинхронного программирования в JavaScript в следующих главах.
 
-But before we can get there, we're going to have to understand much more deeply what asynchrony is and how it operates in JS.
+Для этого нам надо разобраться во всех тонкостях асинхронности в JS.
 
-## A Program in Chunks
+## Программа по кусочкам
 
-You may write your JS program in one *.js* file, but your program is almost certainly comprised of several chunks, only one of which is going to execute *now*, and the rest of which will execute *later*. The most common unit of *chunk* is the `function`.
+Даже, если вы пишете ваш код в одном *.js* файле, ваша программа почти наверняка состоит из нескольких *кусочков*, один из которых выполнится *сейчас*, а остальные *потом*. Наиболее распространенная единица *кусочка* - 'function'.
 
-The problem most developers new to JS seem to have is that *later* doesn't happen strictly and immediately after *now*. In other words, tasks that cannot complete *now* are, by definition, going to complete asynchronously, and thus we will not have blocking behavior as you might intuitively expect or want.
+Большинство, новоприбывших в JS, разработчиков, думают, что асинхронный код приостанавливается для выполнения, но это не так.
 
-Consider:
+Давайте посмотрим:
 
 ```js
-// ajax(..) is some arbitrary Ajax function given by a library
+// ajax(..) обычная ajax функция
 var data = ajax( "http://some.url.1" );
 
 console.log( data );
-// Oops! `data` generally won't have the Ajax results
+// Упс! `данные` не получены
 ```
 
-You're probably aware that standard Ajax requests don't complete synchronously, which means the `ajax(..)` function does not yet have any value to return back to be assigned to `data` variable. If `ajax(..)` *could* block until the response came back, then the `data = ..` assignment would work fine.
+Вы вероятно знаете, что Ajax запросы не выполняются синхронно, а это значит, что `ajax(..)` функция ещё не получила данных для присвоения в переменную `data`. Если бы `ajax(..)` запрос мог бы приостановить код для получения данных, тогда бы `data` не была пуста. 
 
-But that's not how we do Ajax. We make an asynchronous Ajax request *now*, and we won't get the results back until *later*.
-
-The simplest (but definitely not only, or necessarily even best!) way of "waiting" from *now* until *later* is to use a function, commonly called a callback function:
+Простейшая (но далеко не самая лучшая) реализация Ajax -- это использование функции callback. 
 
 ```js
-// ajax(..) is some arbitrary Ajax function given by a library
 ajax( "http://some.url.1", function myCallbackFunction(data){
 
-	console.log( data ); // Yay, I gots me some `data`!
+	console.log( data ); // Ура, Я получил `data`!
 
 } );
 ```
