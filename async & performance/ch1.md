@@ -45,11 +45,9 @@ ajax( "http://some.url.1", function myCallbackFunction(data){
 } );
 ```
 
-**Warning:** You may have heard that it's possible to make synchronous Ajax requests. While that's technically true, you should never, ever do it, under any circumstances, because it locks the browser UI (buttons, menus, scrolling, etc.) and prevents any user interaction whatsoever. This is a terrible idea, and should always be avoided.
+**Предупреждение:** Скорее всего вы слышали, что Ajax запросы можно делать синхронно. Хоть и технически это возможно, но категорически не рекомендуется к использованию. Синхронный Ajax запрос блокирует пользовательский интерфейс браузера (кнопки, меню, скролл и т.д.), делая сайт невозможным для взаимодействия.
 
-Before you protest in disagreement, no, your desire to avoid the mess of callbacks is *not* justification for blocking, synchronous Ajax.
-
-For example, consider this code:
+Взгляните на этот код:
 
 ```js
 function now() {
@@ -66,9 +64,9 @@ var answer = now();
 setTimeout( later, 1000 ); // Meaning of life: 42
 ```
 
-There are two chunks to this program: the stuff that will run *now*, and the stuff that will run *later*. It should be fairly obvious what those two chunks are, but let's be super explicit:
+Программа состоит из условно двух частей: одна из них запуститься *сейчас*, а вторая *потом*.
 
-Now:
+Блок кода, который сработает сразу же после запуска программы (*сейчас* часть):
 ```js
 function now() {
 	return 21;
@@ -81,15 +79,15 @@ var answer = now();
 setTimeout( later, 1000 );
 ```
 
-Later:
+Блок кода, который запуститься через некоторое время (*потом* часть):
 ```js
 answer = answer * 2;
 console.log( "Meaning of life:", answer );
 ```
 
-The *now* chunk runs right away, as soon as you execute your program. But `setTimeout(..)` also sets up an event (a timeout) to happen *later*, so the contents of the `later()` function will be executed at a later time (1,000 milliseconds from now).
+В данном случае,  функция `later()` придет к исполнению по истечению времени, которое мы указали в `setTimeout(..)` - 1000 миллисекунд. 
 
-Any time you wrap a portion of code into a `function` and specify that it should be executed in response to some event (timer, mouse click, Ajax response, etc.), you are creating a *later* chunk of your code, and thus introducing asynchrony to your program.
+Каждый раз, когда вы помещаете часть кода в функцию и указываете, что он должен выполняться в ответ на какое-либо событие (таймер, клик мыши, Ajax ответ и т. д.), вы создаете более позднюю часть своего кода и, таким образом, ваша программа становится асинхронной.
 
 ### Async Console
 
