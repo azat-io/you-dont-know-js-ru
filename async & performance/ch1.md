@@ -89,13 +89,13 @@ console.log( "Meaning of life:", answer );
 
 Каждый раз, когда вы помещаете часть кода в функцию и указываете, что он должен выполняться в ответ на какое-либо событие (таймер, клик мыши, Ajax ответ и т. д.), вы создаете более позднюю часть своего кода и, таким образом, ваша программа становится асинхронной.
 
-### Async Console
+### Асинхронная Консоль
 
-There is no specification or set of requirements around how the `console.*` methods work -- they are not officially part of JavaScript, but are instead added to JS by the *hosting environment* (see the *Types & Grammar* title of this book series).
+В спецификации нет ни слова о принципах работы методов `console.*` -- они официально не являются частью JavaScript, а подключаются в JS *хостинговой средой* (*hosting environment*) (подробнее в *Типы и Грамматика* из этой же серии книг). 
 
-So, different browsers and JS environments do as they please, which can sometimes lead to confusing behavior.
+Таким образом, результат работы console в разных браузерах и разных средах JS может быть не совсем таким, каким мы его ожидали увидеть.
 
-In particular, there are some browsers and some conditions that `console.log(..)` does not actually immediately output what it's given. The main reason this may happen is because I/O is a very slow and blocking part of many programs (not just JS). So, it may perform better (from the page/UI perspective) for a browser to handle `console` I/O asynchronously in the background, without you perhaps even knowing that occurred.
+Как пример, в некоторых браузерах и при некоторых условиях, `console.log (..)` не сразу выводит то, что в него передали. Основная причина этого может заключаться в том, что ввод/вывод является очень медленной и блокирующей частью многих программ (не только в Javascript). Таким образом, он может отработать асинхронно в фоновом режиме, а вы даже и не заметите этого. Сделано это в целях улучшения производительности страницы/пользовательского интерфейса.
 
 A not terribly common, but possible, scenario where this could be *observable* (not from code itself but from the outside):
 
