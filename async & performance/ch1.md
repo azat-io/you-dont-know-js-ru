@@ -110,12 +110,9 @@ console.log( a ); // ??
 // even later
 a.index++;
 ```
+Обычно мы ожидаем увидеть моментальный вывод объекта в момент вызова оператора `console.log(..)`, в данном примере это `{ index: 1 }`, таким образом результат `a.index++` уже будет отличный от вывода `a` и это верно, в большинстве случаев. Но иногда браузер считает необходимым отложить ввод/вывод консоли в фоновый режим. При таком раскладе возможно, что к тому времени, когда объект будет отображен в консоли браузера, `a.index++` уже отработает, и `console.log(..)` выведет `{ index: 2 }`.
 
-We'd normally expect to see the `a` object be snapshotted at the exact moment of the `console.log(..)` statement, printing something like `{ index: 1 }`, such that in the next statement when `a.index++` happens, it's modifying something different than, or just strictly after, the output of `a`.
-
-Most of the time, the preceding code will probably produce an object representation in your developer tools' console that's what you'd expect. But it's possible this same code could run in a situation where the browser felt it needed to defer the console I/O to the background, in which case it's *possible* that by the time the object is represented in the browser console, the `a.index++` has already happened, and it shows `{ index: 2 }`.
-
-It's a moving target under what conditions exactly `console` I/O will be deferred, or even whether it will be observable. Just be aware of this possible asynchronicity in I/O in case you ever run into issues in debugging where objects have been modified *after* a `console.log(..)` statement and yet you see the unexpected modifications show up.
+`console` ведет себя непредсказуемо, поэтому иногда ввод/вывод отрабатывает асинхронно. Просто помните об этой особенности ввода/вывода на случай, если у вас возникнут проблемы при отладке, как в упомянутом примере выше.
 
 **Note:** If you run into this rare scenario, the best option is to use breakpoints in your JS debugger instead of relying on `console` output. The next best option would be to force a "snapshot" of the object in question by serializing it to a `string`, like with `JSON.stringify(..)`.
 
