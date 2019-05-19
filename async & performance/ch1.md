@@ -126,11 +126,11 @@ a.index++;
 
 Движок JS не работает в изоляции. Он работает в хостинговой среде (hosting environment), которая для большинства разработчиков является типичным веб-браузером. За последние несколько лет (но отнюдь не только) JS расширился за пределы браузера до других сред, например такой, как веб-сервер, в роли которой выступает Node.js. Сегодня JavaScript внедряется во все виды устройств, от роботов до лампочек.
 
-But the one common "thread" (that's a not-so-subtle asynchronous joke, for what it's worth) of all these environments is that they have a mechanism in them that handles executing multiple chunks of your program *over time*, at each moment invoking the JS engine, called the "event loop."
+У всех этих сред одинаковый механизм работы называемый "event loop". Он обрабатывает несколько фрагментов кода вашей программы с течением времени, всякий раз обращаясь к движку JS.
 
-In other words, the JS engine has had no innate sense of *time*, but has instead been an on-demand execution environment for any arbitrary snippet of JS. It's the surrounding environment that has always *scheduled* "events" (JS code executions).
+Другими словами, у Jаvascript движка не было врожденного чувства *времени*, вместо этого он был средой исполнения по требованию для любого произвольного куска кода JS.
 
-So, for example, when your JS program makes an Ajax request to fetch some data from a server, you set up the "response" code in a function (commonly called a "callback"), and the JS engine tells the hosting environment, "Hey, I'm going to suspend execution for now, but whenever you finish with that network request, and you have some data, please *call* this function *back*."
+Например, когда ваша JS-программа отправляет Ajax-запрос на получение данных с сервера, вы устанавливаете код "ответа" в функции (обычно называемой "callback").  В таком случае JS скажет хостинговой среде, "Эй, сейчас я собираюсь приостановить выполнение кода, но когда ты закончишь с этим запросом и у тебя будут какие-то данные, пожалуйста, вызови эту функцию обратно".
 
 The browser is then set up to listen for the response from the network, and when it has something to give you, it schedules the callback function to be executed by inserting it into the *event loop*.
 
