@@ -132,25 +132,25 @@ a.index++;
 
 Например, когда ваша JS-программа отправляет Ajax-запрос на получение данных с сервера, вы устанавливаете код "ответа" в функции (обычно называемой "callback").  В таком случае JS скажет хостинговой среде, "Эй, сейчас я собираюсь приостановить выполнение кода, но когда ты закончишь с этим запросом и у тебя будут какие-то данные, пожалуйста, вызови эту функцию обратно".
 
-The browser is then set up to listen for the response from the network, and when it has something to give you, it schedules the callback function to be executed by inserting it into the *event loop*.
+Затем браузер настраивается на прослушивание ответа от сети, и, когда ему есть, что вам отдать, он помещает функцию обратного вызова в *event loop*.
 
-So what is the *event loop*?
+Так что же такое этот *event loop*?
 
-Let's conceptualize it first through some fake-ish code:
+Разобраться в этом нам поможет псевдокод:
 
 ```js
-// `eventLoop` is an array that acts as a queue (first-in, first-out)
+// `eventLoop` массив, который выступает в роли очереди для событий (first-in, first-out)
 var eventLoop = [ ];
 var event;
 
-// keep going "forever"
+// "бесконечный" цикл
 while (true) {
-	// perform a "tick"
+	// выполнить "тик"
 	if (eventLoop.length > 0) {
-		// get the next event in the queue
+		// достать следующее событие в очереди
 		event = eventLoop.shift();
 
-		// now, execute the next event
+		// выполнить событие
 		try {
 			event();
 		}
@@ -161,9 +161,9 @@ while (true) {
 }
 ```
 
-This is, of course, vastly simplified pseudocode to illustrate the concepts. But it should be enough to help get a better understanding.
+Хоть он и упрощенный для иллюстрации этой концепции, но этого достаточно, чтобы лучше разобраться о чём идет речь.
 
-As you can see, there's a continuously running loop represented by the `while` loop, and each iteration of this loop is called a "tick." For each tick, if an event is waiting on the queue, it's taken off and executed. These events are your function callbacks.
+Мы имеем непрерывно работающий цикл `while`, и каждая итерация этого цикла называется "тик". В момент каждого тика, если событие стоит в очереди, оно достается из нее и выполняется. Эти события являются вашими функциями обратного вызова (callback).
 
 It's important to note that `setTimeout(..)` doesn't put your callback on the event loop queue. What it does is set up a timer; when the timer expires, the environment places your callback into the event loop, such that some future tick will pick it up and execute it.
 
