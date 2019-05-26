@@ -165,13 +165,13 @@ while (true) {
 
 Мы имеем непрерывно работающий цикл `while`, и каждая итерация этого цикла называется "тик". В момент каждого тика, если событие стоит в очереди, оно достается из нее и выполняется. Эти события являются вашими функциями обратного вызова (callback).
 
-It's important to note that `setTimeout(..)` doesn't put your callback on the event loop queue. What it does is set up a timer; when the timer expires, the environment places your callback into the event loop, such that some future tick will pick it up and execute it.
+Важно отметить, что `setTimeout(..)` не помещает ваш callback в очередь цикла событий, а устанавливает таймер по истечению которого, callback отправится в event loop и какой-то будущий тик подхватит его и выполнит.
 
-What if there are already 20 items in the event loop at that moment? Your callback waits. It gets in line behind the others -- there's not normally a path for preempting the queue and skipping ahead in line. This explains why `setTimeout(..)` timers may not fire with perfect temporal accuracy. You're guaranteed (roughly speaking) that your callback won't fire *before* the time interval you specify, but it can happen at or after that time, depending on the state of the event queue.
+Но что, если в этот момент в event loop'е и так уже есть, допустим, 20 событий? Ваш callback займет место в конце и будет ждать своей очереди -- по другому никак. Это объясняет, почему таймеры `setTimeout(..)` не всегда срабатывают с идеальной точностью. Они лишь гарантируют, что ваш callback не запустится *до* указанного вами интервала времени, а только в момент его истечения или позже, в зависимости от состояния очереди событий.
 
-So, in other words, your program is generally broken up into lots of small chunks, which happen one after the other in the event loop queue. And technically, other events not related directly to your program can be interleaved within the queue as well.
+Другими словами, ваша программа разбита на множество маленьких кусочков, которые запускаются один за другим в очереди цикла событий. Технически, другие события, не связанные напрямую с вашей программой, могут чередоваться в очереди.
 
-**Note:** We mentioned "up until recently" in relation to ES6 changing the nature of where the event loop queue is managed. It's mostly a formal technicality, but ES6 now specifies how the event loop works, which means technically it's within the purview of the JS engine, rather than just the *hosting environment*. One main reason for this change is the introduction of ES6 Promises, which we'll discuss in Chapter 3, because they require the ability to have direct, fine-grained control over scheduling operations on the event loop queue (see the discussion of `setTimeout(..0)` in the "Cooperation" section).
+**Примечание:** Ранее мы отметили, что до выхода ES6 прямого упоминания о встроенной в язык асинхронности не было. С приходом ECMAScript 6 были внесены некоторые изменения по управлению очередью в event loop. Это в основном формальная техническая составляющая, но теперь ES6 определяет, как работает цикл обработки событий, что означает, что технически это относится к JS, а не исключительно к *хостинговой среде*. Основной причиной для этого изменения послужило введение ES6 Promise'ов, которые могут напрямую управлять операциями планирования в очереди цикла событий (см. обсуждение `setTimeout(..0)` в разделе "Кооперирование").
 
 ## Parallel Threading
 
