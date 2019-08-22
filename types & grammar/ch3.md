@@ -1,9 +1,11 @@
-# You Don't Know JS: Types & Grammar
-# Chapter 3: Natives
+# Вы не знает JS: Типы и грамматика
+# Глава 3: Стандартные встроенные объекты
 
 Several times in Chapters 1 and 2, we alluded to various built-ins, usually called "natives," like `String` and `Number`. Let's examine those in detail now.
+Несколько раз в первой и второй главах этой книги мы упоминали различные нативные объекты, такие как `String` и `Number`. Давай рассмотрим их детальнее.
 
 Here's a list of the most commonly used natives:
+Вот список часто используемых стандартных объектов:
 
 * `String()`
 * `Number()`
@@ -14,11 +16,13 @@ Here's a list of the most commonly used natives:
 * `RegExp()`
 * `Date()`
 * `Error()`
-* `Symbol()` -- added in ES6!
+* `Symbol()` -- добавлено в ES6!
 
 As you can see, these natives are actually built-in functions.
+Как вы можете заметить, на деле все они являются встроенными функциями.
 
 If you're coming to JS from a language like Java, JavaScript's `String()` will look like the `String(..)` constructor you're used to for creating string values. So, you'll quickly observe that you can do things like:
+Если вы пришли в JS из языков подобных Java, то, наверное, заметили, что выражение `String()` схоже с конструктором `String(..)`, используемым в Java для создания строк. Скоро станет понятно, что можно делать подобные вещи:
 
 ```js
 var s = new String( "Hello World!" );
@@ -27,11 +31,12 @@ console.log( s.toString() ); // "Hello World!"
 ```
 
 It *is* true that each of these natives can be used as a native constructor. But what's being constructed may be different than you think.
+На самом деле каждый из этих встроенных объектов может быть использован в качестве конструктора. Но продукт его вызова может быть не таким, как вам кажется.
 
 ```js
 var a = new String( "abc" );
 
-typeof a; // "object" ... not "String"
+typeof a; // "object" ... не "String"
 
 a instanceof String; // true
 
@@ -39,24 +44,31 @@ Object.prototype.toString.call( a ); // "[object String]"
 ```
 
 The result of the constructor form of value creation (`new String("abc")`) is an object wrapper around the primitive (`"abc"`) value.
+Результатом создания значений с помощью вызова конструктора (`new String("abc")`) является объект-обертка над примитивным (`"abc"`) значением.
 
 Importantly, `typeof` shows that these objects are not their own special *types*, but more appropriately they are subtypes of the `object` type.
+Вызов `typeof` показывает, что эти объекты не имеют какой-то уникальный `тип`, точнее определить их подтипами типа `object`.
 
 This object wrapper can further be observed with:
+Эту обертку над значением можно наблюдать с помощью:
 
 ```js
 console.log( a );
 ```
 
 The output of that statement varies depending on your browser, as developer consoles are free to choose however they feel it's appropriate to serialize the object for developer inspection.
+Результаты вывода могут отличаться в разных браузерах, так как консоли разработчика вправе выбирать как сериализировать объекты для инспектирования их разработчиками.
 
 **Note:** At the time of writing, the latest Chrome prints something like this: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. But older versions of Chrome used to just print this: `String {0: "a", 1: "b", 2: "c"}`. The latest Firefox currently prints `String ["a","b","c"]`, but used to print `"abc"` in italics, which was clickable to open the object inspector. Of course, these results are subject to rapid change and your experience may vary.
+**Замечание:** В момент написания этой книги последняя версия Chrome печатает что-то вроде этого: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. Но старые версии Chrome печатали просто строку: `String {0: "a", 1: "b", 2: "c"}`. Последний Firefox на данный момент выводит `String ["a", "b", "c"]`, но до этого печатал курсивом `"abc"`, на который можно было кликнуть и открыть окно инспектора. Конечно, все это быстро меняется, и ваш опыт может сильно разниться с приведенным в книге.
 
 The point is, `new String("abc")` creates a string wrapper object around `"abc"`, not just the primitive `"abc"` value itself.
+Цель создания обертки над строчкой `"abc"` с помощью `new String("abc")` - не только примитивное значение `"abc"`.
 
-## Internal `[[Class]]`
+## Внутреннее свойство `[[Class]]`
 
 Values that are `typeof` `"object"` (such as an array) are additionally tagged with an internal `[[Class]]` property (think of this more as an internal *class*ification rather than related to classes from traditional class-oriented coding). This property cannot be accessed directly, but can generally be revealed indirectly by borrowing the default `Object.prototype.toString(..)` method called against the value. For example:
+Значения, для которых `typeof` возвращает `"object"` (как, например, массив), дополнительно помечаются внутренним свойством `[[Class]]` (думайте об этом больше как о внутренней *класс*ификации, нежели о классах из традиционного ООП). Это свойство не имеет прямого доступа, но его его можно обнаружить, одолжив стандартный метод `Object.prototype.toString()` и вызвав его с желаемым значением. К примеру:
 
 ```js
 Object.prototype.toString.call( [1,2,3] );			// "[object Array]"
@@ -65,8 +77,10 @@ Object.prototype.toString.call( /regex-literal/i );	// "[object RegExp]"
 ```
 
 So, for the array in this example, the internal `[[Class]]` value is `"Array"`, and for the regular expression, it's `"RegExp"`. In most cases, this internal `[[Class]]` value corresponds to the built-in native constructor (see below) that's related to the value, but that's not always the case.
+Видно, что для массива в этом примере, внутренний `[[Class]]` имеет значение `"Array"`, а для регулярного выражения `"RegExp"`. В большинстве случаев, значение внутреннего свойства `[[Class]]` соответствует стандартному встроенному конструктору (см. ниже), связанного со значением, хотя это не всегда так.
 
 What about primitive values? First, `null` and `undefined`:
+А что насчет примитивных значений? Рассмотрим, `null` и `undefined`:
 
 ```js
 Object.prototype.toString.call( null );			// "[object Null]"
