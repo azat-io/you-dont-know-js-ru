@@ -98,7 +98,7 @@ var obj = {
 
 var b = "a";
 
-obj[a];			// "hello world"
+obj[b];			// "hello world"
 obj["b"];		// 42
 ```
 
