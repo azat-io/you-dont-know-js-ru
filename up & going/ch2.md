@@ -96,9 +96,9 @@ var obj = {
 	b: 42
 };
 
-var b = "a";
+var c = "a";
 
-obj[a];			// "hello world"
+obj[c];			// "hello world"
 obj["b"];		// 42
 ```
 
