@@ -45,11 +45,9 @@ ajax( "http://some.url.1", function myCallbackFunction(data){
 } );
 ```
 
-**Warning:** You may have heard that it's possible to make synchronous Ajax requests. While that's technically true, you should never, ever do it, under any circumstances, because it locks the browser UI (buttons, menus, scrolling, etc.) and prevents any user interaction whatsoever. This is a terrible idea, and should always be avoided.
+**Предупреждение:** Скорее всего вы слышали, что Ajax запросы можно делать синхронно. Хоть и технически это возможно, но категорически не рекомендуется к использованию. Синхронный Ajax запрос блокирует пользовательский интерфейс браузера (кнопки, меню, скролл и т.д.), делая сайт невозможным для взаимодействия.
 
-Before you protest in disagreement, no, your desire to avoid the mess of callbacks is *not* justification for blocking, synchronous Ajax.
-
-For example, consider this code:
+Взгляните на этот код:
 
 ```js
 function now() {
@@ -66,9 +64,9 @@ var answer = now();
 setTimeout( later, 1000 ); // Meaning of life: 42
 ```
 
-There are two chunks to this program: the stuff that will run *now*, and the stuff that will run *later*. It should be fairly obvious what those two chunks are, but let's be super explicit:
+Программа состоит из условно двух частей: одна из них запуститься *сейчас*, а вторая *потом*.
 
-Now:
+Блок кода, который сработает сразу же после запуска программы (*сейчас* часть):
 ```js
 function now() {
 	return 21;
@@ -81,23 +79,23 @@ var answer = now();
 setTimeout( later, 1000 );
 ```
 
-Later:
+Блок кода, который запуститься через некоторое время (*потом* часть):
 ```js
 answer = answer * 2;
 console.log( "Meaning of life:", answer );
 ```
 
-The *now* chunk runs right away, as soon as you execute your program. But `setTimeout(..)` also sets up an event (a timeout) to happen *later*, so the contents of the `later()` function will be executed at a later time (1,000 milliseconds from now).
+В данном случае,  функция `later()` придет к исполнению по истечению времени, которое мы указали в `setTimeout(..)` - 1000 миллисекунд. 
 
-Any time you wrap a portion of code into a `function` and specify that it should be executed in response to some event (timer, mouse click, Ajax response, etc.), you are creating a *later* chunk of your code, and thus introducing asynchrony to your program.
+Каждый раз, когда вы помещаете часть кода в функцию и указываете, что он должен выполняться в ответ на какое-либо событие (таймер, клик мыши, Ajax ответ и т. д.), вы создаете более позднюю часть своего кода и, таким образом, ваша программа становится асинхронной.
 
-### Async Console
+### Асинхронная Консоль
 
-There is no specification or set of requirements around how the `console.*` methods work -- they are not officially part of JavaScript, but are instead added to JS by the *hosting environment* (see the *Types & Grammar* title of this book series).
+В спецификации нет ни слова о принципах работы методов `console.*` -- они официально не являются частью Javascript, а подключаются в JS *хостинговой средой* (*hosting environment*) (подробнее в *Типы и Грамматика* из этой же серии книг). 
 
-So, different browsers and JS environments do as they please, which can sometimes lead to confusing behavior.
+Таким образом, результат работы console в разных браузерах и разных средах JS может быть не совсем таким, каким мы его ожидали увидеть.
 
-In particular, there are some browsers and some conditions that `console.log(..)` does not actually immediately output what it's given. The main reason this may happen is because I/O is a very slow and blocking part of many programs (not just JS). So, it may perform better (from the page/UI perspective) for a browser to handle `console` I/O asynchronously in the background, without you perhaps even knowing that occurred.
+Как пример, в некоторых браузерах и при некоторых условиях, `console.log (..)` не сразу выводит то, что в него передали. Основная причина этого может заключаться в том, что ввод/вывод является очень медленной и блокирующей частью многих программ (не только в Javascript). Таким образом, он может отработать асинхронно в фоновом режиме, а вы даже и не заметите этого. Сделано это в целях улучшения производительности страницы/пользовательского интерфейса.
 
 A not terribly common, but possible, scenario where this could be *observable* (not from code itself but from the outside):
 
@@ -112,50 +110,47 @@ console.log( a ); // ??
 // even later
 a.index++;
 ```
+Обычно мы ожидаем увидеть моментальный вывод объекта в момент вызова оператора `console.log(..)`, в данном примере это `{ index: 1 }`, таким образом результат `a.index++` уже будет отличный от вывода `a` и это верно, в большинстве случаев. Но иногда браузер считает необходимым отложить ввод/вывод консоли в фоновый режим. При таком раскладе возможно, что к тому времени, когда объект будет отображен в консоли браузера, `a.index++` уже отработает, и `console.log(..)` выведет `{ index: 2 }`.
 
-We'd normally expect to see the `a` object be snapshotted at the exact moment of the `console.log(..)` statement, printing something like `{ index: 1 }`, such that in the next statement when `a.index++` happens, it's modifying something different than, or just strictly after, the output of `a`.
+`console` ведет себя непредсказуемо, поэтому иногда ввод/вывод отрабатывает асинхронно. Просто помните об этой особенности ввода/вывода на случай, если у вас возникнут проблемы при отладке, как в упомянутом примере выше.
 
-Most of the time, the preceding code will probably produce an object representation in your developer tools' console that's what you'd expect. But it's possible this same code could run in a situation where the browser felt it needed to defer the console I/O to the background, in which case it's *possible* that by the time the object is represented in the browser console, the `a.index++` has already happened, and it shows `{ index: 2 }`.
-
-It's a moving target under what conditions exactly `console` I/O will be deferred, or even whether it will be observable. Just be aware of this possible asynchronicity in I/O in case you ever run into issues in debugging where objects have been modified *after* a `console.log(..)` statement and yet you see the unexpected modifications show up.
-
-**Note:** If you run into this rare scenario, the best option is to use breakpoints in your JS debugger instead of relying on `console` output. The next best option would be to force a "snapshot" of the object in question by serializing it to a `string`, like with `JSON.stringify(..)`.
+**Примечание:** Если вы столкнетесь с этим редким сценарием, лучше всего использовать breakpoints в отладчике JS, а не полагаться на вывод консоли. Еще одним вариантом решения проблемы является `JSON.stringify(..)`, который принудительно "сохранит" рассматриваемый объект путем сериализации его в строку.
 
 ## Event Loop
 
-Let's make a (perhaps shocking) claim: despite clearly allowing asynchronous JS code (like the timeout we just looked at), up until recently (ES6), JavaScript itself has actually never had any direct notion of asynchrony built into it.
+Давайте сделаем (возможно, шокирующее) заявление: несмотря на то, что Javascript позволяет нам писать асинхронный код, какого-либо прямого упоминания о встроенной в язык асинхронности до выхода ES6 не было.
 
-**What!?** That seems like a crazy claim, right? In fact, it's quite true. The JS engine itself has never done anything more than execute a single chunk of your program at any given moment, when asked to.
+**Чего!?** Бред какой-то, верно? На самом деле это правда. Сам движок JS никогда не делал ничего более, чем выполнение одного фрагмента кода вашей программы в тот момент, когда ему сказано.
 
-"Asked to." By whom? That's the important part!
+"Сказано." Кем? Это важный момент!
 
-The JS engine doesn't run in isolation. It runs inside a *hosting environment*, which is for most developers the typical web browser. Over the last several years (but by no means exclusively), JS has expanded beyond the browser into other environments, such as servers, via things like Node.js. In fact, JavaScript gets embedded into all kinds of devices these days, from robots to lightbulbs.
+Движок JS не работает в изоляции. Он работает в хостинговой среде (hosting environment), которая для большинства разработчиков является типичным веб-браузером. За последние несколько лет (но отнюдь не только) JS расширился за пределы браузера до других сред, например такой, как веб-сервер, в роли которой выступает Node.js. Сегодня JavaScript внедряется во все виды устройств, от роботов до лампочек.
 
-But the one common "thread" (that's a not-so-subtle asynchronous joke, for what it's worth) of all these environments is that they have a mechanism in them that handles executing multiple chunks of your program *over time*, at each moment invoking the JS engine, called the "event loop."
+У всех этих сред одинаковый механизм работы называемый "event loop". Он обрабатывает несколько фрагментов кода вашей программы с течением времени, всякий раз обращаясь к движку JS.
 
-In other words, the JS engine has had no innate sense of *time*, but has instead been an on-demand execution environment for any arbitrary snippet of JS. It's the surrounding environment that has always *scheduled* "events" (JS code executions).
+Другими словами, у Jаvascript движка не было врожденного чувства *времени*, вместо этого он был средой исполнения по требованию для любого произвольного куска кода JS.
 
-So, for example, when your JS program makes an Ajax request to fetch some data from a server, you set up the "response" code in a function (commonly called a "callback"), and the JS engine tells the hosting environment, "Hey, I'm going to suspend execution for now, but whenever you finish with that network request, and you have some data, please *call* this function *back*."
+Например, когда ваша JS-программа отправляет Ajax-запрос на получение данных с сервера, вы устанавливаете код "ответа" в функции (обычно называемой "callback").  В таком случае JS скажет хостинговой среде, "Эй, сейчас я собираюсь приостановить выполнение кода, но когда ты закончишь с этим запросом и у тебя будут какие-то данные, пожалуйста, вызови эту функцию обратно".
 
-The browser is then set up to listen for the response from the network, and when it has something to give you, it schedules the callback function to be executed by inserting it into the *event loop*.
+Затем браузер настраивается на прослушивание ответа от сети, и, когда ему есть, что вам отдать, он помещает функцию обратного вызова в *event loop*.
 
-So what is the *event loop*?
+Так что же такое этот *event loop*?
 
-Let's conceptualize it first through some fake-ish code:
+Разобраться в этом нам поможет псевдокод:
 
 ```js
-// `eventLoop` is an array that acts as a queue (first-in, first-out)
+// `eventLoop` массив, который выступает в роли очереди для событий (first-in, first-out)
 var eventLoop = [ ];
 var event;
 
-// keep going "forever"
+// "бесконечный" цикл
 while (true) {
-	// perform a "tick"
+	// выполнить "тик"
 	if (eventLoop.length > 0) {
-		// get the next event in the queue
+		// достать следующее событие в очереди
 		event = eventLoop.shift();
 
-		// now, execute the next event
+		// выполнить событие
 		try {
 			event();
 		}
@@ -166,17 +161,17 @@ while (true) {
 }
 ```
 
-This is, of course, vastly simplified pseudocode to illustrate the concepts. But it should be enough to help get a better understanding.
+Хоть он и упрощенный для иллюстрации этой концепции, но этого достаточно, чтобы лучше разобраться о чём идет речь.
 
-As you can see, there's a continuously running loop represented by the `while` loop, and each iteration of this loop is called a "tick." For each tick, if an event is waiting on the queue, it's taken off and executed. These events are your function callbacks.
+Мы имеем непрерывно работающий цикл `while`, и каждая итерация этого цикла называется "тик". В момент каждого тика, если событие стоит в очереди, оно достается из нее и выполняется. Эти события являются вашими функциями обратного вызова (callback).
 
-It's important to note that `setTimeout(..)` doesn't put your callback on the event loop queue. What it does is set up a timer; when the timer expires, the environment places your callback into the event loop, such that some future tick will pick it up and execute it.
+Важно отметить, что `setTimeout(..)` не помещает ваш callback в очередь цикла событий, а устанавливает таймер по истечению которого, callback отправится в event loop и какой-то будущий тик подхватит его и выполнит.
 
-What if there are already 20 items in the event loop at that moment? Your callback waits. It gets in line behind the others -- there's not normally a path for preempting the queue and skipping ahead in line. This explains why `setTimeout(..)` timers may not fire with perfect temporal accuracy. You're guaranteed (roughly speaking) that your callback won't fire *before* the time interval you specify, but it can happen at or after that time, depending on the state of the event queue.
+Но что, если в этот момент в event loop'е и так уже есть, допустим, 20 событий? Ваш callback займет место в конце и будет ждать своей очереди -- по другому никак. Это объясняет, почему таймеры `setTimeout(..)` не всегда срабатывают с идеальной точностью. Они лишь гарантируют, что ваш callback не запустится *до* указанного вами интервала времени, а только в момент его истечения или позже, в зависимости от состояния очереди событий.
 
-So, in other words, your program is generally broken up into lots of small chunks, which happen one after the other in the event loop queue. And technically, other events not related directly to your program can be interleaved within the queue as well.
+Другими словами, ваша программа разбита на множество маленьких кусочков, которые запускаются один за другим в очереди цикла событий. Технически, другие события, не связанные напрямую с вашей программой, могут чередоваться в очереди.
 
-**Note:** We mentioned "up until recently" in relation to ES6 changing the nature of where the event loop queue is managed. It's mostly a formal technicality, but ES6 now specifies how the event loop works, which means technically it's within the purview of the JS engine, rather than just the *hosting environment*. One main reason for this change is the introduction of ES6 Promises, which we'll discuss in Chapter 3, because they require the ability to have direct, fine-grained control over scheduling operations on the event loop queue (see the discussion of `setTimeout(..0)` in the "Cooperation" section).
+**Примечание:** Ранее мы отметили, что до выхода ES6 прямого упоминания о встроенной в язык асинхронности не было. С приходом ECMAScript 6 были внесены некоторые изменения по управлению очередью в event loop. Это в основном формальная техническая составляющая, но теперь ES6 определяет, как работает цикл обработки событий, что означает, что технически это относится к JS, а не исключительно к *хостинговой среде*. Основной причиной для этого изменения послужило введение ES6 Promise'ов, которые могут напрямую управлять операциями планирования в очереди цикла событий (см. обсуждение `setTimeout(..0)` в разделе "Кооперирование").
 
 ## Parallel Threading
 
