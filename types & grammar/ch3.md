@@ -1,10 +1,8 @@
 # Вы не знает JS: Типы и грамматика
 # Глава 3: Стандартные встроенные объекты
 
-Several times in Chapters 1 and 2, we alluded to various built-ins, usually called "natives," like `String` and `Number`. Let's examine those in detail now.
 Несколько раз в первой и второй главах этой книги мы упоминали различные нативные объекты, такие как `String` и `Number`. Давай рассмотрим их детальнее.
 
-Here's a list of the most commonly used natives:
 Вот список часто используемых стандартных объектов:
 
 * `String()`
@@ -18,10 +16,8 @@ Here's a list of the most commonly used natives:
 * `Error()`
 * `Symbol()` -- добавлено в ES6!
 
-As you can see, these natives are actually built-in functions.
 Как вы можете заметить, на деле все они являются встроенными функциями.
 
-If you're coming to JS from a language like Java, JavaScript's `String()` will look like the `String(..)` constructor you're used to for creating string values. So, you'll quickly observe that you can do things like:
 Если вы пришли в JS из языков подобных Java, то, наверное, заметили, что выражение `String()` схоже с конструктором `String(..)`, используемым в Java для создания строк. Скоро станет понятно, что можно делать подобные вещи:
 
 ```js
@@ -30,7 +26,6 @@ var s = new String( "Hello World!" );
 console.log( s.toString() ); // "Hello World!"
 ```
 
-It *is* true that each of these natives can be used as a native constructor. But what's being constructed may be different than you think.
 На самом деле каждый из этих встроенных объектов может быть использован в качестве конструктора. Но продукт его вызова может быть не таким, как вам кажется.
 
 ```js
@@ -43,31 +38,24 @@ a instanceof String; // true
 Object.prototype.toString.call( a ); // "[object String]"
 ```
 
-The result of the constructor form of value creation (`new String("abc")`) is an object wrapper around the primitive (`"abc"`) value.
 Результатом создания значений с помощью вызова конструктора (`new String("abc")`) является объект-обертка над примитивным (`"abc"`) значением.
 
-Importantly, `typeof` shows that these objects are not their own special *types*, but more appropriately they are subtypes of the `object` type.
 Вызов `typeof` показывает, что эти объекты не имеют какой-то уникальный `тип`, точнее определить их подтипами типа `object`.
 
-This object wrapper can further be observed with:
 Эту обертку над значением можно наблюдать с помощью:
 
 ```js
 console.log( a );
 ```
 
-The output of that statement varies depending on your browser, as developer consoles are free to choose however they feel it's appropriate to serialize the object for developer inspection.
 Результаты вывода могут отличаться в разных браузерах, так как консоли разработчика вправе выбирать как сериализировать объекты для инспектирования их разработчиками.
 
-**Note:** At the time of writing, the latest Chrome prints something like this: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. But older versions of Chrome used to just print this: `String {0: "a", 1: "b", 2: "c"}`. The latest Firefox currently prints `String ["a","b","c"]`, but used to print `"abc"` in italics, which was clickable to open the object inspector. Of course, these results are subject to rapid change and your experience may vary.
 **Замечание:** В момент написания этой книги последняя версия Chrome печатает что-то вроде этого: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. Но старые версии Chrome печатали просто строку: `String {0: "a", 1: "b", 2: "c"}`. Последний Firefox на данный момент выводит `String ["a", "b", "c"]`, но до этого печатал курсивом `"abc"`, на который можно было кликнуть и открыть окно инспектора. Конечно, все это быстро меняется, и ваш опыт может сильно разниться с приведенным в книге.
 
-The point is, `new String("abc")` creates a string wrapper object around `"abc"`, not just the primitive `"abc"` value itself.
 Цель создания обертки над строчкой `"abc"` с помощью `new String("abc")` - не только примитивное значение `"abc"`.
 
 ## Внутреннее свойство `[[Class]]`
 
-Values that are `typeof` `"object"` (such as an array) are additionally tagged with an internal `[[Class]]` property (think of this more as an internal *class*ification rather than related to classes from traditional class-oriented coding). This property cannot be accessed directly, but can generally be revealed indirectly by borrowing the default `Object.prototype.toString(..)` method called against the value. For example:
 Значения, для которых `typeof` возвращает `"object"` (как, например, массив), дополнительно помечаются внутренним свойством `[[Class]]` (думайте об этом больше как о внутренней *класс*ификации, нежели о классах из традиционного ООП). Это свойство не имеет прямого доступа, но его его можно обнаружить, одолжив стандартный метод `Object.prototype.toString()` и вызвав его с желаемым значением. К примеру:
 
 ```js
@@ -76,10 +64,8 @@ Object.prototype.toString.call( [1,2,3] );			// "[object Array]"
 Object.prototype.toString.call( /regex-literal/i );	// "[object RegExp]"
 ```
 
-So, for the array in this example, the internal `[[Class]]` value is `"Array"`, and for the regular expression, it's `"RegExp"`. In most cases, this internal `[[Class]]` value corresponds to the built-in native constructor (see below) that's related to the value, but that's not always the case.
-Видно, что для массива в этом примере, внутренний `[[Class]]` имеет значение `"Array"`, а для регулярного выражения `"RegExp"`. В большинстве случаев, значение внутреннего свойства `[[Class]]` соответствует стандартному встроенному конструктору (см. ниже), связанного со значением, хотя это не всегда так.
+Видно, что для массива в этом примере, внутренний `[[Class]]` имеет значение `"Array"`, а для регулярного выражения - `"RegExp"`. В большинстве случаев, значение внутреннего свойства `[[Class]]` соответствует стандартному встроенному конструктору (см. ниже), связанного со значением, хотя это не всегда так.
 
-What about primitive values? First, `null` and `undefined`:
 А что насчет примитивных значений? Рассмотрим, `null` и `undefined`:
 
 ```js
@@ -87,9 +73,9 @@ Object.prototype.toString.call( null );			// "[object Null]"
 Object.prototype.toString.call( undefined );	// "[object Undefined]"
 ```
 
-You'll note that there are no `Null()` or `Undefined()` native constructors, but nevertheless the `"Null"` and `"Undefined"` are the internal `[[Class]]` values exposed.
+Заметьте, что здесь нет встроенных конструкторов `Null()` и `Undefined()`, но несмотря на это мы видим, что [[Class]] у этих значений равен `"Null"` и `"Undefined"`, соответственно.
 
-But for the other simple primitives like `string`, `number`, and `boolean`, another behavior actually kicks in, which is usually called "boxing" (see "Boxing Wrappers" section next):
+Но для других простых примитивов, таких как `string`, `number` и `boolean`, можно заметить другое поведение, которое обычно называют "boxing" (см. секцию "Обертки над значениями" ниже):
 
 ```js
 Object.prototype.toString.call( "abc" );	// "[object String]"
@@ -97,13 +83,13 @@ Object.prototype.toString.call( 42 );		// "[object Number]"
 Object.prototype.toString.call( true );		// "[object Boolean]"
 ```
 
-In this snippet, each of the simple primitives are automatically boxed by their respective object wrappers, which is why `"String"`, `"Number"`, and `"Boolean"` are revealed as the respective internal `[[Class]]` values.
+В этих примерах, каждое значение примитивного типа автоматически окружается соответствующим объектом-оберткой. Именно поэтому поле [[Class]] оказывается равным `"String"`, `"Number"` и `"Boolean"`, соответственно.
 
-**Note:** The behavior of `toString()` and `[[Class]]` as illustrated here has changed a bit from ES5 to ES6, but we cover those details in the *ES6 & Beyond* title of this series.
+**Замечание** Приведенное выше поведение `toString()` и `[[Class]]` немного изменилось из ES5 в ES6, но мы рассмотрим это подробно в книге *ES6 и не только* этой серии.
 
-## Boxing Wrappers
+## Обертки над значениями
 
-These object wrappers serve a very important purpose. Primitive values don't have properties or methods, so to access `.length` or `.toString()` you need an object wrapper around the value. Thankfully, JS will automatically *box* (aka wrap) the primitive value to fulfill such accesses.
+Эти объекты-обертки играют очень важную роль. Примитивные значениям не имеют свойств и методов, поэтому чтобы получить свойство `.length` или `.toString()` необходим некий объект над значением. К счастью, JS автоматически окружает (оборачивает) простое значение, добавляя дополнительный функционал.
 
 ```js
 var a = "abc";
@@ -112,11 +98,11 @@ a.length; // 3
 a.toUpperCase(); // "ABC"
 ```
 
-So, if you're going to be accessing these properties/methods on your string values regularly, like a `i < a.length` condition in a `for` loop for instance, it might seem to make sense to just have the object form of the value from the start, so the JS engine doesn't need to implicitly create it for you.
+Теперь, если вы собираетесь часто получать свойство или вызывать метод у вашей строки, например, условие `i < a.length` в цикле `for`, то в таком случае имеет смысл сразу создать значение в форме объекта, чтобы движок JS не делал это неявно за вас.
 
-But it turns out that's a bad idea. Browsers long ago performance-optimized the common cases like `.length`, which means your program will *actually go slower* if you try to "preoptimize" by directly using the object form (which isn't on the optimized path).
+Но оказывается, что это плохая идея. Браузеры уже давно оптимизировали быстродействие часто используемых свойств, это означает, что ваша программа начнет работать *даже медленнее* в случае использования объектной формы.
 
-In general, there's basically no reason to use the object form directly. It's better to just let the boxing happen implicitly where necessary. In other words, never do things like `new String("abc")`, `new Number(42)`, etc -- always prefer using the literal primitive values `"abc"` and `42`.
+В целом нет особых причин использовать объектную форму создания значений напрямую. Пусть обертывание значения произойдет неявно, там где это необходимо. Другими словами, не стоит писать `new String("abc")`, `new Number(42)` и т.д. -- использование литерала примитивного значения  должно быть всегда в приоритете.
 
 ### Object Wrapper Gotchas
 
