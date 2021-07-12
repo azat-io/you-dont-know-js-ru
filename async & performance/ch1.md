@@ -45,9 +45,7 @@ ajax( "http://some.url.1", function myCallbackFunction(data){
 } );
 ```
 
-
-
-**Warning:** Вы могли слышать, что является возможным выполнять синхронные Ajax вызовы. While that's technically true, you should never, ever do it, under any circumstances, because it locks the browser UI (buttons, menus, scrolling, etc.) and prevents any user interaction whatsoever. This is a terrible idea, and should always be avoided.
+**Предупреждение:** Вы могли слышать, что является возможным выполнять синхронные Ajax вызовы. Хотя, технически это верно, вы никогда и ни при каких обстоятельствах не должны этого делать, т.к. это блокирует пользовательский интерфейс браузера (кнопки, меню, скроллы, и т.д.) и предотвращает любое взаимодействие с пользователем. Это ужасная идея, и ее всегда следует избегать.
 
 Before you protest in disagreement, no, your desire to avoid the mess of callbacks is *not* justification for blocking, synchronous Ajax.
 
