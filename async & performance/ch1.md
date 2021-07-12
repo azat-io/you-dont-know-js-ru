@@ -51,6 +51,7 @@ Before you protest in disagreement, no, your desire to avoid the mess of callbac
 
 For example, consider this code:
 
+
 ```js
 function now() {
 	return 21;
