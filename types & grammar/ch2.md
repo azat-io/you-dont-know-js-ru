@@ -782,9 +782,9 @@ isNegZero( 0 );			// false
 
 ### Специальное равенство
 
-As we saw above, the `NaN` value and the `-0` value have special behavior when it comes to equality comparison. `NaN` is never equal to itself, so you have to use ES6's `Number.isNaN(..)` (or a polyfill). Simlarly, `-0` lies and pretends that it's equal (even `===` strict equal -- see Chapter 4) to regular positive `0`, so you have to use the somewhat hackish `isNegZero(..)` utility we suggested above.
+Как мы заметили ранее, значения `NaN` и `-0` имеют особенное поведение в случае сравнения. `NaN` никогда не равно самому себе, поэтому необходимо использовать функцию из ES6 `Number.isNaN(..)` (или же полифил). Аналогично, `-0` *лжет* и притворяется равным (даже `===` строго равным -- см. Главу 4) положительному `0`, поэтому необходимо использовать хитрый способ `isNegZero(..)`, который мы предложили выше.
 
-As of ES6, there's a new utility that can be used to test two values for absolute equality, without any of these exceptions. It's called `Object.is(..)`:
+В ES6 появилась новая возможность, которую мы можем использовать для тестирования двух значений на абсолютное равенство без вышеперечисленных исключений. Она называется `Object.is(..)`:
 
 ```js
 var a = 2 / "foo";
@@ -796,7 +796,7 @@ Object.is( b, -0 );		// true
 Object.is( b, 0 );		// false
 ```
 
-There's a pretty simple polyfill for `Object.is(..)` for pre-ES6 environments:
+Есть достаточно простой полифил для `Object.is(..)` для браузеров, не поддерживающих ES6:
 
 ```js
 if (!Object.is) {
@@ -815,7 +815,7 @@ if (!Object.is) {
 }
 ```
 
-`Object.is(..)` probably shouldn't be used in cases where `==` or `===` are known to be *safe* (see Chapter 4 "Coercion"), as the operators are likely much more efficient and certainly are more idiomatic/common. `Object.is(..)` is mostly for these special cases of equality.
+`Object.is(..)`, вероятно, не должен использоваться в случаях, где `==` и `===` достоверно *безопасны* (см. Главу 4 "Coercion"), поскольку данные операторы скорее более эффективны и определенно более идиоматичны/распространены. `Object.is(..)` необходим для особенных случаев равенства.
 
 ## Значения и ссылки
 
