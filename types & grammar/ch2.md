@@ -972,14 +972,14 @@ console.log( b ); // 2, не 3
 
 Ссылки обладают мощными возможностями, но иногда они начинают мешать, а иногда они нужны там, где их нет. Управлять поведением ссылок (выбирать между копированием значений и копированием ссылок) можно только при помощи типа самого значения, так что вам придется косвенно влиять на поведение присваивания/передачи выбором типов используемых значений.
 
-## Review
+## Обзор
 
-In JavaScript, `array`s are simply numerically indexed collections of any value-type. `string`s are somewhat "`array`-like", but they have distinct behaviors and care must be taken if you want to treat them as `array`s. Numbers in JavaScript include both "integers" and floating-point values.
+В JavaScript массивы `array` являются численно индексированными коллекциями для любых типов значений. Строки `string` несколько "массивоподобны", но обладают отличительными особенностями, и нужно быть аккуратным, если вы хотите рассматривать их в роли массивов `array`. Значения чисел в JavaScript включают "целые" ("integers") и с плавающей точкой.
 
-Several special values are defined within the primitive types.
+В примитивах определено несколько специальных значений.
 
-The `null` type has just one value: `null`, and likewise the `undefined` type has just the `undefined` value. `undefined` is basically the default value in any variable or property if no other value is present. The `void` operator lets you create the `undefined` value from any other value.
+Тип `null` имеет одно значение: `null`, аналогично тип `undefined` имеет лишь значение `undefined`. `undefined` в целом является значением по умолчанию для любой переменной или свойства, если не указано иного значения. Оператор `void` позволяет вернуть значение `undefined` из любого другого значения.
 
-`number`s include several special values, like `NaN` (supposedly "Not a Number", but really more appropriately "invalid number"); `+Infinity` and `-Infinity`; and `-0`.
+Числа `number` включают несколько специальных значений, например `NaN` (условно "НЕ число", но на самом деле скорее "неправильное число"); `+Infinity` и `-Infinity`; и `-0`.
 
-Simple scalar primitives (`string`s, `number`s, etc.) are assigned/passed by value-copy, but compound values (`object`s, etc.) are assigned/passed by reference-copy. References are not like references/pointers in other languages -- they're never pointed at other variables/references, only at the underlying values.
+Простые скалярные примитивы (строки `string`, числа `number`, и т.д.) присваиваются/передаются копированием значения, однако сложные значения (объекты `object` и т.д.) присваиваются/передаются копированием ссылки. Ссылки не похожи на ссылки/указатели в других языках -- они никогда не указывают на другие переменные/ссылки, а только на основные значения.
