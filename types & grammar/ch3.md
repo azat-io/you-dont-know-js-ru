@@ -1,4 +1,4 @@
-# Вы не знает JS: Типы и грамматика
+# Вы не знаетe JS: Типы и грамматика
 # Глава 3: Стандартные встроенные объекты
 
 Several times in Chapters 1 and 2, we alluded to various built-ins, usually called "natives," like `String` and `Number`. Let's examine those in detail now.
@@ -63,7 +63,7 @@ The output of that statement varies depending on your browser, as developer cons
 **Замечание:** В момент написания этой книги последняя версия Chrome печатает что-то вроде этого: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. Но старые версии Chrome печатали просто строку: `String {0: "a", 1: "b", 2: "c"}`. Последний Firefox на данный момент выводит `String ["a", "b", "c"]`, но до этого печатал курсивом `"abc"`, на который можно было кликнуть и открыть окно инспектора. Конечно, все это быстро меняется, и ваш опыт может сильно разниться с приведенным в книге.
 
 The point is, `new String("abc")` creates a string wrapper object around `"abc"`, not just the primitive `"abc"` value itself.
-Цель создания обертки над строчкой `"abc"` с помощью `new String("abc")` - не только примитивное значение `"abc"`.
+Суть в том, что `new String("abc")` создаёт объект обёртки строки вокруг `"abc"`, а не просто само примитивное значение `"abc"`.
 
 ## Внутреннее свойство `[[Class]]`
 
