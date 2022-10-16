@@ -694,7 +694,7 @@ for (var k in myObject) {
 
 ```js
 var myObject = { };
-    Object.defineProperty(
+Object.defineProperty(
     myObject,
     "a",
     // сделаем `a` перечисляемым, как обычно
