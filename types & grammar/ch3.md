@@ -1,10 +1,8 @@
 # Вы не знаете JS: Типы и грамматика
 # Глава 3: Стандартные встроенные объекты
 
-Several times in Chapters 1 and 2, we alluded to various built-ins, usually called "natives," like `String` and `Number`. Let's examine those in detail now.
 Несколько раз в Главах 1 и 2 этой книги мы упоминали о различных встроенных объектах таких как `String` и `Number` (встроенные объекты еще называют "примитивы"). Давайте рассмотрим их детальнее.
 
-Here's a list of the most commonly used natives:
 Вот список часто используемых примитивов:
 
 * `String()`
@@ -18,10 +16,8 @@ Here's a list of the most commonly used natives:
 * `Error()`
 * `Symbol()` -- добавлено в ES6!
 
-As you can see, these natives are actually built-in functions.
-Как вы можете заметить, на деле все они являются встроенными функциями.
+Как вы можете заметить, все они фактически являются встроенными функциями.
 
-If you're coming to JS from a language like Java, JavaScript's `String()` will look like the `String(..)` constructor you're used to for creating string values. So, you'll quickly observe that you can do things like:
 Если вы пришли в JS из языков подобных Java, то, наверное, заметили, что выражение `String()` похоже на конструктор `String(..)`, который используется для создания строковых значений. Скоро станет понятно, что можно делать такие вещи как:
 
 ```js
@@ -30,7 +26,6 @@ var s = new String( "Hello World!" );
 console.log( s.toString() ); // "Hello World!"
 ```
 
-It *is* true that each of these natives can be used as a native constructor. But what's being constructed may be different than you think.
 На самом деле, каждый из этих встроенных объектов может быть использован в качестве конструктора. Но результат вызова конструктора может быть не таким, как вам кажется.
 
 ```js
@@ -43,31 +38,24 @@ a instanceof String; // true
 Object.prototype.toString.call( a ); // "[object String]"
 ```
 
-The result of the constructor form of value creation (`new String("abc")`) is an object wrapper around the primitive (`"abc"`) value.
 Результатом создания значений с помощью вызова конструктора (`new String("abc")`) является объект-обёртка над примитивным (`"abc"`) значением.
 
-Importantly, `typeof` shows that these objects are not their own special *types*, but more appropriately they are subtypes of the `object` type.
 Вызов `typeof` показывает, что у этих объектов нет уникального `типв`, точнее определить их подтипами типа `object`.
 
-This object wrapper can further be observed with:
 Обёртку над значением можно посмотреть с помощью:
 
 ```js
 console.log( a );
 ```
 
-The output of that statement varies depending on your browser, as developer consoles are free to choose however they feel it's appropriate to serialize the object for developer inspection.
 Результаты этого вывода отличаются в зависимости от браузера, т.к. консоли разработчика вправе выбирать как сериализировать объекты для инспектирования их разработчиками.
 
-**Note:** At the time of writing, the latest Chrome prints something like this: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. But older versions of Chrome used to just print this: `String {0: "a", 1: "b", 2: "c"}`. The latest Firefox currently prints `String ["a","b","c"]`, but used to print `"abc"` in italics, which was clickable to open the object inspector. Of course, these results are subject to rapid change and your experience may vary.
 **Примечание:** В момент написания этой книги последняя версия Chrome печатает что-то вроде этого: `String {0: "a", 1: "b", 2: "c", length: 3, [[PrimitiveValue]]: "abc"}`. Но старые версии Chrome печатали просто строку: `String {0: "a", 1: "b", 2: "c"}`. Последний Firefox на данный момент выводит `String ["a", "b", "c"]`, но до этого печатал курсивом `"abc"`, на который можно было кликнуть и открыть окно инспектора. Конечно, всё это быстро меняется и ваш опыт может сильно разниться с приведенным в книге.
 
-The point is, `new String("abc")` creates a string wrapper object around `"abc"`, not just the primitive `"abc"` value itself.
 Главное, что вы должны понять - `new String("abc")` создает объект-обертку вокруг `"abc"`, а не просто примитивное значение `"abc"`.
 
 ## Внутреннее свойство `[[Class]]`
 
-Values that are `typeof` `"object"` (such as an array) are additionally tagged with an internal `[[Class]]` property (think of this more as an internal *class*ification rather than related to classes from traditional class-oriented coding). This property cannot be accessed directly, but can generally be revealed indirectly by borrowing the default `Object.prototype.toString(..)` method called against the value. For example:
 Значения, для которых `typeof` возвращает `"object"` (например, массив), дополнительно помечаются внутренним свойством `[[Class]]` (думайте об этом как о внутренней *класс*ификации, а не о классах из традиционного ООП). Доступ к этому свойству не может быть получен напрямую, но "внутренний класс" можно выявить косвенно путем вызова стандартного метода `Object.prototype.toString()` для значения, у которого вы хотите посмотреть "внутренний класс". К примеру:
 
 ```js
@@ -76,10 +64,8 @@ Object.prototype.toString.call( [1,2,3] );			// "[object Array]"
 Object.prototype.toString.call( /regex-literal/i );	// "[object RegExp]"
 ```
 
-So, for the array in this example, the internal `[[Class]]` value is `"Array"`, and for the regular expression, it's `"RegExp"`. In most cases, this internal `[[Class]]` value corresponds to the built-in native constructor (see below) that's related to the value, but that's not always the case.
 Из этого примера видно, что для массива внутренний `[[Class]]` имеет значение `"Array"`, а для регулярного выражения `"RegExp"`. В большинстве случаев значение внутреннего свойства `[[Class]]` соответствует стандартному встроенному конструктору (см. ниже), связанного со значением, но это не всегда так.
 
-What about primitive values? First, `null` and `undefined`:
 А что насчет примитивных значений? Рассмотрим, `null` и `undefined`:
 
 ```js
@@ -87,10 +73,8 @@ Object.prototype.toString.call( null );			// "[object Null]"
 Object.prototype.toString.call( undefined );	// "[object Undefined]"
 ```
 
-You'll note that there are no `Null()` or `Undefined()` native constructors, but nevertheless the `"Null"` and `"Undefined"` are the internal `[[Class]]` values exposed.
 Вы вероятно заметите, что у `Null()` или `Undefined()` нет своих конструкторов. Тем не менее, `"Null"` и `"Undefined"` являются внутренними значениями `[[Class]]`.
 
-But for the other simple primitives like `string`, `number`, and `boolean`, another behavior actually kicks in, which is usually called "boxing" (see "Boxing Wrappers" section next):
 Но для других простых примитивов таких как `string`, `number` и `boolean` используется другое поведение, которое обычно называется "boxing" (см. следующий раздел "Boxing обёртки").
 
 ```js
@@ -99,16 +83,12 @@ Object.prototype.toString.call( 42 );		// "[object Number]"
 Object.prototype.toString.call( true );		// "[object Boolean]"
 ```
 
-In this snippet, each of the simple primitives are automatically boxed by their respective object wrappers, which is why `"String"`, `"Number"`, and `"Boolean"` are revealed as the respective internal `[[Class]]` values.
 В этом примере каждый из простых примитивов автоматически помещается в соответствующие объектные оберти, поэтому `"String"`, `"Number"` и `"Boolean"` раскрываются как внутреннем значении `[[Class]]``.
 
-**Note:** The behavior of `toString()` and `[[Class]]` as illustrated here has changed a bit from ES5 to ES6, but we cover those details in the *ES6 & Beyond* title of this series.
 **Примечание:** Поведение `toString()` и `[[Class]]` немного изменилось при переходе с ES5 на ES6, но мы раскроем эти детали в оглавлении (предисловии) к книге *ES6 & Beyond* этой серии.
 
-## Boxing Wrappers
 ## Упаковка
 
-These object wrappers serve a very important purpose. Primitive values don't have properties or methods, so to access `.length` or `.toString()` you need an object wrapper around the value. Thankfully, JS will automatically *box* (aka wrap) the primitive value to fulfill such accesses.
 У этих объектных обёрток существует очень важная цель. Примитивные значения не имеют собственных свойств или методов, поэтому для доступа к `.length` или `.toString()` вам нужна объектная обертка вокруг значения. К счастью, JS автоматически *оборачивает* примитивное значение для выполнения таких операций.
 
 ```js
@@ -118,36 +98,28 @@ a.length; // 3
 a.toUpperCase(); // "ABC"
 ```
 
-So, if you're going to be accessing these properties/methods on your string values regularly, like a `i < a.length` condition in a `for` loop for instance, it might seem to make sense to just have the object form of the value from the start, so the JS engine doesn't need to implicitly create it for you.
 Так, если вы собираетесь регулярно обращаться к этим свойствам/методам для ваших строковых значений, например, к условию `i < a.length` в цикле `for`, может показаться, что есть смысл с самого начала иметь объектную форму значения, чтобы JS-движок не создавал неявно ее для вас.
 
-But it turns out that's a bad idea. Browsers long ago performance-optimized the common cases like `.length`, which means your program will *actually go slower* if you try to "preoptimize" by directly using the object form (which isn't on the optimized path).
 Но оказалось, что это плохая идея. Браузеры уже давно оптимизировали производительность для таких распространенных случаев как `.length`, что означает, что ваша программа будет *действительно работать медленнее*, если вы попытаетесь "предварительно оптимизировать", используя напрямую объектную форму.
 
-In general, there's basically no reason to use the object form directly. It's better to just let the boxing happen implicitly where necessary. In other words, never do things like `new String("abc")`, `new Number(42)`, etc -- always prefer using the literal primitive values `"abc"` and `42`.
 В целом, нет никаких причин использовать объектную форму напрямую. Лучше просто позволить оборачиванию неявно происходить там, где это необходимо. Другими словами, никогда не делайте таких вещей как `new String("abc")`, `new Number(42)` и т.д. - всегда старайтесь использовать литеральные примитивные значения `"abc"` и `42`.
 
-### Object Wrapper Gotchas
 ### Проблемы с объектными обёртками
 
-There are some gotchas with using the object wrappers directly that you should be aware of if you *do* choose to ever use them.
 Есть несколько проблем с использованием объектных обёрток напрямую, о которых вам следует знать, если вы решите их использовать.
 
-For example, consider `Boolean` wrapped values:
 Рассмотрим значения в булевой обёртке `Boolean`:
 
 ```js
 var a = new Boolean( false );
 
 if (!a) {
-	console.log( "Oops" ); // never runs
+	console.log( "Oops" ); // эта строчка никогда не запустится
 }
 ```
 
-The problem is that you've created an object wrapper around the `false` value, but objects themselves are "truthy" (see Chapter 4), so using the object behaves oppositely to using the underlying `false` value itself, which is quite contrary to normal expectation.
 Проблема в том, что вы создали объектную обёртку вокруг значения `false`, но объекты по своей природе "truthy" (см. Главу 4), поэтому поведение обёрнутого значения отличается от поведения самого значения `false`, что противоречит нормальным ожиданиям.
 
-If you want to manually box a primitive value, you can use the `Object(..)` function (no `new` keyword):
 Для того чтобы вручную обернуть примитивное значение, ты можешь использовать `Object(..)` функцию (без ключевого слова `new`).
 
 ```js
@@ -166,13 +138,10 @@ Object.prototype.toString.call( b ); // "[object String]"
 Object.prototype.toString.call( c ); // "[object String]"
 ```
 
-Again, using the boxed object wrapper directly (like `b` and `c` above) is usually discouraged, but there may be some rare occasions you'll run into where they may be useful.
 Обычно не рекомендуется использовать объектную обёртку напрямую (как `b` и `c` выше), но в редких случаях они могут быть полезны.
 
-## Unboxing
 ## Распаковка
 
-If you have an object wrapper and you want to get the underlying primitive value out, you can use the `valueOf()` method:
 Если у вас есть объектная обертка и вы хотите получить примитивное значение, вы можете использовать метод `valueOf()`:
 
 ```js
@@ -185,7 +154,6 @@ b.valueOf(); // 42
 c.valueOf(); // true
 ```
 
-Unboxing can also happen implicitly, when using an object wrapper value in a way that requires the primitive value. This process (coercion) will be covered in more detail in Chapter 4, but briefly:
 Распаковка может произойти автоматически, когда обёрнутое значение используется в тех местах, где требуется примитивное значение. Более подробно этот процесс ("принуждение") будет рассмотрен в Главе 4, но если кратко:
 
 ```js
@@ -196,12 +164,10 @@ typeof a; // "object"
 typeof b; // "string"
 ```
 
-## Natives as Constructors
+## Примитивы как конструкторы
 
-For `array`, `object`, `function`, and regular-expression values, it's almost universally preferred that you use the literal form for creating the values, but the literal form creates the same sort of object as the constructor form does (that is, there is no nonwrapped value).
 Для регулярных выражений и значений типа `массив`, `объект`, `функция` почти везде предпочтительно использовать литеральную форму для создания значений, но литеральная форма создает такой же объект, как и форма конструктора (то есть, значение обернётся в обёртку).
 
-Just as we've seen above with the other natives, these constructor forms should generally be avoided, unless you really know you need them, mostly because they introduce exceptions and gotchas that you probably don't really *want* to deal with.
 Как мы уже видели выше, такие формы конструкторов следует избегать: в основном, потому что они вводят исключения и проблемы, с которыми скорее всего вы не хотите иметь дело.
 
 ### `Array(..)`
@@ -214,23 +180,17 @@ var b = [1, 2, 3];
 b; // [1, 2, 3]
 ```
 
-**Note:** The `Array(..)` constructor does not require the `new` keyword in front of it. If you omit it, it will behave as if you have used it anyway. So `Array(1,2,3)` is the same outcome as `new Array(1,2,3)`.
 **Примечание:**
 Конструктор `Array(...)` не требует наличия ключевого слова `new` перед ним. Если вы опустите его, поведение будет таким же, как и при его использовании. Поэтому `Array(1,2,3)` - это тот же результат, что и `new Array(1,2,3)`.
 
-The `Array` constructor has a special form where if only one `number` argument is passed, instead of providing that value as *contents* of the array, it's taken as a length to "presize the array" (well, sorta).
 Конструктор `Array` имеет специальную форму, в которой, если передан только один аргумент `number`, вместо предоставления значения как *содержимого* массива, оно берется в качестве длины для "предварительного вычисления размера массива" (как-то так).
 
-This is a terrible idea. Firstly, you can trip over that form accidentally, as it's easy to forget.
-Это ужасная идея. Во-первых, вы можете случайно напороться на эту особенность, так как ее легко забыть.
+Это ужасная идея. Во-первых, вы можете случайно напороться на эту особенность, потому что ее легко забыть.
 
-But more importantly, there's no such thing as actually presizing the array. Instead, what you're creating is an otherwise empty array, but setting the `length` property of the array to the numeric value specified.
 Но что еще важнее — нет такого понятия как "предварительное изменение размера массива". Вместо этого создается пустой массив, а свойство `length` массива устанавливается на указанное числовое значение.
 
-An array that has no explicit values in its slots, but has a `length` property that *implies* the slots exist, is a weird exotic type of data structure in JS with some very strange and confusing behavior. The capability to create such a value comes purely from old, deprecated, historical functionalities ("array-like objects" like the `arguments` object).
 Массив, в котором не записаны явные значение в своих слотах, но имеющий свойство `length`, которое *подразумевает* существование слотов, является довольно экзотическим типом структуры данных в JS с очень странным и запутанным поведением. Возможность создания такого значения возникает вследствии старых, устаревших функций ("массивоподобные объекты", такие как объект `arguments`).
 
-**Note:** An array with at least one "empty slot" in it is often called a "sparse array."
 **Примечание:** Массив, в котором есть хотя бы один "пустой слот", часто называют "разреженным массивом".
 
 It doesn't help matters that this is yet another example where browser developer consoles vary on how they represent such an object, which breeds more confusion.
