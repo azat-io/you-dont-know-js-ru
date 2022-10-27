@@ -405,9 +405,9 @@ v.hasOwnProperty( "then" );		// false
 
 `v` совсем не выглядит как промис или then-содержащее значение. Это просто обычный объект с некоторыми свойствами. Возможно вы просто хотите передавать это значение везде как любой другой объект.
 
-But unknown to you, `v` is also `[[Prototype]]`-linked (see the *this & Object Prototypes* title of this book series) to another object `o`, which happens to have a `then(..)` on it. So the thenable duck typing checks will think and assume `v` is a thenable. Uh oh.
+Но скрытно от вас, `v` также связано `[[Prototype]]` (см. *this и прототипы объектов* книгу в серии книг) с другим объектом `o`, в котором как оказалось есть `then(..)`. Таким образом проверка утиной типизации на then-содержащее значение подумает и предположит, что `v` - это then-содержащее значение. Ой-ей.
 
-It doesn't even need to be something as directly intentional as that:
+Тут даже всё может быть не так явно намеренным:
 
 ```js
 Object.prototype.then = function(){};
@@ -417,49 +417,49 @@ var v1 = { hello: "world" };
 var v2 = [ "Hello", "World" ];
 ```
 
-Both `v1` and `v2` will be assumed to be thenables. You can't control or predict if any other code accidentally or maliciously adds `then(..)` to `Object.prototype`, `Array.prototype`, or any of the other native prototypes. And if what's specified is a function that doesn't call either of its parameters as callbacks, then any Promise resolved with such a value will just silently hang forever! Crazy.
+Оба `v1` и `v2` будут определены как then-содержащие значения. Вы не можете контролировать или предсказать добавит ли какой-либо код случайно или злонамеренно `then(..)` в `Object.prototype`, `Array.prototype` или любой из других встроенных прототипов. И если то, что указано является функцией, которая не вызывает ни один из своих параметров как колбеки, то любой промис, разрешенный с таким значением просто незаметно повиснет навсегда! Безумие.
 
-Sound implausible or unlikely? Perhaps.
+Звучит неправдоподобно или невероятно? Возможно.
 
-But keep in mind that there were several well-known non-Promise libraries preexisting in the community prior to ES6 that happened to already have a method on them called `then(..)`. Some of those libraries chose to rename their own methods to avoid collision (that sucks!). Others have simply been relegated to the unfortunate status of "incompatible with Promise-based coding" in reward for their inability to change to get out of the way.
+Но не забывайте, что есть несколько хорошо известных не-промис библиотек, существовавших в  сообществе до ES6, в кторым случайно оказался метод, названный `then(..)`. Некоторые из этих библиотек решили переименовать свои собственные методы, чтобы избежать коллизий (которые удручают!). Другие просто были отнесены к несчастливому статусу "несовместим с кодом, использующим промисы" в награду за их неспособность измениться, чтобы убраться с дороги.
 
-The standards decision to hijack the previously nonreserved -- and completely general-purpose sounding -- `then` property name means that no value (or any of its delegates), either past, present, or future, can have a `then(..)` function present, either on purpose or by accident, or that value will be confused for a thenable in Promises systems, which will probably create bugs that are really hard to track down.
+По стандартам решили украсть ранее незарезервированное и совершенно универсально звучащее имя свойства `then`, что означает что ни одно значение (или любой из его делегатoв), прошлое, настоящее или будущее, не может иметь функцию `then(..)` намеренно или случайно, в противном случае это значение будут путать с then-содержащим в промис-системах, что вероятно повлечет за собой создание ошибок, которые будет действительно трудно отловить.
 
-**Warning:** I do not like how we ended up with duck typing of thenables for Promise recognition. There were other options, such as "branding" or even "anti-branding"; what we got seems like a worst-case compromise. But it's not all doom and gloom. Thenable duck typing can be helpful, as we'll see later. Just beware that thenable duck typing can be hazardous if it incorrectly identifies something as a Promise that isn't.
+**Предупреждение:** Мне не нравится как мы закончили материал об утиной типизации then-содержащих значений для определения промисов. Были и другие варианты, такие как "брэндинг" или даже "анти-брэндинг"; то, что у нас было, казалось наихудшим компромиссом. Но это совсем не конец света. Then-содержащая утиная типизация может быть и полезной как мы увидим позже. Просто будьте осторожны, так как такая утиная типизация по then может быть опасна если она некорректно определяет что-то как промис, которое таковым не является.
 
-## Promise Trust
+## Доверие к промису
 
-We've now seen two strong analogies that explain different aspects of what Promises can do for our async code. But if we stop there, we've missed perhaps the single most important characteristic that the Promise pattern establishes: trust.
+Сейчас мы увидели две сильные аналогии,  которые объясняют различные аспекты того, что могут делать промисы для нашего асинхронного кода. Но если мы тут и остановимся, мы возможно упустим единственную важнейшую характеристику, которую предоставляет шаблон промисов: доверие.
 
-Whereas the *future values* and *completion events* analogies play out explicitly in the code patterns we've explored, it won't be entirely obvious why or how Promises are designed to solve all of the *inversion of control* trust issues we laid out in the "Trust Issues" section of Chapter 2. But with a little digging, we can uncover some important guarantees that restore the confidence in async coding that Chapter 2 tore down!
+В то время как аналогии *будущие значения* и *события завершения* в явном виде происходят в тех шаблонах кода которые мы изучили, будет не совсем очевидно почему или как промисы разработаны, чтобы решить все проблемы доверия *инверсии управления*, которые мы изложили в секции "Проблемы с доверием" главы 2. Но слегка покопавшись мы можем вскрыть некоторые важные гарантии, которые восстановят уверенность в асинхронном кодировании, которую разрушила глава 2!
 
-Let's start by reviewing the trust issues with callbacks-only coding. When you pass a callback to a utility `foo(..)`, it might:
+Давайте начнем с рассмотрения проблем доверия при разработке в стиле одних только колбеков. Когда вы  передаете колбек в функцию `foo(..)`, она может:
 
-* Call the callback too early
-* Call the callback too late (or never)
-* Call the callback too few or too many times
-* Fail to pass along any necessary environment/parameters
-* swallow any errors/exceptions that may happen
+* Вызвать колбек слишком рано
+* Вызвать колбек слишком поздно (или никогда)
+* Вызвать колбек слишком мало раз или слишком много раз
+* Провалить передачу в колбек любых необходимых окружения/параметров
+* Проглотить любые ошибки/исключения, которые могут произойти
 
-The characteristics of Promises are intentionally designed to provide useful, repeatable answers to all these concerns.
+Характеристики промисов намеренно разработаны, чтобы обеспечить полезные, воспроизводимые ответы на все эти проблемы.
 
-### Calling Too Early
+### Вызывая слишком рано
 
-Primarily, this is a concern of whether code can introduce Zalgo-like effects (see Chapter 2), where sometimes a task finishes synchronously and sometimes asynchronously, which can lead to race conditions.
+В первую очередь, эта проблема в том, могут ли проявиться в коде Залго-подобные эффекты (см. главу 2), где иногда задача завершается синхронно, а иногда - асинхронно, что может приводить к состоянию гонки.
 
-Promises by definition cannot be susceptible to this concern, because even an immediately fulfilled Promise (like `new Promise(function(resolve){ resolve(42); })`) cannot be *observed* synchronously.
+Промисы по определению не могут быть подвержены этой проблеме, потому что даже сразу завершенный промис (типа `new Promise(function(resolve){ resolve(42); })`) нельзя *исследовать* синхронно.
 
-That is, when you call `then(..)` on a Promise, even if that Promise was already resolved, the callback you provide to `then(..)` will **always** be called asynchronously (for more on this, refer back to "Jobs" in Chapter 1).
+То есть, когда вы вызываете `then(..)` у промиса, даже если промис уже был разрешен, колбек, который вы передаете в `then(..)` **всегда** будет вызван асинхронно (детальнее об этом см. "Задачи" в главе 1).
 
-No more need to insert your own `setTimeout(..,0)` hacks. Promises prevent Zalgo automatically.
+Больше не нужно вставлять свои собственные костыли с `setTimeout(..,0)`. Промисы не допускают Залго автоматически.
 
-### Calling Too Late
+### Вызывая слишком поздно
 
-Similar to the previous point, a Promise's `then(..)` registered observation callbacks are automatically scheduled when either `resolve(..)` or `reject(..)` are called by the Promise creation capability. Those scheduled callbacks will predictably be fired at the next asynchronous moment (see "Jobs" in Chapter 1).
+Аналогично предыдущему пункту, колбеки наблюдения, зарегистрированные в `then(..)` промиса автоматически планируются к вызову когда вызван либо `resolve(..)`, либо `reject(..)` посредством кода создания промиса. Эти запланированные колбеки будут предсказуемо вызваны в следующий асинхронный момент (см. "Задачи" в главе 1).
 
-It's not possible for synchronous observation, so it's not possible for a synchronous chain of tasks to run in such a way to in effect "delay" another callback from happening as expected. That is, when a Promise is resolved, all `then(..)` registered callbacks on it will be called, in order, immediately at the next asynchronous opportunity (again, see "Jobs" in Chapter 1), and nothing that happens inside of one of those callbacks can affect/delay the calling of the other callbacks.
+Синхронное наблюдение тут невозможно, следовательно невозможно запустить синхронную цепочку задач таким образом, чтобы на практике "отложить" вызов другого колбека ожидаемым образом. То есть, когда промис разрешен, все зарегистрированные для`then(..)` колбеки будут по порядку вызваны, сразу же при следующей асинхронной возможности (снова, см. "Задачи" в главе 1) и ничто, что происходит внутри одного из этих колбеков не может повлиять или задержать вызов остальных колбеков.
 
-For example:
+Например:
 
 ```js
 p.then( function(){
@@ -474,13 +474,13 @@ p.then( function(){
 // A B C
 ```
 
-Here, `"C"` cannot interrupt and precede `"B"`, by virtue of how Promises are defined to operate.
+Здесь, `"C"` не может прервать и предшествовать `"B"`, в силу того как промисам было определено работать.
 
-#### Promise Scheduling Quirks
+#### Хитрости планировщика промисов
 
-It's important to note, though, that there are lots of nuances of scheduling where the relative ordering between callbacks chained off two separate Promises is not reliably predictable.
+Важно отметить, впрочем, что есть масса нюансов планировщика, когда относительный порядок между колбеками, выстроенными в цепочки двух отдельных промисов, не является надежно предсказуемым.
 
-If two promises `p1` and `p2` are both already resolved, it should be true that `p1.then(..); p2.then(..)` would end up calling the callback(s) for `p1` before the ones for `p2`. But there are subtle cases where that might not be true, such as the following:
+Если два промиса `p1` и `p2` оба уже разрешены, то будет истиной, что `p1.then(..); p2.then(..)` закончится вызовов колбека(ов) для `p1` до колбеков для `p2`. Но есть некоторые хитрые случаи, когда это может быть и не так, такие как следующий:
 
 ```js
 var p3 = new Promise( function(resolve,reject){
@@ -503,7 +503,7 @@ p2.then( function(v){
 	console.log( v );
 } );
 
-// A B  <-- not  B A  as you might expect
+// A B  <-- не B A  как вы могли бы ожидать
 ```
 
 We'll cover this more later, but as you can see, `p1` is resolved not with an immediate value, but with another promise `p3` which is itself resolved with the value `"B"`. The specified behavior is to *unwrap* `p3` into `p1`, but asynchronously, so `p1`'s callback(s) are *behind* `p2`'s callback(s) in the asynchronus Job queue (see Chapter 1).
@@ -1074,7 +1074,7 @@ rejectedPr.then(
 
 It should be clear now that `resolve(..)` is the appropriate name for the first callback parameter of the `Promise(..)` constructor.
 
-**Warning:** The previously mentioned `reject(..)` does **not** do the unwrapping that `resolve(..)` does. If you pass a Promise/thenable value to `reject(..)`, that untouched value will be set as the rejection reason. A subsequent rejection handler would receive the actual Promise/thenable you passed to `reject(..)`, not its underlying immediate value.
+**Предупреждение:** The previously mentioned `reject(..)` does **not** do the unwrapping that `resolve(..)` does. If you pass a Promise/thenable value to `reject(..)`, that untouched value will be set as the rejection reason. A subsequent rejection handler would receive the actual Promise/thenable you passed to `reject(..)`, not its underlying immediate value.
 
 But now let's turn our attention to the callbacks provided to `then(..)`. What should they be called (both in literature and in code)? I would suggest `fulfilled(..)` and `rejected(..)`:
 
@@ -1188,7 +1188,7 @@ If the `msg.toLowerCase()` legitimately throws an error (it does!), why doesn't 
 
 That should paint a clear picture of why error handling with Promises is error-prone (pun intended). It's far too easy to have errors swallowed, as this is very rarely what you'd intend.
 
-**Warning:** If you use the Promise API in an invalid way and an error occurs that prevents proper Promise construction, the result will be an immediately thrown exception, **not a rejected Promise**. Some examples of incorrect usage that fail Promise construction: `new Promise(null)`, `Promise.all()`, `Promise.race(42)`, and so on. You can't get a rejected Promise if you don't use the Promise API validly enough to actually construct a Promise in the first place!
+**Предупреждение:** If you use the Promise API in an invalid way and an error occurs that prevents proper Promise construction, the result will be an immediately thrown exception, **not a rejected Promise**. Some examples of incorrect usage that fail Promise construction: `new Promise(null)`, `Promise.all()`, `Promise.race(42)`, and so on. You can't get a rejected Promise if you don't use the Promise API validly enough to actually construct a Promise in the first place!
 
 ### Pit of Despair
 
@@ -1354,13 +1354,13 @@ While `Promise.all([ .. ])` coordinates multiple Promises concurrently and assum
 
 This pattern is classically called a "latch," but in Promises it's called a "race."
 
-**Warning:** While the metaphor of "only the first across the finish line wins" fits the behavior well, unfortunately "race" is kind of a loaded term, because "race conditions" are generally taken as bugs in programs (see Chapter 1). Don't confuse `Promise.race([ .. ])` with "race condition."
+**Предупреждение:** While the metaphor of "only the first across the finish line wins" fits the behavior well, unfortunately "race" is kind of a loaded term, because "race conditions" are generally taken as bugs in programs (see Chapter 1). Don't confuse `Promise.race([ .. ])` with "race condition."
 
 `Promise.race([ .. ])` also expects a single `array` argument, containing one or more Promises, thenables, or immediate values. It doesn't make much practical sense to have a race with immediate values, because the first one listed will obviously win -- like a foot race where one runner starts at the finish line!
 
 Similar to `Promise.all([ .. ])`, `Promise.race([ .. ])` will fulfill if and when any Promise resolution is a fulfillment, and it will reject if and when any Promise resolution is a rejection.
 
-**Warning:** A "race" requires at least one "runner," so if you pass an empty `array`, instead of immediately resolving, the main `race([..])` Promise will never resolve. This is a footgun! ES6 should have specified that it either fulfills, rejects, or just throws some sort of synchronous error. Unfortunately, because of precedence in Promise libraries predating ES6 `Promise`, they had to leave this gotcha in there, so be careful never to send in an empty `array`.
+**Предупреждение:** A "race" requires at least one "runner," so if you pass an empty `array`, instead of immediately resolving, the main `race([..])` Promise will never resolve. This is a footgun! ES6 should have specified that it either fulfills, rejects, or just throws some sort of synchronous error. Unfortunately, because of precedence in Promise libraries predating ES6 `Promise`, they had to leave this gotcha in there, so be careful never to send in an empty `array`.
 
 Let's revisit our previous concurrent Ajax example, but in the context of a race between `p1` and `p2`:
 
@@ -1667,7 +1667,7 @@ Promise.all( [p1,p2] )
 } );
 ```
 
-**Warning:** Be careful! If an empty `array` is passed to `Promise.all([ .. ])`, it will fulfill immediately, but `Promise.race([ .. ])` will hang forever and never resolve.
+**Предупреждение:** Be careful! If an empty `array` is passed to `Promise.all([ .. ])`, it will fulfill immediately, but `Promise.race([ .. ])` will hang forever and never resolve.
 
 The ES6 `Promise` API is pretty simple and straightforward. It's at least good enough to serve the most basic of async cases, and is a good place to start when rearranging your code from callback hell to something better.
 
