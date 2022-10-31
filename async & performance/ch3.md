@@ -506,94 +506,94 @@ p2.then( function(v){
 // A B  <-- не B A  как вы могли бы ожидать
 ```
 
-We'll cover this more later, but as you can see, `p1` is resolved not with an immediate value, but with another promise `p3` which is itself resolved with the value `"B"`. The specified behavior is to *unwrap* `p3` into `p1`, but asynchronously, so `p1`'s callback(s) are *behind* `p2`'s callback(s) in the asynchronus Job queue (see Chapter 1).
+Мы расскажем об этом позже, но как вы видите `p1` разрешен не с непосредственным значением, а с еще одним промисом `p3`, который сам разрешен со значением `"B"`. Указанное поведение - это *распаковать* `p3` внутри `p1`, но асинхронно, таким образом колбек(и) `p1` *позади* колбека(ов) `p2` в очереди асинхронных задач (см. главу 1).
 
-To avoid such nuanced nightmares, you should never rely on anything about the ordering/scheduling of callbacks across Promises. In fact, a good practice is not to code in such a way where the ordering of multiple callbacks matters at all. Avoid that if you can.
+Чтобы избежать таких хитрых кошмаров, вам никогда не следует полагаться на что-либо связанное с порядком/шедулингом колбеков в промисах. На самом деле, хорошей практикой будет не писать код таким образом, чтобы порядок многочисленных колбеков имел хоть какие-то значение. Избегайте этого если сможете.
 
-### Never Calling the Callback
+### Колбек, который никогда не был вызван
 
-This is a very common concern. It's addressable in several ways with Promises.
+Это - очень распространенная проблема. Она решаема несколькими путями с промисами.
 
-First, nothing (not even a JS error) can prevent a Promise from notifying you of its resolution (if it's resolved). If you register both fulfillment and rejection callbacks for a Promise, and the Promise gets resolved, one of the two callbacks will always be called.
+Во-первых, ничто (ни даже JS-ошибка) не может повлиять на уведомление вас от промиса о своем разрешении (если он разрешен). Если вы указываете оба колбека как для успешного завершения, так и для сбоя при создании промиса и промис разрешается,то один из этих двух колбеков всегда будет вызван.
 
-Of course, if your callbacks themselves have JS errors, you may not see the outcome you expect, but the callback will in fact have been called. We'll cover later how to be notified of an error in your callback, because even those don't get swallowed.
+Конечно, если ваши колбеки сами содержат JS-ошибки, вы можете не получить ожидаемый результат, но колбек и в самом деле будет вызван. Мы расскажем позже как получить уведомление об ошибке в своем колбеке, потому что даже эти ошибки не проглатываются.
 
-But what if the Promise itself never gets resolved either way? Even that is a condition that Promises provide an answer for, using a higher level abstraction called a "race":
+Но что если сам промис никогда не будет разрешен тем или иным путем? Даже для такой ситуации у промисов есть ответ используя абстракцию более высокого порядка, называемую "гонка":
 
 ```js
-// a utility for timing out a Promise
+// функция с промисом по таймауту
 function timeoutPromise(delay) {
 	return new Promise( function(resolve,reject){
 		setTimeout( function(){
-			reject( "Timeout!" );
+			reject( "Таймаут!" );
 		}, delay );
 	} );
 }
 
-// setup a timeout for `foo()`
+// настройка таймаута для `foo()`
 Promise.race( [
-	foo(),					// attempt `foo()`
-	timeoutPromise( 3000 )	// give it 3 seconds
+	foo(),					// попробовать вызвать `foo()`
+	timeoutPromise( 3000 )	// дать на это 3 секунды
 ] )
 .then(
 	function(){
-		// `foo(..)` fulfilled in time!
+		// `foo(..)` выполнился успешно и вовремя!
 	},
 	function(err){
-		// either `foo()` rejected, or it just
-		// didn't finish in time, so inspect
-		// `err` to know which
+		// либо `foo()` завершилась неудачно, либо она
+		// не завершилась вовремя, так что проверьте
+		// `err` чтобы определить причину
 	}
 );
 ```
 
-There are more details to consider with this Promise timeout pattern, but we'll come back to it later.
+Есть еще много нюансов, которые можно учесть при рассмотрении этого шаблона промисов с таймаутом, но мы вернемся к этом позже.
 
-Importantly, we can ensure a signal as to the outcome of `foo()`, to prevent it from hanging our program indefinitely.
+Важно, что мы можем гарантированно просигнализировать о результате `foo()`, чтобы предотвратить зависание нашей программы бесконечно.
 
-### Calling Too Few or Too Many Times
+### Вызывая слишком мало или много раз
 
-By definition, *one* is the appropriate number of times for the callback to be called. The "too few" case would be zero calls, which is the same as the "never" case we just examined.
+По определению, *один* - это подходящее число раз, которое колбек должен быть вызван. Случай "слишком мало" будет означать ноль вызовов, что то же самое что и случай "никогда", который мы только что рассмотрели.
 
-The "too many" case is easy to explain. Promises are defined so that they can only be resolved once. If for some reason the Promise creation code tries to call `resolve(..)` or `reject(..)` multiple times, or tries to call both, the Promise will accept only the first resolution, and will silently ignore any subsequent attempts.
+Случай "слишком много" легко объяснить. Промисы определены таким образом, что могут быть разрешены только один раз. Если по каким-либо причинам код создания промиса попытается вызвать `resolve(..)` или `reject(..)` несколько раз или попытается вызвать их обоих, то промис примет во внимание только первый вызов и молча проигнорирует любые последующие попытки.
 
-Because a Promise can only be resolved once, any `then(..)` registered callbacks will only ever be called once (each).
+Поскольку промис можно разрешить лишь раз, любые зарегистрированные колбеки `then(..)` будут вызваны  только по разу (каждый).
 
-Of course, if you register the same callback more than once, (e.g., `p.then(f); p.then(f);`), it'll be called as many times as it was registered.  The guarantee that a response function is called only once does not prevent you from shooting yourself in the foot.
+Конечно, если зарегистрируете один и ото же колбек более одного раза, (т.е., `p.then(f); p.then(f);`), он будет вызван столько раз, сколько был зарегистрирован. Гарантия того, что функция ответа будет вызвана только раз не препятствует вам выстрелить себе в ногу.
 
-### Failing to Pass Along Any Parameters/Environment
+### Сбой при передаче параметров/окружения
 
-Promises can have, at most, one resolution value (fulfillment or rejection).
+У промисов может быть не больше одного значения разрешения (успешное завершение или отказ).
 
-If you don't explicitly resolve with a value either way, the value is `undefined`, as is typical in JS. But whatever the value, it will always be passed to all registered (and appropriate: fulfillment or rejection) callbacks, either *now* or in the future.
+Если вы не разрешаете промис явно с конкретным значением, значение будет `undefined`, как и обычно в таких случаях в JS. Но если ли значение или нет, оно всегда будет передавно во все зарегистрированные (и корректные: успешное завершение или отказ) колбеки, либо *сейчас*, или в будущем.
 
-Something to be aware of: If you call `resolve(..)` or `reject(..)` with multiple parameters, all subsequent parameters beyond the first will be silently ignored. Although that might seem a violation of the guarantee we just described, it's not exactly, because it constitutes an invalid usage of the Promise mechanism. Other invalid usages of the API (such as calling `resolve(..)` multiple times) are similarly *protected*, so the Promise behavior here is consistent (if not a tiny bit frustrating).
+Что-то, о чем нужно знать: если вы вызываете `resolve(..)` или `reject(..)` с несколькими параметрами, все параметры, которые следуют за первым, будут молча проигнорированы. Хотя это и может выглядеть как нарушение гарантии, которую мы только что описали, это не совсем так потому что it это представляет собой недопустимое использование механизма промисов. Другие недопустимые случаи использования API (такие как вызов `resolve(..)` несколько раз) *защищены* похожим образом, таким образом поведение промисов тут будет консистентным (если не немного расстраивающим).
 
-If you want to pass along multiple values, you must wrap them in another single value that you pass, such as an `array` or an `object`.
+Если вы хотите передать несколько значений, вы должны обернуть их в еще одно одиночное значение, которое вы и передадите, такое как `array` (массив) или `object` (объект).
 
-As for environment, functions in JS always retain their closure of the scope in which they're defined (see the *Scope & Closures* title of this series), so they of course would continue to have access to whatever surrounding state you provide. Of course, the same is true of callbacks-only design, so this isn't a specific augmentation of benefit from Promises -- but it's a guarantee we can rely on nonetheless.
+Что касается окружения, функции в JS всегда сохраняют свое замыкание области видимости, в которой они определены (см. *Область видимости и замыкания* в этой серии книг), так что у них, конечно, остается доступ к тому окружающему состоянию, которое вы предоставляете. Конечно, то же самое справедливо и для подхода с одними колбеками, поэтому это не какое-то особенная выгодная добавка от промисов, но это гарантия, на которую мы можем тем ни менее положиться.
 
-### Swallowing Any Errors/Exceptions
+### Проглатывание любых ошибок/исключений
 
-In the base sense, this is a restatement of the previous point. If you reject a Promise with a *reason* (aka error message), that value is passed to the rejection callback(s).
+В основе, это просто переформулирование предыдущего пункта. Если вы отклоняете промис с определенной *причиной* (т.е. сообщением об ошибке), то это значение будете передано в колбек(и) отказа.
 
-But there's something much bigger at play here. If at any point in the creation of a Promise, or in the observation of its resolution, a JS exception error occurs, such as a `TypeError` or `ReferenceError`, that exception will be caught, and it will force the Promise in question to become rejected.
+Но здесь есть нечто гораздо большее. Если в любой точке создания промиса или при исследовании его разрешения произойдет исключение JS, такое как `TypeError` или `ReferenceError`, такое исключение будет захвачено и это заставит завершиться с отказом рассматриваемый промис.
 
-For example:
+Например:
 
 ```js
 var p = new Promise( function(resolve,reject){
-	foo.bar();	// `foo` is not defined, so error!
-	resolve( 42 );	// never gets here :(
+	foo.bar();	// `foo` не определена поэтому ошибка!
+	resolve( 42 );	// никогда не достигнет этой точки :(
 } );
 
 p.then(
 	function fulfilled(){
-		// never gets here :(
+		// никогда не достигнет этой точки :(
 	},
 	function rejected(err){
-		// `err` will be a `TypeError` exception object
-		// from the `foo.bar()` line.
+		// `err` будет объектом исключения `TypeError`
+		// произошедшим на строке `foo.bar()`.
 	}
 );
 ```
