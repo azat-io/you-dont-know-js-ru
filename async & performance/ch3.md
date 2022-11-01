@@ -598,11 +598,11 @@ p.then(
 );
 ```
 
-The JS exception that occurs from `foo.bar()` becomes a Promise rejection that you can catch and respond to.
+JS-исключение, которое возникает от `foo.bar()`, становится отказом промиса, который вы можете захватить и обработать.
 
-This is an important detail, because it effectively solves another potential Zalgo moment, which is that errors could create a synchronous reaction whereas nonerrors would be asynchronous. Promises turn even JS exceptions into asynchronous behavior, thereby reducing the race condition chances greatly.
+Это - важная деталь, потому что она успешно решает еще один потенциальный Залго-момент, который заключается в том, что эти ошибки повлечь синхронную реакцию тогда как не-ошибки будут асинхронными. Даже JS-исключения промимсы превращают в асинхронное поведение, тем самым значительно уменьшая шансы появления состояния гонки.
 
-But what happens if a Promise is fulfilled, but there's a JS exception error during the observation (in a `then(..)` registered callback)? Even those aren't lost, but you may find how they're handled a bit surprising, until you dig in a little deeper:
+Но что произойдет если промис успешно завершен, а произошло JS-исключение во время обработки результата (в зарегистрированном колбеке `then(..)`)? Даже такие исключения не будут потеряны, но вы  можете немного удивиться тому, как они обрабатываются, пока не вникните немного глубже в это:
 
 ```js
 var p = new Promise( function(resolve,reject){
@@ -612,31 +612,31 @@ var p = new Promise( function(resolve,reject){
 p.then(
 	function fulfilled(msg){
 		foo.bar();
-		console.log( msg );	// never gets here :(
+		console.log( msg );	// никогда не достигнет этой точки :(
 	},
 	function rejected(err){
-		// never gets here either :(
+		// никогда не достигнет и этой точки :(
 	}
 );
 ```
 
-Wait, that makes it seem like the exception from `foo.bar()` really did get swallowed. Never fear, it didn't. But something deeper is wrong, which is that we've failed to listen for it. The `p.then(..)` call itself returns another promise, and it's *that* promise that will be rejected with the `TypeError` exception.
+Подождите-ка, тут похоже, что исключение  от `foo.bar()` и в самом деле проглочено. Без паники, оно не пропало. Но кое-что внутри не так, а именно то, что мы не смогли получить уведомление об этом. Вызов `p.then(..)` сам по себе возвращает другой промис и это *тот самый* промис, который будет отклонен с исключением `TypeError`.
 
-Why couldn't it just call the error handler we have defined there? Seems like a logical behavior on the surface. But it would violate the fundamental principle that Promises are **immutable** once resolved. `p` was already fulfilled to the value `42`, so it can't later be changed to a rejection just because there's an error in observing `p`'s resolution.
+Так почему же он не может просто вызвать обработчик ошибок, который мы там объявили? Похоже, что логичное объяснение лежит на поверхности. Но оно нарушило бы основополагающий принцип промисов - **неизменность** после разрешения. `p` уже была успешно завершена со значением `42`, так что она не может быть позднее изменена на отказ только потому, что возникла ошибка в наблюдающей функции разрешения `p`.
 
-Besides the principle violation, such behavior could wreak havoc, if say there were multiple `then(..)` registered callbacks on the promise `p`, because some would get called and others wouldn't, and it would be very opaque as to why.
+Кроме нарушения принципа, такое поведение может нанести ущерб, если скажем было несколько зарегистрированных колбеков `then(..)` для промиса `p`, поскольку тогда некоторые будут вызваны, а другие - нет, и это было очень непрозрачно в плане причины почему так произошло.
 
-### Trustable Promise?
+### Надежный промис?
 
-There's one last detail to examine to establish trust based on the Promise pattern.
+Есть одна последняя деталь, чтобы понять как установить доверие, основанное на шаблоне промисов.
 
-You've no doubt noticed that Promises don't get rid of callbacks at all. They just change where the callback is passed to. Instead of passing a callback to `foo(..)`, we get *something* (ostensibly a genuine Promise) back from `foo(..)`, and we pass the callback to that *something* instead.
+Без сомнения вы заметили, что промисы не избавились от колбеков полностью. Они просто поменяли место, куда передается колбек. Вместо передачи колбека в `foo(..)`, мы получаем *нечто* (предположительно настоящий промис) обратно из `foo(..)`, и мы взамен передаем колбек в это *нечто*.
 
-But why would this be any more trustable than just callbacks alone? How can we be sure the *something* we get back is in fact a trustable Promise? Isn't it basically all just a house of cards where we can trust only because we already trusted?
+Но почему это было бы надежнее, чем просто колбеки сами по себе? Как мы можем быть уверены в точ, что *нечто*, что мы получаем в ответ на самом деле надежный промис? Не является ли всё это в сущности просто карточным домиком, где мы можем доверять только потому, что мы уже доверяем?
 
-One of the most important, but often overlooked, details of Promises is that they have a solution to this issue as well. Included with the native ES6 `Promise` implementation is `Promise.resolve(..)`.
+Одна из самых важных, но часто незаслуженно обойденных вниманием деталей промисов - это то, что у них есть решение также и этой проблемы. Включенное в нативную реализацию ES6 `Promise` - `Promise.resolve(..)`.
 
-If you pass an immediate, non-Promise, non-thenable value to `Promise.resolve(..)`, you get a promise that's fulfilled with that value. In other words, these two promises `p1` and `p2` will behave basically identically:
+Если вы передаете непосредственное, не являющееся ни промисом, ни then-содержащим, значение в  `Promise.resolve(..)`, вы получили промис, который успешно завершен с этим значением. Другими словами, эти два промиса `p1` и `p2` будут вести себя практически идентично:
 
 ```js
 var p1 = new Promise( function(resolve,reject){
@@ -646,7 +646,7 @@ var p1 = new Promise( function(resolve,reject){
 var p2 = Promise.resolve( 42 );
 ```
 
-But if you pass a genuine Promise to `Promise.resolve(..)`, you just get the same promise back:
+Но если вы передадите настоящий промис в `Promise.resolve(..)`, вы просто получите тот же промис обратно:
 
 ```js
 var p1 = Promise.resolve( 42 );
@@ -656,11 +656,11 @@ var p2 = Promise.resolve( p1 );
 p1 === p2; // true
 ```
 
-Even more importantly, if you pass a non-Promise thenable value to `Promise.resolve(..)`, it will attempt to unwrap that value, and the unwrapping will keep going until a concrete final non-Promise-like value is extracted.
+Что еще более важно, если вы пердаете не-промис then-содержащее значение в `Promise.resolve(..)`, оно попытается распаковать это значение, и распаковка будет продолжаться до тех пор, пока не будет извлечено конкретное окончательное не-промис значение.
 
-Recall our previous discussion of thenables?
+Помните наше прошедшее обсуждение then-содержащих?
 
-Consider:
+Рассмотрите:
 
 ```js
 var p = {
@@ -669,25 +669,25 @@ var p = {
 	}
 };
 
-// this works OK, but only by good fortune
+// это сработает, но только благодаря удаче
 p
 .then(
 	function fulfilled(val){
 		console.log( val ); // 42
 	},
 	function rejected(err){
-		// never gets here
+		// никогда не достигнет этой точки
 	}
 );
 ```
 
-This `p` is a thenable, but it's not a genuine Promise. Luckily, it's reasonable, as most will be. But what if you got back instead something that looked like:
+Это `p` - then-содержащее, но это не настоящий промис. К счастью, оно разумное, как и большинство какие бывают. Но что если вы получите в ответ что-то, что выглядит как-то так:
 
 ```js
 var p = {
 	then: function(cb,errcb) {
 		cb( 42 );
-		errcb( "evil laugh" );
+		errcb( "злобный смех" );
 	}
 };
 
@@ -697,15 +697,15 @@ p
 		console.log( val ); // 42
 	},
 	function rejected(err){
-		// oops, shouldn't have run
-		console.log( err ); // evil laugh
+		// ой, не должно было сработать
+		console.log( err ); // злобный смех
 	}
 );
 ```
 
-This `p` is a thenable but it's not so well behaved of a promise. Is it malicious? Or is it just ignorant of how Promises should work? It doesn't really matter, to be honest. In either case, it's not trustable as is.
+Это `p` - then-содержащее, но оно не ведет себя как хороший промис. Вредоносное ли оно? Или просто игнорирует то, как должны работать промисы? Это не важно, если честно. В любом случае, оно не надежно в том виде, как есть.
 
-Nonetheless, we can pass either of these versions of `p` to `Promise.resolve(..)`, and we'll get the normalized, safe result we'd expect:
+Тем ни менее, мы может передать любую их этих версий `p` в `Promise.resolve(..)`, и мы получим нормализованный, безопасный результат, который и ожидаем:
 
 ```js
 Promise.resolve( p )
@@ -714,51 +714,51 @@ Promise.resolve( p )
 		console.log( val ); // 42
 	},
 	function rejected(err){
-		// never gets here
+		// никогда не достигнет этой точки
 	}
 );
 ```
 
-`Promise.resolve(..)` will accept any thenable, and will unwrap it to its non-thenable value. But you get back from `Promise.resolve(..)` a real, genuine Promise in its place, **one that you can trust**. If what you passed in is already a genuine Promise, you just get it right back, so there's no downside at all to filtering through `Promise.resolve(..)` to gain trust.
+`Promise.resolve(..)` примет любые then-содержащие агрументы, и распакует их в их не-then-содержащее значение. ButНо вы получите обратно из `Promise.resolve(..)` настоящий, подлинный промис, **тот, которому вы можете доверять**. Если то, что вы передали, уже является настоящим промисом, вы просто получилите его же обратно, так что нет никаких недостатков в том, что фильтровать через `Promise.resolve(..)`, чтобы получить надежность.
 
-So let's say we're calling a `foo(..)` utility and we're not sure we can trust its return value to be a well-behaving Promise, but we know it's at least a thenable. `Promise.resolve(..)` will give us a trustable Promise wrapper to chain off of:
+Допустим мы вызываем `foo(..)` и не уверены, что можем доверять его возвращаемому значению в том, что оно является правильным промисом, но мы знаем, что оно как минимум then-содержащее. `Promise.resolve(..)` даст нам надежную обертку в виде промиса, которую можно использовать в цепочке:
 
 ```js
-// don't just do this:
+// не делайте так:
 foo( 42 )
 .then( function(v){
 	console.log( v );
 } );
 
-// instead, do this:
+// вместо этого, делайте так:
 Promise.resolve( foo( 42 ) )
 .then( function(v){
 	console.log( v );
 } );
 ```
 
-**Примечание** Another beneficial side effect of wrapping `Promise.resolve(..)` around any function's return value (thenable or not) is that it's an easy way to normalize that function call into a well-behaving async task. If `foo(42)` returns an immediate value sometimes, or a Promise other times, `Promise.resolve( foo(42) )` makes sure it's always a Promise result. And avoiding Zalgo makes for much better code.
+**Примечание** Еще один выгодный побочный эффект оборачивания `Promise.resolve(..)` вокруг любого возвращаемого из функции значения (then-содержащей или нет) - это то, что  это легкий путь к приведению этого вызова функции к правильно ведущей себя асинхронной задаче. Если `foo(42)` иногда возвращает непосредственное значение, а иногда промис, `Promise.resolve( foo(42) )` следит за тем, чтобы это всегда был в результате промис. И избегая Залго приводит к намного лучшему коду.
 
-### Trust Built
+### Построенное доверие
 
-Hopefully the previous discussion now fully "resolves" (pun intended) in your mind why the Promise is trustable, and more importantly, why that trust is so critical in building robust, maintainable software.
+Надеюсь, что предыдущая дискуссия теперь полностью "разрешает" (каламбур) в вашим мозгу факт, почему промис надежен, и более важно, почему это доверие так критично для построения надежного, поддерживаемого ПО.
 
-Can you write async code in JS without trust? Of course you can. We JS developers have been coding async with nothing but callbacks for nearly two decades.
+Можете ли вы писать асинхронный код в JS без какой-либо надежности? Конечно можете. Мы, JS-разработчики, пишем асинхронный код не имея ничего кроме колбеков уже почти два десятилетия.
 
-But once you start questioning just how much you can trust the mechanisms you build upon to actually be predictable and reliable, you start to realize callbacks have a pretty shaky trust foundation.
+Но как только вы начинаете задавать вопросы просто о том, насколько вы можете доверять механизмам, на которые вы опираетесь, в самом деле быть предсказуемыми и надежными, вы начинаете осознавать, что у   колбеков довольно шаткий фундамент доверия.
 
-Promises are a pattern that augments callbacks with trustable semantics, so that the behavior is more reason-able and more reliable. By uninverting the *inversion of control* of callbacks, we place the control with a trustable system (Promises) that was designed specifically to bring sanity to our async.
+Промисы - это шаблон, который дополняет колбеки надежной семантикой, так что поведение становится более разумным и надежным. Сделав разинверсию *инверсии управления* колбеками, мы передаем управление надежной системе (промисам), которая была специально разработана, чтобы привнести здравый смысл в нашу асинхронность.
 
-## Chain Flow
+## Цепочечный поток
 
-We've hinted at this a couple of times already, but Promises are not just a mechanism for a single-step *this-then-that* sort of operation. That's the building block, of course, but it turns out we can string multiple Promises together to represent a sequence of async steps.
+Мы уже намекали на это пару раз, но промисы - это не только механизм для одношаговой операции типа *это-затем-то*. Это строительный блок, конечно, но оказывается мы можем связать немного промисов вместе для представления последовательности асинхронных шагов.
 
-The key to making this work is built on two behaviors intrinsic to Promises:
+Ключ к тому, чтобы это сработало, построен на двух видах поведения, присущих промисам:
 
-* Every time you call `then(..)` on a Promise, it creates and returns a new Promise, which we can *chain* with.
-* Whatever value you return from the `then(..)` call's fulfillment callback (the first parameter) is automatically set as the fulfillment of the *chained* Promise (from the first point).
+* Каждый раз как вы вызываете `then(..)` у промиса, он создает и возвращает новый промис, с которым мы можем составить *цепочку*.
+* Какое бы значение вы ни вернули из колбека успешного завершения `then(..)` (первый параметр) - оно автоматически устанавливается как set как результата нормального завершения промиса *в цепочке*  (из первого пункта).
 
-Let's first illustrate what that means, and *then* we'll derive how that helps us create async sequences of flow control. Consider the following:
+Давайте сперва проиллюстрируем что это значит, а *затем* (then, туту игра слов) вы выведем как это помодет нам создавать асинхронные последовательности управления потоком. Рассмотрим следующее:
 
 ```js
 var p = Promise.resolve( 21 );
@@ -766,19 +766,19 @@ var p = Promise.resolve( 21 );
 var p2 = p.then( function(v){
 	console.log( v );	// 21
 
-	// fulfill `p2` with value `42`
+	// завершить успешно `p2` со значением `42`
 	return v * 2;
 } );
 
-// chain off `p2`
+// составляем цепочку с `p2`
 p2.then( function(v){
 	console.log( v );	// 42
 } );
 ```
 
-By returning `v * 2` (i.e., `42`), we fulfill the `p2` promise that the first `then(..)` call created and returned. When `p2`'s `then(..)` call runs, it's receiving the fulfillment from the `return v * 2` statement. Of course, `p2.then(..)` creates yet another promise, which we could have stored in a `p3` variable.
+Возвращая `v * 2` (i.e., `42`), мы завершаем промис `p2` с успешным результатом, который созла и вернул первый вызов `then(..)`. Когда происходит вызов `then(..)` у `p2`, он получает успешный результат из выражения `return v * 2`. Конечно, `p2.then(..)` создает еще один промис, который мы можем сохранить в переменной `p3`.
 
-But it's a little annoying to have to create an intermediate variable `p2` (or `p3`, etc.). Thankfully, we can easily just chain these together:
+Но немного раздражает необходимость создавать промежуточную переменную `p2` (или `p3`, и т.д.). К счастью, мы легко можем объединить их в цепочку:
 
 ```js
 var p = Promise.resolve( 21 );
@@ -787,22 +787,22 @@ p
 .then( function(v){
 	console.log( v );	// 21
 
-	// fulfill the chained promise with value `42`
+	// вернуть успешный результат промиса в цепочке со значением `42`
 	return v * 2;
 } )
-// here's the chained promise
+// вот и промис в цепочке
 .then( function(v){
 	console.log( v );	// 42
 } );
 ```
 
-So now the first `then(..)` is the first step in an async sequence, and the second `then(..)` is the second step. This could keep going for as long as you needed it to extend. Just keep chaining off a previous `then(..)` with each automatically created Promise.
+Таким образом теперь первый `then(..)` - это первый шаг в асинхронной последовательности, а второй `then(..)` - это второй шаг. Это может продолжаться столь долго, сколь вам надо это расширять. Просто продолжайте цепочку от предыдущего `then(..)` автоматически созданным промисом.
 
-But there's something missing here. What if we want step 2 to wait for step 1 to do something asynchronous? We're using an immediate `return` statement, which immediately fulfills the chained promise.
+Но здесь нет кое-чего. Что если мы хотим, чтобы шаг 2 ждал пока шаг 1 выполнит что-то асинхронное? Мы используем выражение `return` для возврата значения сразу, которое немедленно и успешно завершает промис в цепочке.
 
-The key to making a Promise sequence truly async capable at every step is to recall how `Promise.resolve(..)` operates when what you pass to it is a Promise or thenable instead of a final value. `Promise.resolve(..)` directly returns a received genuine Promise, or it unwraps the value of a received thenable -- and keeps going recursively while it keeps unwrapping thenables.
+Ключ к тому, чтобы заставить последовательность промисов быть истинно асинхронной на каждом шаге - это вспомнить как работает `Promise.resolve(..)` когда то, что вы передаете ему - это промис или then-содержащее вместо конечного значения. `Promise.resolve(..)` прямо возвращает полученный настоящий промис или распаковывает значение полученного then-содержащего и движется рекурсивно пока может распаковывать then-содержащие.
 
-The same sort of unwrapping happens if you `return` a thenable or Promise from the fulfillment (or rejection) handler. Consider:
+Такой же вид распаковки происходит если вы используете в `return` then-содержащее или промис из обработчика успешного завершения (или отказа). Рассмотрим:
 
 ```js
 var p = Promise.resolve( 21 );
@@ -810,9 +810,9 @@ var p = Promise.resolve( 21 );
 p.then( function(v){
 	console.log( v );	// 21
 
-	// create a promise and return it
+	// создаем промис и возвращаем его
 	return new Promise( function(resolve,reject){
-		// fulfill with value `42`
+		// успешное завершение со значением `42`
 		resolve( v * 2 );
 	} );
 } )
@@ -821,7 +821,7 @@ p.then( function(v){
 } );
 ```
 
-Even though we wrapped `42` up in a promise that we returned, it still got unwrapped and ended up as the resolution of the chained promise, such that the second `then(..)` still received `42`. If we introduce asynchrony to that wrapping promise, everything still nicely works the same:
+Несмотря на то, что мы обернули `42` в промис, который вернули, оно все еще распаковано и оказалось в качестве разрешения промиса в цепочке, такого как второй `then(..)`, который тем ни менее получил `42`. Если мы добавим асинхронность для этого оборачивающего промиса, все всё еще будет работать по-прежнему одинаково:
 
 ```js
 var p = Promise.resolve( 21 );
@@ -829,26 +829,26 @@ var p = Promise.resolve( 21 );
 p.then( function(v){
 	console.log( v );	// 21
 
-	// create a promise to return
+	// создаем промис и возвращаем его
 	return new Promise( function(resolve,reject){
-		// introduce asynchrony!
+		// добавляем асинхронность!
 		setTimeout( function(){
-			// fulfill with value `42`
+			// успешное завершение со значением `42`
 			resolve( v * 2 );
 		}, 100 );
 	} );
 } )
 .then( function(v){
-	// runs after the 100ms delay in the previous step
+	// запускается после задержки 100мс на предыдущем шаге
 	console.log( v );	// 42
 } );
 ```
 
-That's incredibly powerful! Now we can construct a sequence of however many async steps we want, and each step can delay the next step (or not!), as necessary.
+Это невероятно мощно! Теперь мы можем строить последовательность со сколь угодно большим количеством  асинхронных шагов и каждый шаг может задержать следующий шаг (или не задержать!), если необходимо.
 
-Of course, the value passing from step to step in these examples is optional. If you don't return an explicit value, an implicit `undefined` is assumed, and the promises still chain together the same way. Each Promise resolution is thus just a signal to proceed to the next step.
+Конечно, значение, передаваемое из шага в шаг в этих примерах, не обязательное. Если вы не вернете явное значение, будет предполагаться  неявное значение `undefined` и промисы все еще будут в цепочке таким же образом. Разрешение каждого промиса, таким образом, является просто сигналом перейти к следующему шагу.
 
-To further the chain illustration, let's generalize a delay-Promise creation (without resolution messages) into a utility we can reuse for multiple steps:
+Для дальней иллюстрации цепочки, давайте обобщим создание промиса с задержкой (без вывода сообщений о завершении) в функцию, которую мы можем переиспользовать для нескольких шагов:
 
 ```js
 function delay(time) {
@@ -857,46 +857,46 @@ function delay(time) {
 	} );
 }
 
-delay( 100 ) // step 1
+delay( 100 ) // шаг 1
 .then( function STEP2(){
-	console.log( "step 2 (after 100ms)" );
+	console.log( "шаг 2 (после 100мс)" );
 	return delay( 200 );
 } )
 .then( function STEP3(){
-	console.log( "step 3 (after another 200ms)" );
+	console.log( "шаг 3 (после еще 200мс)" );
 } )
 .then( function STEP4(){
-	console.log( "step 4 (next Job)" );
+	console.log( "шаг 4 (следующая задача)" );
 	return delay( 50 );
 } )
 .then( function STEP5(){
-	console.log( "step 5 (after another 50ms)" );
+	console.log( "шаг 5 (после еще 50мс)" );
 } )
 ...
 ```
 
-Calling `delay(200)` creates a promise that will fulfill in 200ms, and then we return that from the first `then(..)` fulfillment callback, which causes the second `then(..)`'s promise to wait on that 200ms promise.
+Вызов `delay(200)` создает промис, который успешно завершиться через 200мс, а затем вы вернем его из первого колбека успешного завершения `then(..)`, который приведет ко второму промису от `then(..)`, чтобы подождать этот 200мс-промис.
 
-**Примечание** As described, technically there are two promises in that interchange: the 200ms-delay promise and the chained promise that the second `then(..)` chains from. But you may find it easier to mentally combine these two promises together, because the Promise mechanism automatically merges their states for you. In that respect, you could think of `return delay(200)` as creating a promise that replaces the earlier-returned chained promise.
+**Примечание** Как было описано, технически есть два промиса в этом обмене: промис с 200мс-задержкой и промис в цепочке, к которому присоединяется второй `then(..)`. Но возможно вам будет проще мысленно объединить эти два промиса вместе, потому что механизм промисов автоматически объединим их состояния для вас. В этом отношении, вы можете думать о `return delay(200)` как о создании промиса, который заменяет ранее возвращенный промис в цепочке.
 
-To be honest, though, sequences of delays with no message passing isn't a terribly useful example of Promise flow control. Let's look at a scenario that's a little more practical.
+Хотя, если честно, последовательности задержек без передачи полезной нагрузки не очень полезный пример управления потоком промисов. Давайте взглянем на сценарий, который выглядит чуточку более практично.
 
-Instead of timers, let's consider making Ajax requests:
+Вместо таймеров, двайте рассмотрим возможность создания Ajax-запросов:
 
 ```js
-// assume an `ajax( {url}, {callback} )` utility
+// предположим есть функция `ajax( {url}, {callback} )`
 
-// Promise-aware ajax
+// Ajax с учетом промисов
 function request(url) {
 	return new Promise( function(resolve,reject){
-		// the `ajax(..)` callback should be our
-		// promise's `resolve(..)` function
+		// колбек `ajax(..)` должен стать нашей
+		// функцией `resolve(..)` промиса
 		ajax( url, resolve );
 	} );
 }
 ```
 
-We first define a `request(..)` utility that constructs a promise to represent the completion of the `ajax(..)` call:
+Сначала мы определяем функцию `request(..)`, которая создает промис для представления завершения вызова `ajax(..)`:
 
 ```js
 request( "http://some.url.1/" )
@@ -908,47 +908,47 @@ request( "http://some.url.1/" )
 } );
 ```
 
-**Примечание** Developers commonly encounter situations in which they want to do Promise-aware async flow control with utilities that are not themselves Promise-enabled (like `ajax(..)` here, which expects a callback). Although the native ES6 `Promise` mechanism doesn't automatically solve this pattern for us, practically all Promise libraries *do*. They usually call this process "lifting" or "promisifying" or some variation thereof. We'll come back to this technique later.
+**Примечание** Разработчики часто сталкиваются с ситуациями, когда они хотят получить асинхронное управление потоком промисов для функций, которые сами по себе не поддерживают промисы (как `ajax(..)` здесь, который ожидает на входе колбек). Хотя нативный механизм ES6 `Promise` не решает автоматически этот шаблон за нас, практически все промис-библиотеки *решают*. Они обычно называют этот процесс  "lifting" (поднятие) или "promisifying" (промисифицирование) или вариации на тему. Мы вернемся к этой технике позже.
 
-Using the Promise-returning `request(..)`, we create the first step in our chain implicitly by calling it with the first URL, and chain off that returned promise with the first `then(..)`.
+Используя `request(..)`, умеющий возвращать промис, мы неявно создаем первый шаг в нашей цепочке вызывая его с первым URL, и объединяем в цепочку этот возвращенный промис с первым `then(..)`.
 
-Once `response1` comes back, we use that value to construct a second URL, and make a second `request(..)` call. That second `request(..)` promise is `return`ed so that the third step in our async flow control waits for that Ajax call to complete. Finally, we print `response2` once it returns.
+Как только возвращается `response1`, мы используем это значение чтобы создать второй URL и выполнить второй вызов `request(..)`. Этот второй промис из `request(..)` - возвращен `return`ом таким образом, что третий шаг в нашем асинхронном контроле потока ждет завершения этого Ajax-вызова. Наконец, мы выводим `response2` как только он возвращен.
 
-The Promise chain we construct is not only a flow control that expresses a multistep async sequence, but it also acts as a message channel to propagate messages from step to step.
+Цепочка промисов, которую мы создали - не только управление потоком, которое отражает многошаговую асинхронную последовательность, но и также действует как канал сообщений для передачи их от шага к шагу.
 
-What if something went wrong in one of the steps of the Promise chain? An error/exception is on a per-Promise basis, which means it's possible to catch such an error at any point in the chain, and that catching acts to sort of "reset" the chain back to normal operation at that point:
+Что если что-то пойдет не так в одном из шагов цепочки промисов? Ошибка/исключение соединены со своим промисом, что означает, что есть возможность поймать такую ошибку в любом месте цепочки и такой захват действует как бы как "сброс" цепочки обратно к нормальному функционированию в этой точке:
 
 ```js
-// step 1:
+// шаг 1:
 request( "http://some.url.1/" )
 
-// step 2:
+// шаг 2:
 .then( function(response1){
-	foo.bar(); // undefined, error!
+	foo.bar(); // undefined, ошибка!
 
-	// never gets here
+	// никогда не достигнет этой точки
 	return request( "http://some.url.2/?v=" + response1 );
 } )
 
-// step 3:
+// шаг 3:
 .then(
 	function fulfilled(response2){
-		// never gets here
+		// никогда не достигнет этой точки
 	},
-	// rejection handler to catch the error
+	// обработчик отказа, чтобы поймать ошибку
 	function rejected(err){
-		console.log( err );	// `TypeError` from `foo.bar()` error
+		console.log( err );	// `TypeError` из-за ошибки на `foo.bar()`
 		return 42;
 	}
 )
 
-// step 4:
+// шаг 4:
 .then( function(msg){
 	console.log( msg );		// 42
 } );
 ```
 
-When the error occurs in step 2, the rejection handler in step 3 catches it. The return value (`42` in this snippet), if any, from that rejection handler fulfills the promise for the next step (4), such that the chain is now back in a fulfillment state.
+Когда происходит ошибка на шаге 2, обработчик отказа в шаге 3 ловит ее. Возвращаемое значение (`42` в этом примере кода), если таковое есть, из обработчика отказа успешно завершает промис для следующего шага (4), так, чтобы цепочка вернулось обратно в состояние успешного завершения.
 
 **Примечание** As we discussed earlier, when returning a promise from a fulfillment handler, it's unwrapped and can delay the next step. That's also true for returning promises from rejection handlers, such that if the `return 42` in step 3 instead returned a promise, that promise could delay step 4. A thrown exception inside either the fulfillment or rejection handler of a `then(..)` call causes the next (chained) promise to be immediately rejected with that exception.
 
