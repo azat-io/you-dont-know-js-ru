@@ -950,133 +950,133 @@ request( "http://some.url.1/" )
 
 Когда происходит ошибка на шаге 2, обработчик отказа в шаге 3 ловит ее. Возвращаемое значение (`42` в этом примере кода), если таковое есть, из обработчика отказа успешно завершает промис для следующего шага (4), так, чтобы цепочка вернулось обратно в состояние успешного завершения.
 
-**Примечание** As we discussed earlier, when returning a promise from a fulfillment handler, it's unwrapped and can delay the next step. That's also true for returning promises from rejection handlers, such that if the `return 42` in step 3 instead returned a promise, that promise could delay step 4. A thrown exception inside either the fulfillment or rejection handler of a `then(..)` call causes the next (chained) promise to be immediately rejected with that exception.
+**Примечание** Как мы уже говорили ранее, при возврате промиса из обработчика успешного завершения, этот промис не обернут и может задержать следующий шаг. Это также верно при возврате промисов из обработчиков отказа, так что если `return 42` на шаге 3 вернет вместо этого промис, этот промис может задержать шаг 4. Выброшенное исключение внутри либо обработчика успешного завершения, либо отказа в вызове `then(..)` приведет к тому, что следующий (в цепочке) промис будет немедленно отвергнут с этим же исключением.
 
-If you call `then(..)` on a promise, and you only pass a fulfillment handler to it, an assumed rejection handler is substituted:
+Если вы вызовете `then(..)` у промиса и передадите только обработчик успешного завершения в него, будет подставлен неявный обработчик отказов:
 
 ```js
 var p = new Promise( function(resolve,reject){
-	reject( "Oops" );
+	reject( "Ой" );
 } );
 
 var p2 = p.then(
 	function fulfilled(){
-		// never gets here
+		// никогда не достигнет этой точки
 	}
-	// assumed rejection handler, if omitted or
-	// any other non-function value passed
+	// неявный обработчик отказа, если явно не указан или
+	// передано любое другое значение - не-функция
 	// function(err) {
 	//     throw err;
 	// }
 );
 ```
 
-As you can see, the assumed rejection handler simply rethrows the error, which ends up forcing `p2` (the chained promise) to reject with the same error reason. In essence, this allows the error to continue propagating along a Promise chain until an explicitly defined rejection handler is encountered.
+Как видите, неявный обработчик отказа просто повторно бросает ту же ошибку, что в итоге вынуждает `p2` (промис в цепочке) завершиться отказом с той же самой причиной в виде ошибки. По сути, это позволяет ошибке продолжить путешествовать по цепочке промисов до тех пор, пока не встретится явно заданный обработчик отказа.
 
-**Примечание** We'll cover more details of error handling with Promises a little later, because there are other nuanced details to be concerned about.
+**Примечание** Мы расскажем подробнее об обработке ошибок в промисах немного позже, потому что есть и другие нюансы, о которым стоит побеспокоиться.
 
-If a proper valid function is not passed as the fulfillment handler parameter to `then(..)`, there's also a default handler substituted:
+Если в `then(..)` не передана валидная функция в качестве параметра обработчика успешного завершения, также будет подставлен неявный обработчик:
 
 ```js
 var p = Promise.resolve( 42 );
 
 p.then(
-	// assumed fulfillment handler, if omitted or
-	// any other non-function value passed
+	// неявный обработчик успешного завершения, если явно не указан или
+	// передано любое другое значение - не-функция
 	// function(v) {
 	//     return v;
 	// }
 	null,
 	function rejected(err){
-		// never gets here
+		// никогда не достигнет этой точки
 	}
 );
 ```
 
-As you can see, the default fulfillment handler simply passes whatever value it receives along to the next step (Promise).
+Как видите, обработчик успешного завершения по умолчанию просто передает полученное значение на следующий шаг (промис).
 
-**Примечание** The `then(null,function(err){ .. })` pattern -- only handling rejections (if any) but letting fulfillments pass through -- has a shortcut in the API: `catch(function(err){ .. })`. We'll cover `catch(..)` more fully in the next section.
+**Примечание** Шаблон `then(null,function(err){ .. })`, обрабатывающий только отказы (если есть), но позволяющий пропускать далее успешные завершения, имеет сокращенную форму в API: `catch(function(err){ .. })`. Мы рассмотрим `catch(..)` более полно в следующем разделе.
 
-Let's review briefly the intrinsic behaviors of Promises that enable chaining flow control:
+Давайте вкратце рассмотрим присущие промисам типы поведения, которые позволяют организовать цепочечное управление потоком:
 
-* A `then(..)` call against one Promise automatically produces a new Promise to return from the call.
-* Inside the fulfillment/rejection handlers, if you return a value or an exception is thrown, the new returned (chainable) Promise is resolved accordingly.
-* If the fulfillment or rejection handler returns a Promise, it is unwrapped, so that whatever its resolution is will become the resolution of the chained Promise returned from the current `then(..)`.
+* Вызов `then(..)` с одним промисом автоматически создает новый промис в качестве возвращаемого значения вызова.
+* Внутри обработчиков успешного завершения/отказа, если вы возвращаете значение или бросается исключение, новый возвращенный промис (который можно присоединить к цепочке) разрешается соответственно с тем же результатом.
+* Если обработчик успешного завершения или отказа возвращают промис, он не обернут, таким образом как бы он не разрешился, это станет разрешением промиса в цепочке, возвращенного из текущего `then(..)`.
 
-While chaining flow control is helpful, it's probably most accurate to think of it as a side benefit of how Promises compose (combine) together, rather than the main intent. As we've discussed in detail several times already, Promises normalize asynchrony and encapsulate time-dependent value state, and *that* is what lets us chain them together in this useful way.
+Хотя цепочечное управление потоком полезное, возможно будет более точным представлять его как побочный эффект того, как промисы объединяются (составляются) вместе, нежели как основной функционал. Как мы подробно обсуждали уже несколько раз, промисы нормализуют асинхронность и скрывают  состояние значения, зависимого от времени, и это *то*, что позволяет нам объединять их в цепочки таким удобным способом.
 
-Certainly, the sequential expressiveness of the chain (this-then-this-then-this...) is a big improvement over the tangled mess of callbacks as we identified in Chapter 2. But there's still a fair amount of boilerplate (`then(..)` and `function(){ .. }`) to wade through. In the next chapter, we'll see a significantly nicer pattern for sequential flow control expressivity, with generators.
+Определенно, последовательная выразительность цепочки (это-then-это-then-это...) - это большое улучшение по сравнению с запутанным клубком колбеков, как мы уже выяснили в главе 2. Но все еще есть изрядный объем шаблона (`then(..)` и `function(){ .. }`), через который нужно продираться. В следующей главе мы увидим значительно более приятный шаблон для выразительной организации последовательного управления потоком с помощью генераторов.
 
-### Terminology: Resolve, Fulfill, and Reject
+### Терминология: Разрешить (Resolve), Успешно завершить (Fulfill) и Отвергнуть (Reject)
 
-There's some slight confusion around the terms "resolve," "fulfill," and "reject" that we need to clear up, before you get too much deeper into learning about Promises. Let's first consider the `Promise(..)` constructor:
+Существует небольшая путаница в терминах "разрешить (resolve)", "успешно завершить (fulfill)" и "отвергнуть (reject)", которую нам необходимо прояснить до того, как вы погрузитесь слишком глубоко в изучении промисов. Давайте сначала рассмотрим конструктор `Promise(..)`:
 
 ```js
 var p = new Promise( function(X,Y){
-	// X() for fulfillment
-	// Y() for rejection
+	// X() для успешного завершения
+	// Y() для отказа
 } );
 ```
 
-As you can see, two callbacks (here labeled `X` and `Y`) are provided. The first is *usually* used to mark the Promise as fulfilled, and the second *always* marks the Promise as rejected. But what's the "usually" about, and what does that imply about accurately naming those parameters?
+Как видите, переданы два колбека (здесь помечены как `X` и `Y`). Первый *обычно* используется для отметки того, что промис успешно завершен, а второй *всегда* помечает промис как отвергнутый. Но о чем это "обычно" и что это означает для точного именования этих параметров?
 
-Ultimately, it's just your user code and the identifier names aren't interpreted by the engine to mean anything, so it doesn't *technically* matter; `foo(..)` and `bar(..)` are equally functional. But the words you use can affect not only how you are thinking about the code, but how other developers on your team will think about it. Thinking wrongly about carefully orchestrated async code is almost surely going to be worse than the spaghetti-callback alternatives.
+В конечном счете, это только ваш код и имена идентификаторов не интерпретируются JS-движком как что-то значимое, так что *технически* это не имеет значения; `foo(..)` и `bar(..)` одинаково функциональны. Но слова, которыми вы пользуетесь, могут затронуть не только как вы думаете о коде, но и как другие разработчики в вашей команде будут думать о нем. Думая неправильно о тщательно организованном асинхронном коде - это почти наверняка будет хуже, чем альтернативы из спагетти-колбеков.
 
-So it actually does kind of matter what you call them.
+Так что на самом деле имеет значение, как вы их называете.
 
-The second parameter is easy to decide. Almost all literature uses `reject(..)` as its name, and because that's exactly (and only!) what it does, that's a very good choice for the name. I'd strongly recommend you always use `reject(..)`.
+Со вторым параметром легко определиться. Почти вся литература использует `reject(..)` (отвергнуть) как его имя и поскольку это в точности (и только это!) то, что он делает, это и есть очень хороший выбор для этого имени. Я бы настоятельно рекомендовал вам всегда использовать `reject(..)`.
 
-But there's a little more ambiguity around the first parameter, which in Promise literature is often labeled `resolve(..)`. That word is obviously related to "resolution," which is what's used across the literature (including this book) to describe setting a final value/state to a Promise. We've already used "resolve the Promise" several times to mean either fulfilling or rejecting the Promise.
+Но вокруг первого параметра чуть больше неясностей, который в литературе о промисах часто обозначается `resolve(..)` (разрешить). Это слово очевидно связано с "resolution" (разрешение), которое и используется во всей литературе (включая эту книгу), чтобы описать установку конечного значения/состояния в промисе. Мы уже использовать "разрешить промис" несколько раз, чтобы обозначить  либо успешное завершение, или отвергнутый промис.
 
-But if this parameter seems to be used to specifically fulfill the Promise, why shouldn't we call it `fulfill(..)` instead of `resolve(..)` to be more accurate? To answer that question, let's also take a look at two of the `Promise` API methods:
+Но если этот параметр, по-видимому, используется для конкретно успешного завершения промиса, почему бы не назвать его `fulfill(..)` (успешно завершить) вместо `resolve(..)` (разрешить), чтобы быть более точным? Чтобы ответить на этот вопрос, давайте также взглянет на два метода `Promise` API:
 
 ```js
 var fulfilledPr = Promise.resolve( 42 );
 
-var rejectedPr = Promise.reject( "Oops" );
+var rejectedPr = Promise.reject( "Ой" );
 ```
 
-`Promise.resolve(..)` creates a Promise that's resolved to the value given to it. In this example, `42` is a normal, non-Promise, non-thenable value, so the fulfilled promise `fulfilledPr` is created for the value `42`. `Promise.reject("Oops")` creates the rejected promise `rejectedPr` for the reason `"Oops"`.
+`Promise.resolve(..)` создает промис, который разрешен со переданным значением. В этом примере, `42` - это обычное, не-промис, не-then-содержащее значение, поэтому успешно завершенный промис `fulfilledPr` создан для значения `42`. `Promise.reject("Ой")` создает отвергнутый промис `rejectedPr` для причины `"Ой"`.
 
-Let's now illustrate why the word "resolve" (such as in `Promise.resolve(..)`) is unambiguous and indeed more accurate, if used explicitly in a context that could result in either fulfillment or rejection:
+Давайте теперь проиллюстрируем, почему слово "resolve" (разрешить) (такое как в `Promise.resolve(..)`) - является однозначным и более точным, если используется явно в контексте, который должен завершиться либо успешно, либо отказом:
 
 ```js
 var rejectedTh = {
 	then: function(resolved,rejected) {
-		rejected( "Oops" );
+		rejected( "Ой" );
 	}
 };
 
 var rejectedPr = Promise.resolve( rejectedTh );
 ```
 
-As we discussed earlier in this chapter, `Promise.resolve(..)` will return a received genuine Promise directly, or unwrap a received thenable. If that thenable unwrapping reveals a rejected state, the Promise returned from `Promise.resolve(..)` is in fact in that same rejected state.
+Как мы уже говорили ранее в этой главе, `Promise.resolve(..)` вернет полученный настоящий промис напрямую или распакует полученное then-содержащее. Если распаковка этого then-содержащего покажет отвергнутое состояние, то промис, который был возвращен из `Promise.resolve(..)` - по факту в том же самом отвергнутом состоянии.
 
-So `Promise.resolve(..)` is a good, accurate name for the API method, because it can actually result in either fulfillment or rejection.
+Таким образом `Promise.resolve(..)` - это хорошее, точное название для метода API, потому что он может завершится либо успешно, либо будет отвергнутым.
 
-The first callback parameter of the `Promise(..)` constructor will unwrap either a thenable (identically to `Promise.resolve(..)`) or a genuine Promise:
+Первый колбек-параметр конструктора `Promise(..)` распакует либо then-содержащее (идентично `Promise.resolve(..)`), либо настоящий промис:
 
 ```js
 var rejectedPr = new Promise( function(resolve,reject){
-	// resolve this promise with a rejected promise
-	resolve( Promise.reject( "Oops" ) );
+	// разрешить этот промис отвергнутым промисом
+	resolve( Promise.reject( "Ой" ) );
 } );
 
 rejectedPr.then(
 	function fulfilled(){
-		// never gets here
+		// никогда не достигнет этой точки
 	},
 	function rejected(err){
-		console.log( err );	// "Oops"
+		console.log( err );	// "Ой"
 	}
 );
 ```
 
-It should be clear now that `resolve(..)` is the appropriate name for the first callback parameter of the `Promise(..)` constructor.
+Теперь должно быть ясно, что `resolve(..)` - подходящее название для для первого колбек-параметра конструктора `Promise(..)`.
 
-**Предупреждение:** The previously mentioned `reject(..)` does **not** do the unwrapping that `resolve(..)` does. If you pass a Promise/thenable value to `reject(..)`, that untouched value will be set as the rejection reason. A subsequent rejection handler would receive the actual Promise/thenable you passed to `reject(..)`, not its underlying immediate value.
+**Предупреждение:** Ранее упомянутый `reject(..)` **не** выполняет распаковку, как это делает `resolve(..)`. Если вы передадите промис или then-содержащее значение в `reject(..)`, то именно это значение нетронутым будет установлено как причина отказа. Последующий обработчик отказа получит настоящий промис/then-содержащее, которое вы передали в `reject(..)`, а не его внутреннее непосредственное значение.
 
-But now let's turn our attention to the callbacks provided to `then(..)`. What should they be called (both in literature and in code)? I would suggest `fulfilled(..)` and `rejected(..)`:
+Но теперь давайте обратим наше внимание на колбеки, переданные в `then(..)`. Как их следует назвывать (и в литературе, и в коде)? Я бы предложил `fulfilled(..)` (успешно завершенный) и `rejected(..)` (отвергнутый):
 
 ```js
 function fulfilled(msg) {
@@ -1093,13 +1093,13 @@ p.then(
 );
 ```
 
-In the case of the first parameter to `then(..)`, it's unambiguously always the fulfillment case, so there's no need for the duality of "resolve" terminology. As a side note, the ES6 specification uses `onFulfilled(..)` and `onRejected(..)` to label these two callbacks, so they are accurate terms.
+В случае первого параметра в `then(..)` - это однозначно всегда случай успешного завершения, поэтому нет нужны для двойственной терминологии "resolve". В качестве примечания, спецификация ES6 использует `onFulfilled(..)` и `onRejected(..)`, чтобы обозначить эти два колбека, поэтому они являются точными терминами.
 
-## Error Handling
+## Обработка ошибок
 
-We've already seen several examples of how Promise rejection -- either intentional through calling `reject(..)` or accidental through JS exceptions -- allows saner error handling in asynchronous programming. Let's circle back though and be explicit about some of the details that we glossed over.
+Мы уже видели несколько примеров того, как отказ промисов, либо намеренно через вызов `reject(..)`, либо случайно через исключение JS, позволяет более разумно обрабатывать ошибки при асинхронной разработке. Давайте вернемся назад и четко сформулируем некоторые детали, которые мы пропустили.
 
-The most natural form of error handling for most developers is the synchronous `try..catch` construct. Unfortunately, it's synchronous-only, so it fails to help in async code patterns:
+Самая естественная форма обработки ошибок для большинства разработчиков - это синхронная конструкция `try..catch`. К сожалению, она есть только в синхронной форме, поэтому она не поможет в шаблонах асинхронного кода:
 
 ```js
 function foo() {
@@ -1110,23 +1110,23 @@ function foo() {
 
 try {
 	foo();
-	// later throws global error from `baz.bar()`
+	// позднее выбросит глобальную ошибку из `baz.bar()`
 }
 catch (err) {
-	// never gets here
+	// никогда не достигнет этой точки
 }
 ```
 
-`try..catch` would certainly be nice to have, but it doesn't work across async operations. That is, unless there's some additional environmental support, which we'll come back to with generators in Chapter 4.
+Было бы неплохо иметь в арсенале `try..catch`, но он не работает для асинхронных операций. То есть, если только нет какой-то дополнительной поддержки среды, к к торой мы вернемся вместе с генераторами в главе 4.
 
-In callbacks, some standards have emerged for patterned error handling, most notably the "error-first callback" style:
+В колбеках, появились некоторые стандарты для шаблонной обработки ошибок, особенно стиль "колбек ошибки идет первым":
 
 ```js
 function foo(cb) {
 	setTimeout( function(){
 		try {
 			var x = baz.bar();
-			cb( null, x ); // success!
+			cb( null, x ); // успех!
 		}
 		catch (err) {
 			cb( err );
@@ -1136,7 +1136,7 @@ function foo(cb) {
 
 foo( function(err,val){
 	if (err) {
-		console.error( err ); // bummer :(
+		console.error( err ); // облом :(
 	}
 	else {
 		console.log( val );
@@ -1153,14 +1153,14 @@ This sort of error handling is technically *async capable*, but it doesn't compo
 So we come back to error handling in Promises, with the rejection handler passed to `then(..)`. Promises don't use the popular "error-first callback" design style, but instead use "split callbacks" style; there's one callback for fulfillment and one for rejection:
 
 ```js
-var p = Promise.reject( "Oops" );
+var p = Promise.reject( "Ой" );
 
 p.then(
 	function fulfilled(){
-		// never gets here
+		// никогда не достигнет этой точки
 	},
 	function rejected(err){
-		console.log( err ); // "Oops"
+		console.log( err ); // "Ой"
 	}
 );
 ```
@@ -1179,7 +1179,7 @@ p.then(
 		console.log( msg.toLowerCase() );
 	},
 	function rejected(err){
-		// never gets here
+		// никогда не достигнет этой точки
 	}
 );
 ```
@@ -1273,7 +1273,7 @@ If a Promise is rejected, it defaults to noisily reporting that fact to the deve
 Consider:
 
 ```js
-var p = Promise.reject( "Oops" ).defer();
+var p = Promise.reject( "Ой" ).defer();
 
 // `foo(..)` is Promise-aware
 foo( 42 )
@@ -1544,7 +1544,7 @@ Let's illustrate using `map(..)` with a list of Promises (instead of simple valu
 ```js
 var p1 = Promise.resolve( 21 );
 var p2 = Promise.resolve( 42 );
-var p3 = Promise.reject( "Oops" );
+var p3 = Promise.reject( "Ой" );
 
 // double values in list even if they're in
 // Promises
@@ -1562,7 +1562,7 @@ Promise.map( [p1,p2,p3], function(pr,done){
 	);
 } )
 .then( function(vals){
-	console.log( vals );	// [42,84,"Oops"]
+	console.log( vals );	// [42,84,"Ой"]
 } );
 ```
 
@@ -1593,10 +1593,10 @@ A shortcut for creating an already-rejected Promise is `Promise.reject(..)`, so 
 
 ```js
 var p1 = new Promise( function(resolve,reject){
-	reject( "Oops" );
+	reject( "Ой" );
 } );
 
-var p2 = Promise.reject( "Oops" );
+var p2 = Promise.reject( "Ой" );
 ```
 
 `Promise.resolve(..)` is usually used to create an already-fulfilled Promise in a similar way to `Promise.reject(..)`. However, `Promise.resolve(..)` also unwraps thenable values (as discussed several times already). In that case, the Promise returned adopts the final resolution of the thenable you passed in, which could either be fulfillment or rejection:
@@ -1607,7 +1607,7 @@ var fulfilledTh = {
 };
 var rejectedTh = {
 	then: function(cb,errCb) {
-		errCb( "Oops" );
+		errCb( "Ой" );
 	}
 };
 
@@ -1649,7 +1649,7 @@ For `Promise.race([ .. ])`, only the first promise to resolve (fulfillment or re
 ```js
 var p1 = Promise.resolve( 42 );
 var p2 = Promise.resolve( "Hello World" );
-var p3 = Promise.reject( "Oops" );
+var p3 = Promise.reject( "Ой" );
 
 Promise.race( [p1,p2,p3] )
 .then( function(msg){
@@ -1658,7 +1658,7 @@ Promise.race( [p1,p2,p3] )
 
 Promise.all( [p1,p2,p3] )
 .catch( function(err){
-	console.error( err );	// "Oops"
+	console.error( err );	// "Ой"
 } );
 
 Promise.all( [p1,p2] )
