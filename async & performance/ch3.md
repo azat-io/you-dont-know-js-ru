@@ -1144,13 +1144,13 @@ foo( function(err,val){
 } );
 ```
 
-**Примечание** The `try..catch` here works only from the perspective that the `baz.bar()` call will either succeed or fail immediately, synchronously. If `baz.bar()` was itself its own async completing function, any async errors inside it would not be catchable.
+**Примечание** `try..catch` тут работает только с той точки зрения, что вызов `baz.bar()` немедленно  завершится успешно или со сбоем и при этом синхронно. Если `baz.bar()` сам являлся своей же асинхронной функцией продолжения, то любые асинхронные ошибки внутри него нельзя будет поймать.
 
-The callback we pass to `foo(..)` expects to receive a signal of an error by the reserved first parameter `err`. If present, error is assumed. If not, success is assumed.
+Колбек, который мы передаем в `foo(..)`, ожидает получить сигнал об ошибке с помощью зарезервированного первого параметра `err`. Если присутствует, предполагается ошибка. Если нет, то предполагается успешное завершение.
 
-This sort of error handling is technically *async capable*, but it doesn't compose well at all. Multiple levels of error-first callbacks woven together with these ubiquitous `if` statement checks inevitably will lead you to the perils of callback hell (see Chapter 2).
+Такой тип обработки ошибок технически *поддерживает асинхронность*, но он совсем не способен к композиции. Множественные уровни колбеков в стиле "ошибка первая" сплетенные вместе с этими вездесущими операторами проверок `if` неизбежно приведет вас к опасностям, связанным с адом колбеков (см. главу 2).
 
-So we come back to error handling in Promises, with the rejection handler passed to `then(..)`. Promises don't use the popular "error-first callback" design style, but instead use "split callbacks" style; there's one callback for fulfillment and one for rejection:
+Таким образом вы возвращаемся к обработке ошибок с помощью промисов, с передачей обработчика отказов в `then(..)`. Промисы не используют популярный стиль дизайна "колбек с первым параметром-ошибкой", а вместо этого используют стиль "раздельных колбеков", есть один колбек для успешного завершения и другой - для отказа:
 
 ```js
 var p = Promise.reject( "Ой" );
@@ -1165,17 +1165,17 @@ p.then(
 );
 ```
 
-While this pattern of error handling makes fine sense on the surface, the nuances of Promise error handling are often a fair bit more difficult to fully grasp.
+Несмотря на то, что этот шаблон обработки ошибок, на первый взгляд, имеет смысл, нюансы обработки ошибок в промисах зачастую гораздо сложнее полностью осознать.
 
-Consider:
+Представьте:
 
 ```js
 var p = Promise.resolve( 42 );
 
 p.then(
 	function fulfilled(msg){
-		// numbers don't have string functions,
-		// so will throw an error
+		// числа не содержат функцией как у строк,
+		// поэтому тут возникнет ошибка
 		console.log( msg.toLowerCase() );
 	},
 	function rejected(err){
@@ -1184,121 +1184,121 @@ p.then(
 );
 ```
 
-If the `msg.toLowerCase()` legitimately throws an error (it does!), why doesn't our error handler get notified? As we explained earlier, it's because *that* error handler is for the `p` promise, which has already been fulfilled with value `42`. The `p` promise is immutable, so the only promise that can be notified of the error is the one returned from `p.then(..)`, which in this case we don't capture.
+Если `msg.toLowerCase()` законно выдает ошибку (и это действительно так!), почему же наш обработчик ошибок не вызван? Как мы объясняли ранее, так происходит потому, что *этот* обработчик ошибок - для промиса `p`, который уже был разрешен успешно со значением `42`. Промис `p` - неизменяемый, поэтому единственный промис, который может получить ошибку, тот, что возвращается из `p.then(..)`, который мы в этом случае никак не ловим.
 
-That should paint a clear picture of why error handling with Promises is error-prone (pun intended). It's far too easy to have errors swallowed, as this is very rarely what you'd intend.
+Это должно дать четкое представление о том, почему обработка ошибок в промисах подвержена ошибкам (каламбур). Слишком легко допустить, чтобы ошибки были "проглочены", так как это очень редко то, что вы задумывали изначально.
 
-**Предупреждение:** If you use the Promise API in an invalid way and an error occurs that prevents proper Promise construction, the result will be an immediately thrown exception, **not a rejected Promise**. Some examples of incorrect usage that fail Promise construction: `new Promise(null)`, `Promise.all()`, `Promise.race(42)`, and so on. You can't get a rejected Promise if you don't use the Promise API validly enough to actually construct a Promise in the first place!
+**Предупреждение:** Если вы используете API промисов неправильным путем и происходит ошибка, то это препятсвует правильному созданию промиса, в результате будет полученное сращу же исключение, но **не отвергнутый промис**. Некоторые примеры некорректного использования, который ломают создание промиса: `new Promise(null)`, `Promise.all()`, `Promise.race(42)`, и т.д.. Вы не сможете получить отвергнутый промис, если вы не используете API промисов достаточно корректно, чтобы на само деле создать в первую очередь сам промис!
 
-### Pit of Despair
+### Яма отчаяния
 
-Jeff Atwood noted years ago: programming languages are often set up in such a way that by default, developers fall into the "pit of despair" (http://blog.codinghorror.com/falling-into-the-pit-of-success/) -- where accidents are punished -- and that you have to try harder to get it right. He implored us to instead create a "pit of success," where by default you fall into expected (successful) action, and thus would have to try hard to fail.
+Джефф Этвуд заметил несколько лет назад: языки программирования часто настроены настоены по умолчанию таким образом, что разработчки попадают в "яму отчаяния" (http://blog.codinghorror.com/falling-into-the-pit-of-success/), где за инциденты наказывают и что нужно больше стараться, чтобы все получилось. Он призвал нас вместо этого создавать "яму успеха," когда по умолчанию вы попадаете в ожидаемое (успешное) действие, и, следовательно, должны сильно постараться, чтобы потерпеть неудачу.
 
-Promise error handling is unquestionably "pit of despair" design. By default, it assumes that you want any error to be swallowed by the Promise state, and if you forget to observe that state, the error silently languishes/dies in obscurity -- usually despair.
+Обработка ошибок в промисах - несомненно, является дизайном "ямы отчаяния". По умолчанию, он предполагает, что вы хотите, чтобы любые ошибки были поглощены состоянием промиса и если вы забудете исследовать этот состояние, ошибка тихо томится/умирает в безвестности, обычно отчаяния.
 
-To avoid losing an error to the silence of a forgotten/discarded Promise, some developers have claimed that a "best practice" for Promise chains is to always end your chain with a final `catch(..)`, like:
+Чтобы избежать ошибки из-за молчания забытого/заброшенного промиса, некоторые разработчики заявили, что "лучшей практикой" для цепочек промисов является всегда завершать цепочку заключительным `catch(..)`, например:
 
 ```js
 var p = Promise.resolve( 42 );
 
 p.then(
 	function fulfilled(msg){
-		// numbers don't have string functions,
-		// so will throw an error
+		// числа не содержат функцией как у строк,
+		// поэтому тут возникнет ошибка
 		console.log( msg.toLowerCase() );
 	}
 )
 .catch( handleErrors );
 ```
 
-Because we didn't pass a rejection handler to the `then(..)`, the default handler was substituted, which simply propagates the error to the next promise in the chain. As such, both errors that come into `p`, and errors that come *after* `p` in its resolution (like the `msg.toLowerCase()` one) will filter down to the final `handleErrors(..)`.
+Поскольку мы не передали обработчик отказов в `then(..)`, был подставлен обработчик по умолчанию, который просто передает ошибку следующему промису в цепочке. Таким образом, обе ошибки, идущие в `p`, и ошибки, которые появляются *после* `p` в его разрешении (как в `msg.toLowerCase()`) будут отфильтрованы до конечного `handleErrors(..)`.
 
-Problem solved, right? Not so fast!
+Проблема решена, не так ли? Не так быстро!
 
-What happens if `handleErrors(..)` itself also has an error in it? Who catches that? There's still yet another unattended promise: the one `catch(..)` returns, which we don't capture and don't register a rejection handler for.
+Что случится, если `handleErrors(..)` сам содержит ошибку? Кто отловит ее? Остался еще один невыполненный промис: тот, который возвращает `catch(..)`, который мы не ловим и не регистрируем обработчик отказа для него.
 
-You can't just stick another `catch(..)` on the end of that chain, because it too could fail. The last step in any Promise chain, whatever it is, always has the possibility, even decreasingly so, of dangling with an uncaught error stuck inside an unobserved Promise.
+Вы не можете просто приклеить другой `catch(..)` в конец этой цепочки, потому что он тоже может завершиться ошибкой. Последний шаг в любой цепочек промисов, какой бы он ни был, всегда будет содержать возможность, хоть и в меньшей степени, зависнуть с непойманной ошибкой, застрявшей внутри  неотслеживаемого промиса.
 
-Sound like an impossible conundrum yet?
+Все еще звучит как невыполнимая головоломка?
 
-### Uncaught Handling
+### Обработка непойманного
 
-It's not exactly an easy problem to solve completely. There are other ways to approach it which many would say are *better*.
+Эту проблему нелегко решить полностью. Есть и другие способы достичь этого, которые, по мнению многих, являются *лучшими*.
 
-Some Promise libraries have added methods for registering something like a "global unhandled rejection" handler, which would be called instead of a globally thrown error. But their solution for how to identify an error as "uncaught" is to have an arbitrary-length timer, say 3 seconds, running from time of rejection. If a Promise is rejected but no error handler is registered before the timer fires, then it's assumed that you won't ever be registering a handler, so it's "uncaught."
+Некоторые промис-библиотеки добавили методы для регистрации чего-то подобного "глобальному обработчику необработанных отказов", который бы вызывался вместо глобального выброса ошибки. Но их решение о том, как определить ошибку как "непойманную" - это иметь таймер произвольной длительности, скажем 3 секунды, запускаемый от момента отказа. Если промис отвергнут, но не было зарегистрировано ни одного обработчика ошибок до того, как будет запушен таймер, то предполагается, что вы будто и не регистрировали ни одного обработчика, поэтому ошибка "не поймана".
 
-In practice, this has worked well for many libraries, as most usage patterns don't typically call for significant delay between Promise rejection and observation of that rejection. But this pattern is troublesome because 3 seconds is so arbitrary (even if empirical), and also because there are indeed some cases where you want a Promise to hold on to its rejectedness for some indefinite period of time, and you don't really want to have your "uncaught" handler called for all those false positives (not-yet-handled "uncaught errors").
+На практике, это хорошо работает для многих библиотек, поскольку большинство использованных подходов  как правило не требуют значительной задержки между отказом промиса и началом наблюдения за ним. Но этот шаблон вызывает проблемы, потому что 3 секунды это очень произвольное время (пусть даже эмпирическое), а также потому, что действительно есть случаи когда вы хотите придержать отказ промиса на некоторый неопределенный период времени и вы на самом деле не хотите, чтобы ваш обработчик "непойманного" вызывался для всех этих ложных срабатываний (еще не обработанные "непойманные ошибки").
 
-Another more common suggestion is that Promises should have a `done(..)` added to them, which essentially marks the Promise chain as "done." `done(..)` doesn't create and return a Promise, so the callbacks passed to `done(..)` are obviously not wired up to report problems to a chained Promise that doesn't exist.
+Другое более распространенное предложение заключается в том, что к промисам нужно добавить `done(..)`, что, по сути, отмечает цепочку промисов как "выполненную" (done). `done(..)` не создает и не возвращает промис, таким образом колбеки, переданные в `done(..)`, очевидно не подключены для извещения о проблемах в промис в цепочке, который не существует.
 
-So what happens instead? It's treated as you might usually expect in uncaught error conditions: any exception inside a `done(..)` rejection handler would be thrown as a global uncaught error (in the developer console, basically):
+Итак, что происходит вместо этого? Она обрабатывается так, как вы обычно ожидаете в условиях не пойманной ошибки: любое исключение внутри обработчика отказа `done(..)` будет выброшено как глобальная непойманная ошибка (в консоль разработчика, по сути):
 
 ```js
 var p = Promise.resolve( 42 );
 
 p.then(
 	function fulfilled(msg){
-		// numbers don't have string functions,
-		// so will throw an error
+		// у чисел нет функций как у строк,
+		// поэтому будет выброшена ошибка
 		console.log( msg.toLowerCase() );
 	}
 )
 .done( null, handleErrors );
 
-// if `handleErrors(..)` caused its own exception, it would
-// be thrown globally here
+// если `handleErrors(..)` породила свое собственное исключение, оно
+// будет выброшено тут как глобальное
 ```
 
-This might sound more attractive than the never-ending chain or the arbitrary timeouts. But the biggest problem is that it's not part of the ES6 standard, so no matter how good it sounds, at best it's a lot longer way off from being a reliable and ubiquitous solution.
+Это может показаться более привлекательным, чем бесконечная цепочка или произвольные тайм-ауты. Но самая большая проблема заключается в том, что это не является частью стандарта ES6, поэтому, как бы хорошо это ни звучало, в лучшем случае это еще долго не будет надежным и повсеместным решением.
 
-Are we just stuck, then? Not entirely.
+Неужели мы просто застряли? Не совсем.
 
-Browsers have a unique capability that our code does not have: they can track and know for sure when any object gets thrown away and garbage collected. So, browsers can track Promise objects, and whenever they get garbage collected, if they have a rejection in them, the browser knows for sure this was a legitimate "uncaught error," and can thus confidently know it should report it to the developer console.
+Браузеры имеют уникальную возможность, которой нет у нашего кода: они могут отслеживать и точно знать, когда любой объект становится ненужным и собирается сборщиком мусора. Таким образом, браузеры могут отслеживать объекты промисов и всякий раз, когда их собирает сборщик мусора, если они содержат отказ, браузер точно знает, что это была допустимая "непойманная ошибка", и поэтому может с уверенностью утверждать, что должен сообщить о ней в консоль разработчика.
 
-**Примечание** At the time of this writing, both Chrome and Firefox have early attempts at that sort of "uncaught rejection" capability, though support is incomplete at best.
+**Примечание** На момент написания этой статьи, в обоих Chrome и Firefox есть ранние ранние попытки такого рода возможности "непойманный отказ", хотя поддержка в лучшем случае неполная.
 
-However, if a Promise doesn't get garbage collected -- it's exceedingly easy for that to accidentally happen through lots of different coding patterns -- the browser's garbage collection sniffing won't help you know and diagnose that you have a silently rejected Promise laying around.
+Однако, если промис не был собран сборщиком мусора, что очень легко сделать случайно с помощью множества различных шаблонов разработки, осведомленность сборщика мусора браузера не поможет вам  узнать и диагностировать, что у вас есть молча отвергнутый промис, находящийся рядом.
 
-Is there any other alternative? Yes.
+Есть ли другие альтернативы? Да.
 
-### Pit of Success
+### Яма успеха
 
-The following is just theoretical, how Promises *could* be someday changed to behave. I believe it would be far superior to what we currently have. And I think this change would be possible even post-ES6 because I don't think it would break web compatibility with ES6 Promises. Moreover, it can be polyfilled/prollyfilled in, if you're careful. Let's take a look:
+Нижеследующее является лишь теоретическим, как промисы *могли бы* однажды изменить свое поведение. Я верю, что Я уверен, что это будет намного лучше, чем то, что мы имеем сейчас. И я думаю, что это изменение будет возможно даже в пост-ES6, потому что я не думаю, что это нарушит совместимость с ES6 промисами. Более того, это можно превратить в полифил, если вы будете осторожны. Давайте взглянем:
 
-* Promises could default to reporting (to the developer console) any rejection, on the next Job or event loop tick, if at that exact moment no error handler has been registered for the Promise.
-* For the cases where you want a rejected Promise to hold onto its rejected state for an indefinite amount of time before observing, you could call `defer()`, which suppresses automatic error reporting on that Promise.
+* Промисы могут по умолчанию сообщать (в консоль разработчика) о любом отказе в следующей задаче или тике цикла событий, если в этот момент для промиса не был зарегистрирован обработчик ошибок.
+* Для случаев, когда вы хотите удерживать отвергнутый промис в таком состоянии на бесконечное количество времени до начала наблюдения за ним, вы могли бы вызвать `defer()`, который подавляет автоматическое уведомление об ошибках в этом промисе.
 
-If a Promise is rejected, it defaults to noisily reporting that fact to the developer console (instead of defaulting to silence). You can opt out of that reporting either implicitly (by registering an error handler before rejection), or explicitly (with `defer()`). In either case, *you* control the false positives.
+Если промис отвергнут, по умолчанию он шумно сообщает об этом факте в консоль разработчика (вместо тишины по умолчанию). Вы можете отказаться от такой информации, либо неявно (зарегистрировав обработчик ошибок до отказа), или явно (с помощью `defer()`). В любом случае, *вы* управляете ложными срабатываниями.
 
-Consider:
+Рассмотрим:
 
 ```js
 var p = Promise.reject( "Ой" ).defer();
 
-// `foo(..)` is Promise-aware
+// `foo(..)` промисоподобная
 foo( 42 )
 .then(
 	function fulfilled(){
 		return p;
 	},
 	function rejected(err){
-		// handle `foo(..)` error
+		// обработка ошибок в `foo(..)`
 	}
 );
 ...
 ```
 
-When we create `p`, we know we're going to wait a while to use/observe its rejection, so we call `defer()` -- thus no global reporting. `defer()` simply returns the same promise, for chaining purposes.
+Когда мы создаем `p`, мы знаем, что мы собираемся подождать некоторое время, чтобы использовать/наблюдать за его отказом, поэтому мы вызываем `defer()` - таким образом, отсутствует глобальная отчетность. `defer()` просто возвращает тот же промис для возможности выстраивания цепочки.
 
-The promise returned from `foo(..)` gets an error handler attached *right away*, so it's implicitly opted out and no global reporting for it occurs either.
+Промис, возвращенный из `foo(..)`, получает обработчик ошибок, привязанный *сразу же*, поэтому она выходит "из игры" и никакой глобальной отчетности по этому поводу также не ведется.
 
-But the promise returned from the `then(..)` call has no `defer()` or error handler attached, so if it rejects (from inside either resolution handler), then *it* will be reported to the developer console as an uncaught error.
+А вот у промиса, возвращенного из вызова `then(..)`, нет ни `defer()`, ни присоединенного обработчика ошибок, поэтому если он завершается отказом (изнутри любого обработчика разрешения), то *он* будет сообщен в консоль разработчика как не пойманная ошибка.
 
-**This design is a pit of success.** By default, all errors are either handled or reported -- what almost all developers in almost all cases would expect. You either have to register a handler or you have to intentionally opt out, and indicate you intend to defer error handling until *later*; you're opting for the extra responsibility in just that specific case.
+**"Этот подход" - яма успеха.** По умолчанию, все ошибки либо обрабатываются, либо о них получаются уведомления, то, что почти все разработчики в почти всех случаях ожидали бы. Вы либо должны зарегистрировать обработчик, либо вы должны намеренно отказаться и указать, что вы намерены отложить обработку ошибок на *попозже*, вы берете дополнительную ответственность только в этом конкретном случае.
 
-The only real danger in this approach is if you `defer()` a Promise but then fail to actually ever observe/handle its rejection.
+Единственная реальная опасность в этом подходе - если вы отложите (`defer()`) промис, а затем не сможете на деле вообще наблюдать/обработать его отказ.
 
-But you had to intentionally call `defer()` to opt into that pit of despair -- the default was the pit of success -- so there's not much else we could do to save you from your own mistakes.
+Но вы должны были намеренно вызвать `defer()`, чтобы опуститься в эту яму отчаяния, изначально была яма успеха, поэтому мы мало что можем сделать, чтобы спасти вас от ваших собственных ошибок.
 
 I think there's still hope for Promise error handling (post-ES6). I hope the powers that be will rethink the situation and consider this alternative. In the meantime, you can implement this yourself (a challenging exercise for the reader!), or use a *smarter* Promise library that does so for you!
 
