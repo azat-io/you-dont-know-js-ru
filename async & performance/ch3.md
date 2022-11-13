@@ -149,7 +149,7 @@ add( fetchX(), fetchY() )
 
 В этом кусочке кода есть два слоя промисов.
 
-`fetchX()` и `fetchY()` вызываются напрямую и возвращаемые или значения (промисы!) передаются в `add(..)`. Внутренние значения,  которые представляют эти промисы, могут быть готовы *сейчас* или *позже*, но каждый промис нормализует свое поведение, чтобы вести себя одинаково вне зависимости ни о чего. Мы рассуждаем о значениях `X` и `Y` во время-независимой манере. Они -  *будущие значения*.
+`fetchX()` и `fetchY()` вызываются напрямую и возвращаемые или значения (промисы!) передаются в `add(..)`. Внутренние значения,  которые представляют эти промисы, могут быть готовы *сейчас* или *позже*, но каждый промис приводит свое поведение к тому, чтобы вести себя одинаково вне зависимости ни о чего. Мы рассуждаем о значениях `X` и `Y` во время-независимой манере. Они -  *будущие значения*.
 
 Второй уровень -  это промис, который создается в `add(..)` (через `Promise.all([ .. ])`) и возвращается, и который мы ожидаем вызвав `then(..)`. Когда операция `add(..)` завершена, наше *будущее значение* `sum` готово и можем вывести его на экран. Внутри `add(..)` мы скрываем всю логику ожидания *будущих значений* `X` и `Y`.
 
@@ -1300,37 +1300,37 @@ foo( 42 )
 
 Но вы должны были намеренно вызвать `defer()`, чтобы опуститься в эту яму отчаяния, изначально была яма успеха, поэтому мы мало что можем сделать, чтобы спасти вас от ваших собственных ошибок.
 
-I think there's still hope for Promise error handling (post-ES6). I hope the powers that be will rethink the situation and consider this alternative. In the meantime, you can implement this yourself (a challenging exercise for the reader!), or use a *smarter* Promise library that does so for you!
+Я думаю, что все еще есть надежда на обработку ошибок промисов (пост-ES6). Я надеюсь, что власть предержащие переосмыслят ситуацию и рассмотрят эту альтернативу. Тем временем, вы можете реализовать это сами (непростое упражнение для читателя!) или использовать *более умную* библиотеку промисов, которая сделает это за вас!
 
-**Примечание** This exact model for error handling/reporting is implemented in my *asynquence* Promise abstraction library, which will be discussed in Appendix A of this book.
+**Примечание** Эта конкретная модель обработки ошибок/сообщений реализована в моей библиотеке абстракций над промисами *asynquence*, которую обсудим в приложении A этой книги.
 
-## Promise Patterns
+## Шаблоны промисов
 
-We've already implicitly seen the sequence pattern with Promise chains (this-then-this-then-that flow control) but there are lots of variations on asynchronous patterns that we can build as abstractions on top of Promises. These patterns serve to simplify the expression of async flow control -- which helps make our code more reason-able and more maintainable -- even in the most complex parts of our programs.
+Мы уже увидено неявно шаблон последовательности в цепочках промисов (управление потоком это-затем-это-затем-то), но существует множество вариаций асинхронных шаблонов, которые мы можем построить как абстракции над промисами. Этим шаблоны служат для упрощения выражения асинхронного управления потоком, который помогает сделать наш код более более разумным и более поддерживаемым, даже в самых сложных частях наших программ.
 
-Two such patterns are codified directly into the native ES6 `Promise` implementation, so we get them for free, to use as building blocks for other patterns.
+Два таких шаблона кодируются непосредственно в нативную реализацию ES6 `Promise`, так что мы получаем их бесплатно, чтобы использовать как строительные блоки для других шаблонов.
 
 ### Promise.all([ .. ])
 
-In an async sequence (Promise chain), only one async task is being coordinated at any given moment -- step 2 strictly follows step 1, and step 3 strictly follows step 2. But what about doing two or more steps concurrently (aka "in parallel")?
+В асинхронной последовательности (цепочке промисов) только одна асинхронная задача координируется в любой момент времени, шаг 2 строго следует за шагом 1, а шаг 3 строго следует за шагом 2. А как насчет выполнения двух и более шагов одновременно (т.е. "параллельно")?
 
-In classic programming terminology, a "gate" is a mechanism that waits on two or more parallel/concurrent tasks to complete before continuing. It doesn't matter what order they finish in, just that all of them have to complete for the gate to open and let the flow control through.
+В классической терминологии программирования, "шлюз" - это механизм, который ожидает завершения двух или более параллельных/ одновременных задач, прежде чем продолжить работу. Не важно в каком порядке они завершатся, а важно только, что все они должны завершиться чтобы открыть шлюз и позволить потоку управлению потоком идти дальше.
 
-In the Promise API, we call this pattern `all([ .. ])`.
+В API промисов, мы называем этот щаблон `all([ .. ])`.
 
-Say you wanted to make two Ajax requests at the same time, and wait for both to finish, regardless of their order, before making a third Ajax request. Consider:
+Скажем вы хотели сделать два Ajax-запроса в одно и то же время и дождаться окончания обоих, независимо от их порядка, до выполнения третьего Ajax-запроса. Рассмотрим:
 
 ```js
-// `request(..)` is a Promise-aware Ajax utility,
-// like we defined earlier in the chapter
+// `request(..)` - промис-совместимая Ajax-функция,
+// примерно как та, что мы определяли ранее в главе
 
 var p1 = request( "http://some.url.1/" );
 var p2 = request( "http://some.url.2/" );
 
 Promise.all( [p1,p2] )
 .then( function(msgs){
-	// both `p1` and `p2` fulfill and pass in
-	// their messages here
+	// оба `p1` and `p2` завершатся успешно и передадут
+	// свои сообщения сюда
 	return request(
 		"http://some.url.3/?v=" + msgs.join(",")
 	);
@@ -1340,40 +1340,40 @@ Promise.all( [p1,p2] )
 } );
 ```
 
-`Promise.all([ .. ])` expects a single argument, an `array`, consisting generally of Promise instances. The promise returned from the `Promise.all([ .. ])` call will receive a fulfillment message (`msgs` in this snippet) that is an `array` of all the fulfillment messages from the passed in promises, in the same order as specified (regardless of fulfillment order).
+`Promise.all([ .. ])` ожидает один аргумент, `массив`, состоящий состоящий в целом из экземпляров промисов. Промис, возвращенный из вызова `Promise.all([ .. ])`, получит сообщение об успешном завершении (`msgs` в этом примере кода), которое является `массивом` всех сообщений об успешном завершении от переданных промисов, в том же порядке как они были переданы (независимо от порядка завершения).
 
-**Примечание** Technically, the `array` of values passed into `Promise.all([ .. ])` can include Promises, thenables, or even immediate values. Each value in the list is essentially passed through `Promise.resolve(..)` to make sure it's a genuine Promise to be waited on, so an immediate value will just be normalized into a Promise for that value. If the `array` is empty, the main Promise is immediately fulfilled.
+**Примечание** Технически, `массив` значений, переданный в `Promise.all([ .. ])`, может содержать промисы, then-содержащие или даже непосредственные значения. Каждое значение в списке по сути, проходит через `Promise.resolve(..)`, чтобы убедиться, что ожидается настоящий промис, таким образом непосредственное значение будет просто приведено в промис для этого значения. Если `массив` пустой, основной промис немедленно завершается успешно.
 
-The main promise returned from `Promise.all([ .. ])` will only be fulfilled if and when all its constituent promises are fulfilled. If any one of those promises instead is rejected, the main `Promise.all([ .. ])` promise is immediately rejected, discarding all results from any other promises.
+Основной промис, возвращенный из `Promise.all([ .. ])`, будет успешно завершен только тогда и если  все входящие в него промисы будут успешно завершены. Если любой из этих промисов вместо этого отвергается, основной промис `Promise.all([ .. ])` сразу же отвергается, отбрасывая все результаты любых других промисов.
 
-Remember to always attach a rejection/error handler to every promise, even and especially the one that comes back from `Promise.all([ .. ])`.
+Помните о том, чтобы всегда присоединять обработчик отказа/ошибки к каждому промису, даже и особенно к тому, который возвращается из `Promise.all([ .. ])`.
 
 ### Promise.race([ .. ])
 
-While `Promise.all([ .. ])` coordinates multiple Promises concurrently and assumes all are needed for fulfillment, sometimes you only want to respond to the "first Promise to cross the finish line," letting the other Promises fall away.
+В то время как `Promise.all([ .. ])` координирует несколько обещаний одновременно и предполагает,  что все они нужны для успешного завершения, иногда вы хотите всего лишь получить ответ от "первого же промиса, пересекшего финишную линию", позволяя других промисам отпасть за ненадобностью.
 
-This pattern is classically called a "latch," but in Promises it's called a "race."
+Этот шаблон классически называют "задвижка" (latch), но в промисах он называется "гонка" (race).
 
-**Предупреждение:** While the metaphor of "only the first across the finish line wins" fits the behavior well, unfortunately "race" is kind of a loaded term, because "race conditions" are generally taken as bugs in programs (see Chapter 1). Don't confuse `Promise.race([ .. ])` with "race condition."
+**Предупреждение:** В то время как метафора "только первый, пересёкший финишную черту, выигрывает" хорошо соответствует поведению, к сожалению "гонка" - это своего рода нагруженный термин, потому что "состояния гонки" - обычно воспринимаются как ошибки в программах (см. главу 1). Не путайте `Promise.race([ .. ])` с "состоянием гонки" (race condition).
 
-`Promise.race([ .. ])` also expects a single `array` argument, containing one or more Promises, thenables, or immediate values. It doesn't make much practical sense to have a race with immediate values, because the first one listed will obviously win -- like a foot race where one runner starts at the finish line!
+`Promise.race([ .. ])` также ожидает единственный аргумент в виде `массива`, содержащий один или более промисов, then-содержащих или непосредственных значений. Не имеет большого практического смысла иметь гонку с непосредственными значениями, потому что первое перечисленное значение очевидно выиграет, как в беге, где один бегун стартует с финиша!
 
-Similar to `Promise.all([ .. ])`, `Promise.race([ .. ])` will fulfill if and when any Promise resolution is a fulfillment, and it will reject if and when any Promise resolution is a rejection.
+Аналогично `Promise.all([ .. ])`, `Promise.race([ .. ])` завершится успешно если и тогда, когда любое из разрешений промисов - успешное, и завершится отказом если и тогда, когда любое из разрешений промисов - это отказ.
 
-**Предупреждение:** A "race" requires at least one "runner," so if you pass an empty `array`, instead of immediately resolving, the main `race([..])` Promise will never resolve. This is a footgun! ES6 should have specified that it either fulfills, rejects, or just throws some sort of synchronous error. Unfortunately, because of precedence in Promise libraries predating ES6 `Promise`, they had to leave this gotcha in there, so be careful never to send in an empty `array`.
+**Предупреждение:** "гонка" требует по меньшей мере одного "бегуна", поэтому если вы передадите пустой `массив`, вместо немедленно разрешения, основной промис `race([..])` никогда не будет разрешен. Это программные "грабли"! ES6 должен был указать, что он либо выполняет, либо отклоняет, либо просто выбрасывает какую-то синхронную ошибку. К сожалению, из-за прецедента в библиотеках промисов, предшествующих ES6 `Promise`, им пришлось оставить эту недоработку, поэтому будьте осторожны и никогда не отправляйте пустой `массив`.
 
-Let's revisit our previous concurrent Ajax example, but in the context of a race between `p1` and `p2`:
+Давайте вернемся к нашему предыдущему примеру с параллельным Ajax, но в контексте гонки между `p1` и `p2`:
 
 ```js
-// `request(..)` is a Promise-aware Ajax utility,
-// like we defined earlier in the chapter
+// `request(..)` - это промис-совместимая функция,
+// подобно той, что мы ранее определили в этой главе
 
 var p1 = request( "http://some.url.1/" );
 var p2 = request( "http://some.url.2/" );
 
 Promise.race( [p1,p2] )
 .then( function(msg){
-	// either `p1` or `p2` will win the race
+	// либо `p1`, либо `p2` выиграет гонку
 	return request(
 		"http://some.url.3/?v=" + msg
 	);
@@ -1383,46 +1383,46 @@ Promise.race( [p1,p2] )
 } );
 ```
 
-Because only one promise wins, the fulfillment value is a single message, not an `array` as it was for `Promise.all([ .. ])`.
+Поскольку побеждает только один промис, значение успешного завершения - это одно сообщение, а не  `массив`, как это было в `Promise.all([ .. ])`.
 
-#### Timeout Race
+#### Гонка таймаутов
 
-We saw this example earlier, illustrating how `Promise.race([ .. ])` can be used to express the "promise timeout" pattern:
+Мы видели этот пример ранее, иллюстрирующий как `Promise.race([ .. ])` может использоваться для выражения шаблона "таймаут промиса":
 
 ```js
-// `foo()` is a Promise-aware function
+// `foo()` - функция, поддерживающая промисы
 
-// `timeoutPromise(..)`, defined ealier, returns
-// a Promise that rejects after a specified delay
+// `timeoutPromise(..)`, определенный ранее, аозвращает
+// промис, который завершается отказом rejects после указанной задержки
 
-// setup a timeout for `foo()`
+// настроить таймаут для `foo()`
 Promise.race( [
-	foo(),					// attempt `foo()`
-	timeoutPromise( 3000 )	// give it 3 seconds
+	foo(),					// попробовать вызвать `foo()`
+	timeoutPromise( 3000 )	// дать ему 3 секунды
 ] )
 .then(
 	function(){
-		// `foo(..)` fulfilled in time!
+		// `foo(..)` завершилась успешно и вовремя!
 	},
 	function(err){
-		// either `foo()` rejected, or it just
-		// didn't finish in time, so inspect
-		// `err` to know which
+		// либо `foo()` завершился отказом, либо просто
+		// не успеет завершиться вовремя, поэтому загляните в
+		// `err`, чтобы узнать причину
 	}
 );
 ```
 
-This timeout pattern works well in most cases. But there are some nuances to consider, and frankly they apply to both `Promise.race([ .. ])` and `Promise.all([ .. ])` equally.
+Этот шаблон таймаута работает в большинстве случаев. Но есть некоторые нюансы, которые необходимо учитывать, и, честно говоря, они применимы к обоим `Promise.race([ .. ])` и `Promise.all([ .. ])` в равной степени.
 
 #### "Finally"
 
-The key question to ask is, "What happens to the promises that get discarded/ignored?" We're not asking that question from the performance perspective -- they would typically end up garbage collection eligible -- but from the behavioral perspective (side effects, etc.). Promises cannot be canceled -- and shouldn't be as that would destroy the external immutability trust discussed in the "Promise Uncancelable" section later in this chapter -- so they can only be silently ignored.
+Ключевой вопрос, который необходимо задать: "Что происходит  с промисами, который который отбрасываются/игнорируются?" Мы задаем этот вопрос не с точки зрения производительности, они, как правило, попадают в сборку мусора как подходящие кандидаты для этого, а с поведенческий аспекта (побочные эффекты и т.д.). Промисы нельзя отменить, и не должны бы, поскольку это разрушит доверие к внешней неизменяемости, обсуждаемой в секции "Промис неотменяемый" позже в этой главе, поэтому их можно только молча игнорировать.
 
-But what if `foo()` in the previous example is reserving some sort of resource for usage, but the timeout fires first and causes that promise to be ignored? Is there anything in this pattern that proactively frees the reserved resource after the timeout, or otherwise cancels any side effects it may have had? What if all you wanted was to log the fact that `foo()` timed out?
+Но что если `foo()` из предыдущего примера резервирует какой-то ресурс для использования, но первым срабатывает таймаут и приводит к тому, что этот промис игнорируется? Есть ли в этом шаблоне что-нибудь, что с упреждением освобождает зарезервированный ресурс после истечения тайм-аута или иным образом отменяет любые побочные эффекты, которые он мог иметь? Что если всё, что вы хотели - это зафиксировать факт того, что `foo()` завершился по таймауту?
 
-Some developers have proposed that Promises need a `finally(..)` callback registration, which is always called when a Promise resolves, and allows you to specify any cleanup that may be necessary. This doesn't exist in the specification at the moment, but it may come in ES7+. We'll have to wait and see.
+НЕкоторые разработчики предлагают, что промису нужна регистрация колбека `finally(..)`, который вызывается всегда, когда промис разрешен, и позволяет вам и позволяет вам указать любую очистку, которая может потребоваться. На текущий момент такого нет в спецификации, но может появиться в ES7+. Подождем и посмотрим.
 
-It might look like:
+Это может выглядеть так:
 
 ```js
 var p = Promise.resolve( 42 );
@@ -1433,73 +1433,73 @@ p.then( something )
 .finally( cleanup );
 ```
 
-**Примечание** In various Promise libraries, `finally(..)` still creates and returns a new Promise (to keep the chain going). If the `cleanup(..)` function were to return a Promise, it would be linked into the chain, which means you could still have the unhandled rejection issues we discussed earlier.
+**Примечание** В различных промис-библиотеках `finally(..)` все еще создает и возвращает новый промис (чтобы продолжать цепочку). Если бы функция `cleanup(..)` возвращала промис, его можно было бы соединить в цепочку, что означает, что у вас все еще могли бы быть проблемы с неразрешенными отказами, которые мы ранее обсуждали.
 
-In the meantime, we could make a static helper utility that lets us observe (without interfering) the resolution of a Promise:
+Тем временем, мы могли бы создать статическую вспомогательную функцию, которая позволит нам наблюдать (без вмешательства) за разрешением промиса:
 
 ```js
-// polyfill-safe guard check
+// защитная проверка в стиле безопасного полифила
 if (!Promise.observe) {
 	Promise.observe = function(pr,cb) {
-		// side-observe `pr`'s resolution
+		// стороннее наблюдение за разрешением  `pr`
 		pr.then(
 			function fulfilled(msg){
-				// schedule callback async (as Job)
+				// запланировать колбек асинхронно (в виде задачи)
 				Promise.resolve( msg ).then( cb );
 			},
 			function rejected(err){
-				// schedule callback async (as Job)
+				// запланировать колбек асинхронно (в виде задачи)
 				Promise.resolve( err ).then( cb );
 			}
 		);
 
-		// return original promise
+		// вернуть оригинальный промис
 		return pr;
 	};
 }
 ```
 
-Here's how we'd use it in the timeout example from before:
+Вот как мы используем его в предыдущем примере с таймаутом:
 
 ```js
 Promise.race( [
 	Promise.observe(
-		foo(),					// attempt `foo()`
+		foo(),					// попытка вызова `foo()`
 		function cleanup(msg){
-			// clean up after `foo()`, even if it
-			// didn't finish before the timeout
+			// почистить за `foo()`, даже если она
+			// не завершилась после таймаута
 		}
 	),
-	timeoutPromise( 3000 )	// give it 3 seconds
+	timeoutPromise( 3000 )	// дать функции таймаут в 3 секунды
 ] )
 ```
 
-This `Promise.observe(..)` helper is just an illustration of how you could observe the completions of Promises without interfering with them. Other Promise libraries have their own solutions. Regardless of how you do it, you'll likely have places where you want to make sure your Promises aren't *just* silently ignored by accident.
+Этот хелпер `Promise.observe(..)` - просто иллюстрация того, как вы могли бы наблюдать за завершениями промисов без вмешательства в них. В других библиотеках промисов есть свои собственные решения. НЕзависимо от того ка вы это сделаете, скорее всего, у вас будут места, где вы захотите убедиться, что ваши промисы не будут *просто* молча проигнорированы случайно.
 
-### Variations on all([ .. ]) and race([ .. ])
+### Вариации на тему all([ .. ]) и race([ .. ])
 
-While native ES6 Promises come with built-in `Promise.all([ .. ])` and `Promise.race([ .. ])`, there are several other commonly used patterns with variations on those semantics:
+В то время как нативные ES6 промисы идут со встроенными `Promise.all([ .. ])` и `Promise.race([ .. ])`, есть несколько других часто используемых паттернов с вариациями этой семантики:
 
-* `none([ .. ])` is like `all([ .. ])`, but fulfillments and rejections are transposed. All Promises need to be rejected -- rejections become the fulfillment values and vice versa.
-* `any([ .. ])` is like `all([ .. ])`, but it ignores any rejections, so only one needs to fulfill instead of *all* of them.
-* `first([ .. ])` is a like a race with `any([ .. ])`, which is that it ignores any rejections and fulfills as soon as the first Promise fulfills.
-* `last([ .. ])` is like `first([ .. ])`, but only the latest fulfillment wins.
+* `none([ .. ])` похож на `all([ .. ])`, но успешные завершения и отказы меняются местами. Все промисы должны быть отвергнуты, отказы становятся значениями успешного завершения, а значения успешного завершения - наоборот.
+* `any([ .. ])` похож на `all([ .. ])`, но она игнорирует любые отказы, поэтому нужно выполнить только один, а не *все*.
+* `first([ .. ])` похож на гонку в сочетании с `any([ .. ])`, которая заключается в том, что она игнорирует любые отказы и успешно завершается, как только успешно завершается первый промис.
+* `last([ .. ])` похож на `first([ .. ])`, но только самое последнее успешное завершение побеждает.
 
 Some Promise abstraction libraries provide these, but you could also define them yourself using the mechanics of Promises, `race([ .. ])` and `all([ .. ])`.
 
-For example, here's how we could define `first([ .. ])`:
+Например, вот как мы могли бы определить `first([ .. ])`:
 
 ```js
-// polyfill-safe guard check
+// защитная проверка в стиле безопасного полифила
 if (!Promise.first) {
 	Promise.first = function(prs) {
 		return new Promise( function(resolve,reject){
-			// loop through all promises
+			// цикл по всем промисам
 			prs.forEach( function(pr){
-				// normalize the value
+				// нормализовать значение
 				Promise.resolve( pr )
-				// whichever one fulfills first wins, and
-				// gets to resolve the main promise
+				// кто успешно завершится первым, тот и победил, и
+				// приводит к разрешению основного промиса
 				.then( resolve );
 			} );
 		} );
@@ -1507,15 +1507,15 @@ if (!Promise.first) {
 }
 ```
 
-**Примечание** This implementation of `first(..)` does not reject if all its promises reject; it simply hangs, much like a `Promise.race([])` does. If desired, you could add additional logic to track each promise rejection and if all reject, call `reject()` on the main promise. We'll leave that as an exercise for the reader.
+**Примечание** Такая реализация `first(..)` не завершается отказом если все ее промисы завершаются отказом; она просто зависает, подобно тому, как работает `Promise.race([])`. При необходимости, вы могли бы добавить дополнительную логику для отслеживания каждого отказа промисов и если все они отвергнуты, вызвать `reject()` для основного промиса. Оставим это как упражнение для читателя.
 
-### Concurrent Iterations
+### Одновременные итерации
 
-Sometimes you want to iterate over a list of Promises and perform some task against all of them, much like you can do with synchronous `array`s (e.g., `forEach(..)`, `map(..)`, `some(..)`, and `every(..)`). If the task to perform against each Promise is fundamentally synchronous, these work fine, just as we used `forEach(..)` in the previous snippet.
+Иногда вы хотите проходить по списку промисов и выполнить некоторую задачу для них всех, так же, как это можно сделать с синхронными `array`s (e.g., `forEach(..)`, `map(..)`, `some(..)`, and `every(..)`). Если задача Если задача, которую нужно выполнить по отношению к каждому промису, является принципиально синхронной, это отлично работает, точно так же, как мы использовали `forEach(..)` в предыдущем отрывке кода.
 
-But if the tasks are fundamentally asynchronous, or can/should otherwise be performed concurrently, you can use async versions of these utilities as provided by many libraries.
+Но если задачи принципиально асинхронные или могут/должны в противном случае выполняться одновременно, вы можете воспользоваться асинхронными версиями этих функций, предоставляемых многими библиотеками.
 
-For example, let's consider an asynchronous `map(..)` utility that takes an `array` of values (could be Promises or anything else), plus a function (task) to perform against each. `map(..)` itself returns a promise whose fulfillment value is an `array` that holds (in the same mapping order) the async fulfillment value from each task:
+Например, давайте рассмотрим асинхронную функцию `map(..)`, которая принимает `массив` значений (могут быть промисами или чем-то еще), плюс функцию (задачу), для выполнения над каждым значением. `map(..)` сам по себе возвращает промис, чье значение успешного завершения - `массив`, который хранит (в том же порядке) асинхронное значение успешного завершения из каждой задачи:
 
 ```js
 if (!Promise.map) {
