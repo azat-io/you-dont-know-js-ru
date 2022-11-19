@@ -1474,7 +1474,7 @@ Promise.race( [
 ] )
 ```
 
-Этот хелпер `Promise.observe(..)` - просто иллюстрация того, как вы могли бы наблюдать за завершениями промисов без вмешательства в них. В других библиотеках промисов есть свои собственные решения. НЕзависимо от того ка вы это сделаете, скорее всего, у вас будут места, где вы захотите убедиться, что ваши промисы не будут *просто* молча проигнорированы случайно.
+Это вспомогательная функция `Promise.observe(..)` - просто иллюстрация того, как вы могли бы наблюдать за завершениями промисов без вмешательства в них. В других библиотеках промисов есть свои собственные решения. НЕзависимо от того ка вы это сделаете, скорее всего, у вас будут места, где вы захотите убедиться, что ваши промисы не будут *просто* молча проигнорированы случайно.
 
 ### Вариации на тему all([ .. ]) и race([ .. ])
 
@@ -1640,13 +1640,13 @@ p.catch( rejected ); // или `p.then( null, rejected )`
 
 Статические вспомогательные функции `Promise.all([ .. ])` и `Promise.race([ .. ])` в ES6 `Promise` API обе создают промис как свое возвращаемое значение. Разрешение этого промиса целиком управляется массивом промисов, который вы передаете на вход.
 
-For `Promise.all([ .. ])`, all the promises you pass in must fulfill for the returned promise to fulfill. If any promise is rejected, the main returned promise is immediately rejected, too (discarding the results of any of the other promises). For fulfillment, you receive an `array` of all the passed in promises' fulfillment values. For rejection, you receive just the first promise rejection reason value. This pattern is classically called a "gate": all must arrive before the gate opens.
+Для `Promise.all([ .. ])` все промисы, которые вы передаете, должны завершиться, чтобы возвращаемый промис также завершился. Если какой-либо из промисов будет отвергнут, главный возвращаемый промис  будет также немедленно отвергнут (отбрасывая результаты любых других промисов). При завершении вы получаете `массив` всех переданных в промисы значений завершения. При отказе, вы получаете только значение причины отказа первого промиса. Этот шаблон классически называется "шлюз (gate)": все должны прибыть до того, как откроется шлюз.
 
-For `Promise.race([ .. ])`, only the first promise to resolve (fulfillment or rejection) "wins," and whatever that resolution is becomes the resolution of the returned promise. This pattern is classically called a "latch": first one to open the latch gets through. Consider:
+Для `Promise.race([ .. ])`, только первый промис с разрешением (завершение или отказ) "выигрывает", и какое бы ни было его разрешение, оно и становится разрешением возвращаемого промиса. Этот шаблон классически называется "задвижка (latch)": первый, кто откроет задвижку - проходит. Представьте:
 
 ```js
 var p1 = Promise.resolve( 42 );
-var p2 = Promise.resolve( "Hello World" );
+var p2 = Promise.resolve( "Привет, мир" );
 var p3 = Promise.reject( "Ой" );
 
 Promise.race( [p1,p2,p3] )
@@ -1661,62 +1661,62 @@ Promise.all( [p1,p2,p3] )
 
 Promise.all( [p1,p2] )
 .then( function(msgs){
-	console.log( msgs );	// [42,"Hello World"]
+	console.log( msgs );	// [42,"Привет, мир"]
 } );
 ```
 
-**Предупреждение:** Be careful! If an empty `array` is passed to `Promise.all([ .. ])`, it will fulfill immediately, but `Promise.race([ .. ])` will hang forever and never resolve.
+**Предупреждение:** Будьте осторожны! Если в `Promise.all([ .. ])` будет передает пустой массив, то функция завершится немедленно, а вот `Promise.race([ .. ])` повиснет навсегда и никогда не разрешится.
 
-The ES6 `Promise` API is pretty simple and straightforward. It's at least good enough to serve the most basic of async cases, and is a good place to start when rearranging your code from callback hell to something better.
+ES6 `Promise` API довольно простое и понятное. Оно, по крайней мере, достаточно хорош, чтобы обслуживать самые простые случаи асинхронной работы и это хорошее место для начала перестройки вашего кода из ада колбеков в нечто лучшее.
 
-But there's a whole lot of async sophistication that apps often demand which Promises themselves will be limited in addressing. In the next section, we'll dive into those limitations as motivations for the benefit of Promise libraries.
+Но существует целый ряд асинхронных сложностей, которые часто требуются приложениям и для которых промисы сами по себе будут ограничены в решении. В следующем разделе мы погрузимся в эти ограничения как мотивацию для создания библиотек промисов.
 
-## Promise Limitations
+## Ограничения промисов
 
-Many of the details we'll discuss in this section have already been alluded to in this chapter, but we'll just make sure to review these limitations specifically.
+Многие детали, которые мы обсудим в этом разделе, уже упоминались в этой главе, но мы просто рассмотрим эти ограничения отдельно.
 
-### Sequence Error Handling
+### Обработка ошибок последовательностей
 
-We covered Promise-flavored error handling in detail earlier in this chapter. The limitations of how Promises are designed -- how they chain, specifically -- creates a very easy pitfall where an error in a Promise chain can be silently ignored accidentally.
+Мы подробно рассмотрели обработку ошибок с помощью промисов в начале этой главы. Ограничения в том, как разработаны промисы, в частности, как они связываются в цепочки, создают очень легкую ловушку, когда ошибка в цепочке промисов может быть молча проигнорирована случайно.
 
-But there's something else to consider with Promise errors. Because a Promise chain is nothing more than its constituent Promises wired together, there's no entity to refer to the entire chain as a single *thing*, which means there's no external way to observe any errors that may occur.
+Но есть еще кое-что, что следует учитывать с ошибками промисов. Поскольку цепочка промисов - это не что иное, как входящие в нее промисы, соединенные вместе, нет никакой сущности, чтобы ссылаться на всю цепочку как на единое *нечто*, что означает, что нет внешнего способа наблюдения за возможными ошибками.
 
-If you construct a Promise chain that has no error handling in it, any error anywhere in the chain will propagate indefinitely down the chain, until observed (by registering a rejection handler at some step). So, in that specific case, having a reference to the *last* promise in the chain is enough (`p` in the following snippet), because you can register a rejection handler there, and it will be notified of any propagated errors:
+Если вы конструируете цепочку промисов, в которой нет обработки ошибок, любая ошибка где бы то ни было в цепочке будет распространяться бесконечно вниз по цепочке, пока не будет замечена (регистрацией обработчика отказов на каком-либо шаге). Так что, в этом конкретном случае, иметь ссылку на *последний* промис в цепочке будет достаточно (`p` в последующем примере кода), потому что вы можете зарегистрировать там обработчик отказов, и он будет уведомлен о любых распространяемых ошибках:
 
 ```js
-// `foo(..)`, `STEP2(..)` and `STEP3(..)` are
-// all promise-aware utilities
+// `foo(..)`, `STEP2(..)` и `STEP3(..)` -
+// обе функции поддерживают промисы
 
 var p = foo( 42 )
 .then( STEP2 )
 .then( STEP3 );
 ```
 
-Although it may seem sneakily confusing, `p` here doesn't point to the first promise in the chain (the one from the `foo(42)` call), but instead from the last promise, the one that comes from the `then(STEP3)` call.
+Хотя это может показаться хитрым и запутанным, `p` здесь не указывает на первый промис в цепочке (тот, что получен из вызова `foo(42)`), а вместо этого из последнего промиса, того, который возвращается из вызова `then(STEP3)`.
 
-Also, no step in the promise chain is observably doing its own error handling. That means that you could then register a rejection error handler on `p`, and it would be notified if any errors occur anywhere in the chain:
+Кроме того, ни один шаг в цепочке промисов не выполняет собственную обработку ошибок. Это означает, что вы могли бы зарегистрировать обработчик ошибок отказа для `p` и он получит уведомление если возникнет какая-нибудь ошибка в цепочке:
 
 ```
 p.catch( handleErrors );
 ```
 
-But if any step of the chain in fact does its own error handling (perhaps hidden/abstracted away from what you can see), your `handleErrors(..)` won't be notified. This may be what you want -- it was, after all, a "handled rejection" -- but it also may *not* be what you want. The complete lack of ability to be notified (of "already handled" rejection errors) is a limitation that restricts capabilities in some use cases.
+Но если любой этап цепочки фактически выполняет собственную обработку ошибок (возможно скрыто/абстрагировано от того, что вы можете увидеть), ваш `handleErrors(..)` не получит уведомлений. Возможно это и будет то, что вы хотите, это же был, в конце концов, "обработанный отказ", но это также может и *не* быть тем, что вы хотели. Полное отсутствие возможности получать уведомления (об "уже обработанных" ошибках отказа) является ограничением, которое сужает возможности в некоторых сценариях использования.
 
-It's basically the same limitation that exists with a `try..catch` that can catch an exception and simply swallow it. So this isn't a limitation **unique to Promises**, but it *is* something we might wish to have a workaround for.
+По сути, это то же самое ограничение, которое существует для блока `try..catch`, который может поймать исключение и просто проглотить его. Таким образом, это не является ограничением **специфичным для промисов**, но это *то*, для чего мы могли бы захотеть наличия обходного пути.
 
-Unfortunately, many times there is no reference kept for the intermediate steps in a Promise-chain sequence, so without such references, you cannot attach error handlers to reliably observe the errors.
+К сожалению, во многих случаях не сохраняются ссылки на промежуточные шаги в последовательности цепочки промисов, поэтому без таких ссылок вы не сможете подключить обработчики ошибок для надежного наблюдения за ошибками.
 
-### Single Value
+### Единственное значение
 
-Promises by definition only have a single fulfillment value or a single rejection reason. In simple examples, this isn't that big of a deal, but in more sophisticated scenarios, you may find this limiting.
+У промисов по определению есть только одно значение завершения или одна причина отказа. В простых примерах, это не так уж и важно, но в более сложных сценариях вы можете счесть это ограничением.
 
-The typical advice is to construct a values wrapper (such as an `object` or `array`) to contain these multiple messages. This solution works, but it can be quite awkward and tedious to wrap and unwrap your messages with every single step of your Promise chain.
+Типичный совет - создать обертку для значений (такую как `объект` или `массив`), чтобы хранить эти многочисленные сообщения. Это решение работает, но это может быть довольно неудобно и утомительно - упаковывать и распаковывать ваши сообщения на каждом шаге вашей цепочки промисов.
 
-#### Splitting Values
+#### Разделение значений
 
-Sometimes you can take this as a signal that you could/should decompose the problem into two or more Promises.
+Иногда вы можете воспринять это как сигнал о том, что вы можете/должны разложить проблему на два или более промисов.
 
-Imagine you have a utility `foo(..)` that produces two values (`x` and `y`) asynchronously:
+Представьте, что ув ас есть функция `foo(..)`, которая обеспечивает два значения (`x` и `y`) асинхронно:
 
 ```js
 function getY(x) {
@@ -1732,7 +1732,7 @@ function foo(bar,baz) {
 
 	return getY( x )
 	.then( function(y){
-		// wrap both values into container
+		// упаковать оба значения в контейнер
 		return [x,y];
 	} );
 }
@@ -1746,13 +1746,13 @@ foo( 10, 20 )
 } );
 ```
 
-First, let's rearrange what `foo(..)` returns so that we don't have to wrap `x` and `y` into a single `array` value to transport through one Promise. Instead, we can wrap each value into its own promise:
+Сперва, давайте переставим то. что возвращает `foo(..)` чтобы нам не пришлось упаковывать `x` и `y` в единственное значение `массива`, чтобы для передачи через один промис. Вместо этого мы можем обернуть кажое значение в свой собственный промис:
 
 ```js
 function foo(bar,baz) {
 	var x = bar * baz;
 
-	// return both promises
+	// вернуть оба промиса
 	return [
 		Promise.resolve( x ),
 		getY( x )
@@ -1770,13 +1770,13 @@ Promise.all(
 } );
 ```
 
-Is an `array` of promises really better than an `array` of values passed through a single promise? Syntactically, it's not much of an improvement.
+Действительно ли `массив` промисов лучше, чем `массив` значений, переданных через один промис? Синтаксически это не является большим улучшением.
 
-But this approach more closely embraces the Promise design theory. It's now easier in the future to refactor to split the calculation of `x` and `y` into separate functions. It's cleaner and more flexible to let the calling code decide how to orchestrate the two promises -- using `Promise.all([ .. ])` here, but certainly not the only option -- rather than to abstract such details away inside of `foo(..)`.
+Но этот подход больше отвечает теории дизайна промисов. Теперь легче в будущем рефакторить, чтобы разделить вычисление `x` и `y` на отдельные функции. Это Гораздо чище и гибче позволить вызывающему коду решать, как согласовать эти два промиса используя тут `Promise.all([ .. ])`, но, конечно, не единственный вариант, а не абстрагироваться от таких деталей внутри `foo(..)`.
 
-#### Unwrap/Spread Arguments
+#### Распаковка/разбиение аргументов
 
-The `var x = ..` and `var y = ..` assignments are still awkward overhead. We can employ some functional trickery (hat tip to Reginald Braithwaite, @raganwald on Twitter) in a helper utility:
+Присвоения `var x = ..` и `var y = ..` - все еще неудобные накладные расходы. Мы можем использовать некоторые функциональные хитрости (благодарим за предоставленную информацию Реджинальда Брейтуэйта (Reginald Braithwaite), @raganwald в твиттере) вво вспомогательной функции:
 
 ```js
 function spread(fn) {
@@ -1793,7 +1793,7 @@ Promise.all(
 )
 ```
 
-That's a bit nicer! Of course, you could inline the functional magic to avoid the extra helper:
+Это немного лучше! Конечно, вы можете встроить функциональную магию, чтобы избежать дополнительную функцию:
 
 ```js
 Promise.all(
@@ -1807,7 +1807,7 @@ Promise.all(
 ) );
 ```
 
-These tricks may be neat, but ES6 has an even better answer for us: destructuring. The array destructuring assignment form looks like this:
+Эти трюки могут быть простыми, но у ES6 есть еще более лучший ответ для нас: деструктуризация. Форма присвоения с деструктуризацией массива выглядит как-то так:
 
 ```js
 Promise.all(
@@ -1820,7 +1820,7 @@ Promise.all(
 } );
 ```
 
-But best of all, ES6 offers the array parameter destructuring form:
+Но лучше всего, ES6 предлагает формат деструктуризации параметра-массива:
 
 ```js
 Promise.all(
@@ -1831,23 +1831,23 @@ Promise.all(
 } );
 ```
 
-We've now embraced the one-value-per-Promise mantra, but kept our supporting boilerplate to a minimum!
+Теперь мы придерживаемся мантры "одно значение на промис", но сократили до минимума наш вспомогательный шаблон!
 
-**Примечание** For more information on ES6 destructuring forms, see the *ES6 & Beyond* title of this series.
+**Примечание** Для получения дополнительной информации о форматах деструктуризации в ES6 см. книгу *За пределами ES6* этой серии.
 
-### Single Resolution
+### Единственное разрешение
 
-One of the most intrinsic behaviors of Promises is that a Promise can only be resolved once (fulfillment or rejection). For many async use cases, you're only retrieving a value once, so this works fine.
+Одним из наиболее характерных свойств промисов является то, что промис может быть разрешен только один раз (завершение или отказ). Для многих случаев использования асинхронного кода, вы получаете значение только один раз, поэтому это работает прекрасно.
 
-But there's also a lot of async cases that fit into a different model -- one that's more akin to events and/or streams of data. It's not clear on the surface how well Promises can fit into such use cases, if at all. Without a significant abstraction on top of Promises, they will completely fall short for handling multiple value resolution.
+Но есть также множество асинхронных случаев, которые вписываются в другую модель - те, которые больше похожи на события и/или потоки данных. На первый взгляд неясно, насколько хорошо промисы могут вписаться в такие сценарии использования, если это вообще возможно. Без значительной абстракции поверх промисов, они будут совершенно не подходить для обработки множественного разрешения значений.
 
-Imagine a scenario where you might want to fire off a sequence of async steps in response to a stimulus (like an event) that can in fact happen multiple times, like a button click.
+Представьте себе сценарий, в котором вы хотите запустить последовательность асинхронных шагов в ответ на стимул (например, событие), который может произойти несколько раз, например, нажатие кнопки.
 
-This probably won't work the way you want:
+Это, вероятно, не будет работать так, как вы хотите:
 
 ```js
-// `click(..)` binds the `"click"` event to a DOM element
-// `request(..)` is the previously defined Promise-aware Ajax
+// `click(..)` привязывает событие `"click"` к элементу DOM
+// `request(..)` это ранее определенный Ajax-запрос с поддержкой промисов
 
 var p = new Promise( function(resolve,reject){
 	click( "#mybtn", resolve );
@@ -1862,9 +1862,9 @@ p.then( function(evt){
 } );
 ```
 
-The behavior here only works if your application calls for the button to be clicked just once. If the button is clicked a second time, the `p` promise has already been resolved, so the second `resolve(..)` call would be ignored.
+Приведенное здесь поведение работает только в том случае, если ваше приложение требует, чтобы кнопка была нажата только один раз. Если кнопка нажата второй раз, промис `p` уже был разрешен, поэтому второй вызов `resolve(..)` будет проигнорирован.
 
-Instead, you'd probably need to invert the paradigm, creating a whole new Promise chain for each event firing:
+Вместо этого вам, вероятно, придется изменить парадигму, создавая совершенно новую цепочку промисов для каждого срабатывания события:
 
 ```js
 click( "#mybtn", function(evt){
@@ -1877,9 +1877,9 @@ click( "#mybtn", function(evt){
 } );
 ```
 
-This approach will *work* in that a whole new Promise sequence will be fired off for each `"click"` event on the button.
+Этот подход *работает* в том смысле, что для каждого события `"click"` на кнопке будет запускаться совершенно новая последовательность промисов.
 
-But beyond just the ugliness of having to define the entire Promise chain inside the event handler, this design in some respects violates the idea of separation of concerns/capabilities (SoC). You might very well want to define your event handler in a different place in your code from where you define the *response* to the event (the Promise chain). That's pretty awkward to do in this pattern, without helper mechanisms.
+Но помимо безобразия, связанного с необходимостью определять всю цепочку промисов внутри обработчика события, эта конструкция в некоторых отношениях нарушает идею разделения обязанностей/возможностей (SoC). Вполне возможно, что вы захотите определить обработчик события в другом месте вашего кода, а не там, где вы определяете *ответ* на событие (цепочка промисов). Это довольно неудобно делать в этом шаблоне без вспомогательных механизмов..
 
 **Примечание** Another way of articulating this limitation is that it'd be nice if we could construct some sort of "observable" that we can subscribe a Promise chain to. There are libraries that have created these abstractions (such as RxJS -- http://rxjs.codeplex.com/), but the abstractions can seem so heavy that you can't even see the nature of Promises anymore. Such heavy abstraction brings important questions to mind such as whether (sans Promises) these mechanisms are as *trustable* as Promises themselves have been designed to be. We'll revisit the "Observable" pattern in Appendix B.
 
