@@ -1,13 +1,13 @@
-# You Don't Know JS: Types & Grammar
-# Chapter 4: Coercion
+# Вы не знаете JS: Типы и грамматика
+# Глава 4: Приведение
 
-Now that we much more fully understand JavaScript's types and values, we turn our attention to a very controversial topic: coercion.
+Теперь, когда мы гораздо более полно понимаем типы и значения Javascript, мы обратим наше внимание на очень спорную тему: приведение.
 
-As we mentioned in Chapter 1, the debates over whether coercion is a useful feature or a flaw in the design of the language (or somewhere in between!) have raged since day one. If you've read other popular books on JS, you know that the overwhelmingly prevalent *message* out there is that coercion is magical, evil, confusing, and just downright a bad idea.
+Как мы упоминали в Главе 1, споры о том, является ли приведение полезной возможностью или недостатком языка (или чем-то посередине!) бушевали с первого дня. Если вы читали другие популярные книги по JS, вы знаете, что в подавляющем большинстве случаев распространено *мнение* о том, что приведение - это волшебство, зло, путаница и просто совершенно плохая идея.
 
-In the same overall spirit of this book series, rather than running away from coercion because everyone else does, or because you get bitten by some quirk, I think you should run toward that which you don't understand and seek to *get it* more fully.
+Следуя духу этой серии книг, вместо того, чтобы убегать от приведения значений, потому что так делают все остальные, или потому, что вас укусила какая-то муха, я думаю, вам следует заняться тем, чего вы не понимаете, и попытаться лучше *схватить* это.
 
-Our goal is to fully explore the pros and cons (yes, there *are* pros!) of coercion, so that you can make an informed decision on its appropriateness in your program.
+Наша цель - полностью изучить плюсы и минусы (да, *есть* плюсы!) приведения, чтобы вы могли принять обоснованное решение о его целесообразности в вашем коде.
 
 ## Converting Values
 
