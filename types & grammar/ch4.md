@@ -9,43 +9,43 @@
 
 Наша цель - полностью изучить плюсы и минусы (да, *есть* плюсы!) приведения, чтобы вы могли принять обоснованное решение о его целесообразности в вашем коде.
 
-## Converting Values
+## Конвертация значений
 
-Converting a value from one type to another is often called "type casting," when done explicitly, and "coercion" when done implicitly (forced by the rules of how a value is used).
+Конвертация значения из одного типа в другой часто называется "преобразованием типа", когда делается явно, и "приведением", когда выполняется неявно (диктуется правилами использования значения).
 
-**Note:** It may not be obvious, but JavaScript coercions always result in one of the scalar primitive (see Chapter 2) values, like `string`, `number`, or `boolean`. There is no coercion that results in a complex value like `object` or `function`. Chapter 3 covers "boxing," which wraps scalar primitive values in their `object` counterparts, but this is not really coercion in an accurate sense.
+**Примечание:** Это может быть неочевидно, но результат приведения в JavaScript это всегда значение скалярного примитива (см. Главу 2), например, `string`, `number`, или `boolean`. Не существует приведения, которое бы приводило к созданию сложного значения, такого как `object` или `function`. Глава 3 посвящена "упаковке", которая помещает скалярные примитивные значения в их `object`-аналоги, но на самом деле это не приведение в строгом смысле слова.
 
-Another way these terms are often distinguished is as follows: "type casting" (or "type conversion") occur in statically typed languages at compile time, while "type coercion" is a runtime conversion for dynamically typed languages.
+Другой распространенный способ различения этих терминов состоит в следующем: "преобразование типов" (или "конвертация типов") выполняется в статически типизированных языках во время компиляции, а "приведение типов" - это преобразование во время выполнения в динамически типизированных языках.
 
-However, in JavaScript, most people refer to all these types of conversions as *coercion*, so the way I prefer to distinguish is to say "implicit coercion" vs. "explicit coercion."
+Однако в JavaScript большинство людей называют все эти виды преобразований *приведением*, поэтому я предпочитаю обозначать их как "неявное приведение" и "явное приведение".
 
-The difference should be obvious: "explicit coercion" is when it is obvious from looking at the code that a type conversion is intentionally occurring, whereas "implicit coercion" is when the type conversion will occur as a less obvious side effect of some other intentional operation.
+Разница должна быть очевидной: "явное приведение" - это когда при взгляде на код ясно, что преобразование типа выполняется намеренно, тогда как "неявное приведение" - это когда преобразование - это менее очевидный побочный эффект какой-либо другой намеренной операции.
 
-For example, consider these two approaches to coercion:
+Для примера рассмотрим эти два способа приведения:
 
 ```js
 var a = 42;
 
-var b = a + "";			// implicit coercion
+var b = a + "";			// неявное приведение
 
-var c = String( a );	// explicit coercion
+var c = String( a );	// явное приведение
 ```
 
-For `b`, the coercion that occurs happens implicitly, because the `+` operator combined with one of the operands being a `string` value (`""`) will insist on the operation being a `string` concatenation (adding two strings together), which *as a (hidden) side effect* will force the `42` value in `a` to be coerced to its `string` equivalent: `"42"`.
+В случае с `b` возникающее приведение происходит неявно, потому что оператор `+` в сочетании с одним из операндов, являющимся строковым значением (`""`), будет настаивать на том, что это операция конкатенации строк (сложения двух `string` вместе), что *в качестве (скрытого) побочного эффекта* приведет к тому, что значение `42` в `a` будет приведено к его строковому эквиваленту: `"42"`.
 
-By contrast, the `String(..)` function makes it pretty obvious that it's explicitly taking the value in `a` and coercing it to a `string` representation.
+Напротив, функция `String(..)` делает конвертацию очевидной, так как она явно берёт значение в `a` и приводит его к `string` представлению.
 
-Both approaches accomplish the same effect: `"42"` comes from `42`. But it's the *how* that is at the heart of the heated debates over JavaScript coercion.
+Оба подхода приводят к одному и тому же результату: из `42` получается `"42"`. Но именно то, как это делается, лежит в основе жарких дебатов о приведении в JavaScript.
 
-**Note:** Technically, there's some nuanced behavioral difference here beyond the stylistic difference. We cover that in more detail later in the chapter, in the "Implicitly: Strings <--> Numbers" section.
+**Примечание**: Технически, здесь, помимо стилистических различий, есть и нюансы в разном поведении. Мы рассмотрим их более подробно позже в разделе "Неявно: Строки <--> Числа".
 
-The terms "explicit" and "implicit," or "obvious" and "hidden side effect," are *relative*.
+Термины "явный" и "неявный", или "очевидный" и "скрытый побочный эффект", *относительны*.
 
-If you know exactly what `a + ""` is doing and you're intentionally doing that to coerce to a `string`, you might feel the operation is sufficiently "explicit." Conversely, if you've never seen the `String(..)` function used for `string` coercion, its behavior might seem hidden enough as to feel "implicit" to you.
+Если вы точно знаете, что делает `a + ""`, и вы намеренно пишете это, чтобы привести к `string`, вы можете воспринимать эту операцию достаточно "явной". И наоборот, если вы никогда не видели функцию `String(..)`, используемую для приведения к `string`, ее поведение может показаться достаточно скрытым, чтобы стать для вас "неявным".
 
-But we're having this discussion of "explicit" vs. "implicit" based on the likely opinions of an *average, reasonably informed, but not expert or JS specification devotee* developer. To whatever extent you do or do not find yourself fitting neatly in that bucket, you will need to adjust your perspective on our observations here accordingly.
+Но мы ведем это обсуждение "явного" и "неявного" с точки зрения *среднего, достаточно информированного разработчика, но не эксперта или поборника JS спецификации*. В какой бы степени такое описание ни подходило вашему мироощущению, вам необходимо сделать поправку на наш угол обзора здесь.
 
-Just remember: it's often rare that we write our code and are the only ones who ever read it. Even if you're an expert on all the ins and outs of JS, consider how a less experienced teammate of yours will feel when they read your code. Will it be "explicit" or "implicit" to them in the same way it is for you?
+Просто помните: часто бывает так, что мы пишем наш код и являемся единственными, кто его читает. Даже если вы являетесь экспертом во всех тонкостях JS, подумайте, что почувствуют ваши менее опытные товарищи по команде, когда прочтут ваш код. Будет ли он "явным" или "неявным" для них так же, как и для вас?
 
 ## Abstract Value Operations
 
