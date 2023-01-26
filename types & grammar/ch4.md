@@ -47,31 +47,31 @@ var c = String( a );	// явное приведение
 
 Просто помните: часто бывает так, что мы пишем наш код и являемся единственными, кто его читает. Даже если вы являетесь экспертом во всех тонкостях JS, подумайте, что почувствуют ваши менее опытные товарищи по команде, когда прочтут ваш код. Будет ли он "явным" или "неявным" для них так же, как и для вас?
 
-## Abstract Value Operations
+## Абстрактные операции со значениями
 
-Before we can explore *explicit* vs *implicit* coercion, we need to learn the basic rules that govern how values *become* either a `string`, `number`, or `boolean`. The ES5 spec in section 9 defines several "abstract operations" (fancy spec-speak for "internal-only operation") with the rules of value conversion. We will specifically pay attention to: `ToString`, `ToNumber`, and `ToBoolean`, and to a lesser extent, `ToPrimitive`.
+Прежде чем мы сможем приступить к *явному* и *неявному* приведению, нам нужно изучить базовые правила, которые определяют, как значения *становятся* `string`, `number` или `boolean`. Спецификация ES5 в разделе 9 определяет несколько "абстрактных операций" (затейливо обозначенные как "исключительно внутренние операции") с правилами конвертации значений. Мы специально обратим внимание на: `ToString`, `ToNumber`, `ToBoolean` и, в меньшей степени, на `ToPrimitive`.
 
 ### `ToString`
 
-When any non-`string` value is coerced to a `string` representation, the conversion is handled by the `ToString` abstract operation in section 9.8 of the specification.
+Когда любое не строковое значение приводится в `string`-представление, преобразование выполняется абстрактной операцией `ToString` из раздела 9.8 спецификации.
 
-Built-in primitive values have natural stringification: `null` becomes `"null"`, `undefined` becomes `"undefined"` and `true` becomes `"true"`. `number`s are generally expressed in the natural way you'd expect, but as we discussed in Chapter 2, very small or very large `numbers` are represented in exponent form:
+Встроенные примитивные значения имеют естественную строковое отображение: `null` становится `"null"`, `undefined` превращается в `"undefined"`, а `true` конвертируется в `"true"`. Числа (`number`) обычно представляются ожидаемым вами образом, но, как мы обсуждали в Главе 2, очень маленькие или очень большие числа представляются в экспоненциальной форме:
 
 ```js
-// multiplying `1.07` by `1000`, seven times over
+// умножим `1.07` на `1000` семь раз
 var a = 1.07 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000 * 1000;
 
-// seven times three digits => 21 digits
+// семь раз по три цифры => 21 цифра
 a.toString(); // "1.07e21"
 ```
 
-For regular objects, unless you specify your own, the default `toString()` (located in `Object.prototype.toString()`) will return the *internal `[[Class]]`* (see Chapter 3), like for instance `"[object Object]"`.
+Для обычных объектов, если вы не укажете свой собственный, по умолчанию используется `toString()` (находится в `Object.prototype.toString()`), который вернет *внутренний `[[Class]]`* (см. Главу 3). Например, `"[object Object]"`.
 
-But as shown earlier, if an object has its own `toString()` method on it, and you use that object in a `string`-like way, its `toString()` will automatically be called, and the `string` result of that call will be used instead.
+Но, как было показано ранее, если у объекта есть свой собственный метод `toString()`, и вы используете этот объект как `string`, автоматически будет вызван его `toString()`, и вместо объекта будет использован `string`-результат этого метода.
 
-**Note:** The way an object is coerced to a `string` technically goes through the `ToPrimitive` abstract operation (ES5 spec, section 9.1), but those nuanced details are covered in more detail in the `ToNumber` section later in this chapter, so we will skip over them here.
+**Примечание:** Технически путь приведения объекта к `string` пролегает через абстрактную операцию `ToPrimitive` (Спецификация ES5, раздел 9.1), но эти нюансы более подробно рассматриваются позже в разделе `ToNumber`, поэтому мы пропустим их здесь.
 
-Arrays have an overridden default `toString()` that stringifies as the (string) concatenation of all its values (each stringified themselves), with `","` in between each value:
+У массивов базовый метод `toString()` переопределён и представляет собой сцепление всех его значений в виде строк через разделитель `","` (строковое представление каждого значения формируется индивидуально):
 
 ```js
 var a = [1,2,3];
@@ -79,30 +79,30 @@ var a = [1,2,3];
 a.toString(); // "1,2,3"
 ```
 
-Again, `toString()` can either be called explicitly, or it will automatically be called if a non-`string` is used in a `string` context.
+Опять же, `toString()` может быть либо вызван явно, либо он будет вызван автоматически, если не строковое значение используется в `string`-контексте.
 
-#### JSON Stringification
+#### Строковое преобразование JSON
 
-Another task that seems awfully related to `ToString` is when you use the `JSON.stringify(..)` utility to serialize a value to a JSON-compatible `string` value.
+Другая задача, которая, казалось бы, плохо связанна с `ToString`, - это когда вы используете утилиту `JSON.stringify(..)` для сериализации значения в строковый вид, совместимый с JSON.
 
-It's important to note that this stringification is not exactly the same thing as coercion. But since it's related to the `ToString` rules above, we'll take a slight diversion to cover JSON stringification behaviors here.
+Важно отметить, что это строковое преобразование - не совсем то же самое, что приведение. Но поскольку оно связано с приведенными выше правилами `ToString`, мы сделаем небольшое отступление, чтобы рассмотреть логику строкового преобразования JSON.
 
-For most simple values, JSON stringification behaves basically the same as `toString()` conversions, except that the serialization result is *always a `string`*:
+Обычно для большинства простых значений строковое преобразование JSON  ведет себя так же, как `toString()`, за исключением того, что результатом сериализации *всегда является `string`*:
 
 ```js
 JSON.stringify( 42 );	// "42"
-JSON.stringify( "42" );	// ""42"" (a string with a quoted string value in it)
+JSON.stringify( "42" );	// ""42"" (строка с закавыченным строковым значением)
 JSON.stringify( null );	// "null"
 JSON.stringify( true );	// "true"
 ```
 
-Any *JSON-safe* value can be stringified by `JSON.stringify(..)`. But what is *JSON-safe*? Any value that can be represented validly in a JSON representation.
+Любое *безопасное для JSON* значение может быть преобразовано в строку с помощью `JSON.stringify(..)`. Но что такое *безопасное для JSON*? Любое значение, которое может быть корректно отображено в представлении JSON.
 
-It may be easier to consider values that are **not** JSON-safe. Some examples: `undefined`s, `function`s, (ES6+) `symbol`s, and `object`s with circular references (where property references in an object structure create a never-ending cycle through each other). These are all illegal values for a standard JSON structure, mostly because they aren't portable to other languages that consume JSON values.
+Вероятно, проще будет назвать значения, которые **не** являются безопасными для JSON. Некоторые примеры: `undefined`, `function`, `symbol` (ES6+) и `object` с циклическими ссылками (где ссылки на свойства объекта создают замкнутый круг, указывая друг на друга). Все это недопустимые значения для стандартной структуры JSON, главным образом потому, что они не переносимы на другие языки, которые используют JSON-данные.
 
-The `JSON.stringify(..)` utility will automatically omit `undefined`, `function`, and `symbol` values when it comes across them. If such a value is found in an `array`, that value is replaced by `null` (so that the array position information isn't altered). If found as a property of an `object`, that property will simply be excluded.
+Утилита `JSON.stringify(..)` автоматически опустит значения `undefined`, `function` и `symbol`, когда столкнется с ними. Если такое значение окажется в `array`, то оно заменяется на `null` (чтобы сохранить информацию о местоположении элементов в массиве). Если любое из них хранится в свойстве `object`, это свойство будет просто исключено.
 
-Consider:
+Рассмотрим:
 
 ```js
 JSON.stringify( undefined );					// undefined
@@ -112,13 +112,13 @@ JSON.stringify( [1,undefined,function(){},4] );	// "[1,null,null,4]"
 JSON.stringify( { a:2, b:function(){} } );		// "{"a":2}"
 ```
 
-But if you try to `JSON.stringify(..)` an `object` with circular reference(s) in it, an error will be thrown.
+Но если вы попытаетесь передать в `JSON.stringify(..)` любой `object` с циклическими ссылками, то будет выдана ошибка.
 
-JSON stringification has the special behavior that if an `object` value has a `toJSON()` method defined, this method will be called first to get a value to use for serialization.
+Строковое преобразование JSON ведет себя иначе, если в передаваемом ему `object` определен метод `toJSON()`. Этот метод будет вызван первым, чтобы получить сериализованное значение.
 
-If you intend to JSON stringify an object that may contain illegal JSON value(s), or if you just have values in the `object` that aren't appropriate for the serialization, you should define a `toJSON()` method for it that returns a *JSON-safe* version of the `object`.
+Если вы собираетесь преобразовывать в JSON строку объект, который может содержать недопустимые JSON-значения, или если у вас в `object` есть значения, которые не подходят для сериализации, то вам следует определить для него метод `toJSON()`, который возвратит *безопасную для JSON* версию `object`.
 
-For example:
+Например:
 
 ```js
 var o = { };
@@ -129,32 +129,32 @@ var a = {
 	d: function(){}
 };
 
-// create a circular reference inside `a`
+// создадим циклическую ссылку в `a`
 o.e = a;
 
-// would throw an error on the circular reference
+// выдаст ошибку о циклической ссылке
 // JSON.stringify( a );
 
-// define a custom JSON value serialization
+// определим пользовательскую сериализацию в JSON
 a.toJSON = function() {
-	// only include the `b` property for serialization
+	// при сериализации включать только свойство `b`
 	return { b: this.b };
 };
 
 JSON.stringify( a ); // "{"b":42}"
 ```
 
-It's a very common misconception that `toJSON()` should return a JSON stringification representation. That's probably incorrect, unless you're wanting to actually stringify the `string` itself (usually not!). `toJSON()` should return the actual regular value (of whatever type) that's appropriate, and `JSON.stringify(..)` itself will handle the stringification.
+Это очень распространенное заблуждение, что `toJSON()` должен возвращать строковое представление JSON. Вероятно, это неправильно до тех пор, пока вы не захотите сделать сериализацию самой `string` (обычно такого желания нет!). В действительности `toJSON()` должен возвращать обычное значение (любого подходящего типа), а `JSON.stringify(..)` сам преобразует его в строку.
 
-In other words, `toJSON()` should be interpreted as "to a JSON-safe value suitable for stringification," not "to a JSON string" as many developers mistakenly assume.
+Другими словами, `toJSON()` следует интерпретировать как "к JSON-безопасному значению, подходящему для превращения в строку", а не "к строке JSON", как ошибочно предполагают многие разработчики.
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = {
 	val: [1,2,3],
 
-	// probably correct!
+	// вероятно, правильно!
 	toJSON: function(){
 		return this.val.slice( 1 );
 	}
@@ -163,7 +163,7 @@ var a = {
 var b = {
 	val: [1,2,3],
 
-	// probably incorrect!
+	// вероятно, неправильно!
 	toJSON: function(){
 		return "[" +
 			this.val.slice( 1 ).join() +
@@ -176,15 +176,15 @@ JSON.stringify( a ); // "[2,3]"
 JSON.stringify( b ); // ""[2,3]""
 ```
 
-In the second call, we stringified the returned `string` rather than the `array` itself, which was probably not what we wanted to do.
+Во втором вызове мы сериализовали возвращаемый `string`, а не `array`, что, вероятно, было не тем, что мы хотели сделать.
 
-While we're talking about `JSON.stringify(..)`, let's discuss some lesser-known functionalities that can still be very useful.
+Пока мы говорим о `JSON.stringify(..)`, давайте обсудим некоторые менее известные возможности, которые тем не менее могут быть очень полезными.
 
-An optional second argument can be passed to `JSON.stringify(..)` that is called *replacer*. This argument can either be an `array` or a `function`. It's used to customize the recursive serialization of an `object` by providing a filtering mechanism for which properties should and should not be included, in a similar way to how `toJSON()` can prepare a value for serialization.
+ В `JSON.stringify(..)` может быть передан необязательный второй аргумент, который называется *replacer*. Он может быть либо `array`, либо `function`. Аргумент используется для настройки рекурсивной сериализации `object`, предоставляя механизм фильтрации, какие свойства должны включаться или исключаться, аналогично тому, как `toJSON()` может готовить значение для сериализации.
 
-If *replacer* is an `array`, it should be an `array` of `string`s, each of which will specify a property name that is allowed to be included in the serialization of the `object`. If a property exists that isn't in this list, it will be skipped.
+Если *replacer* - `array`, то он должен быть массивом строк, каждая из которых будет содержать имя свойства, которое разрешено включать в сериализацию объекта. Если в `object` есть свойство, которого нет в этом списке, оно будет пропущено.
 
-If *replacer* is a `function`, it will be called once for the `object` itself, and then once for each property in the `object`, and each time is passed two arguments, *key* and *value*. To skip a *key* in the serialization, return `undefined`. Otherwise, return the *value* provided.
+Если *replacer* - `function`, то она будет вызвана один раз для самого `object`, а затем по разу для каждого свойства в `object`. Каждый раз передается два аргумента, *key* (ключ) и *value* (значение). Чтобы пропустить *key* при сериализации, верните значение `undefined`. В противном случае верните указанное *value*.
 
 ```js
 var a = {
@@ -201,9 +201,9 @@ JSON.stringify( a, function(k,v){
 // "{"b":42,"d":[1,2,3]}"
 ```
 
-**Note:** In the `function` *replacer* case, the key argument `k` is `undefined` for the first call (where the `a` object itself is being passed in). The `if` statement **filters out** the property named `"c"`. Stringification is recursive, so the `[1,2,3]` array has each of its values (`1`, `2`, and `3`) passed as `v` to *replacer*, with indexes (`0`, `1`, and `2`) as `k`.
+**Примечание:** Когда *replacer* - это `function`, при первом вызове (где передается сам объект `a`) аргумент `k` равен `undefined`. Оператор `if` **отфильтровывает** свойство с именем `"c"`. Строковое преобразование рекурсивное, поэтому в массиве `[1,2,3]` каждое из его значений (`1`, `2`, `3`) передается как аргумент `v`, а индексы (`0`, `1`, `2`) - как аргумент `k`.
 
-A third optional argument can also be passed to `JSON.stringify(..)`, called *space*, which is used as indentation for prettier human-friendly output. *space* can be a positive integer to indicate how many space characters should be used at each indentation level. Or, *space* can be a `string`, in which case up to the first ten characters of its value will be used for each indentation level.
+В `JSON.stringify(..)` также может быть передан третий необязательный аргумент, называемый *space*, который используется в качестве отступа для более наглядного и читаемого вывода. *space* может быть положительным целым числом, говорящим, сколько пробелов следует использовать на каждом уровне отступа. *space*  может быть и `string`. В этом случае для каждого уровня отступа будут использоваться первые десять символов его значения.
 
 ```js
 var a = {
@@ -235,32 +235,33 @@ JSON.stringify( a, null, "-----" );
 // }"
 ```
 
-Remember, `JSON.stringify(..)` is not directly a form of coercion. We covered it here, however, for two reasons that relate its behavior to `ToString` coercion:
+Помните, что `JSON.stringify(..)` напрямую не является формой приведения. Однако мы рассмотрели его здесь по двум причинам, которые связывают его действие с приведением `ToString`:
 
-1. `string`, `number`, `boolean`, and `null` values all stringify for JSON basically the same as how they coerce to `string` values via the rules of the `ToString` abstract operation.
-2. If you pass an `object` value to `JSON.stringify(..)`, and that `object` has a `toJSON()` method on it, `toJSON()` is automatically called to (sort of) "coerce" the value to be *JSON-safe* before stringification.
+1. Значения `string`, `number`, `boolean` и `null` - все они в основном преобразуются JSON-строки так же, как приводятся в `string`-значения с помощью правил абстрактной операции `ToString`.
+
+2. Если вы передаете `object`-значение в `JSON.stringify(..)`, и в этом `object` есть метод `toJSON()`, то `toJSON()` автоматически вызывается, чтобы (как бы) "привести" значение в *безопасное для JSON значение* перед началом преобразования в строку.
 
 ### `ToNumber`
 
-If any non-`number` value is used in a way that requires it to be a `number`, such as a mathematical operation, the ES5 spec defines the `ToNumber` abstract operation in section 9.3.
+Если любое не `number` значение используется в контексте, требующем, чтобы оно было `number`, например, в математической операции, то спецификация ES5 определяет абстрактную операцию `ToNumber` в разделе 9.3.
 
-For example, `true` becomes `1` and `false` becomes `0`. `undefined` becomes `NaN`, but (curiously) `null` becomes `0`.
+Например, `true` становится `1`, `false` - `0`, а `undefined` превращается в `NaN`, но (что любопытно) `null` преобразуется в `0`.
 
-`ToNumber` for a `string` value essentially works for the most part like the rules/syntax for numeric literals (see Chapter 3). If it fails, the result is `NaN` (instead of a syntax error as with `number` literals). One example difference is that `0`-prefixed octal numbers are not handled as octals (just as normal base-10 decimals) in this operation, though such octals are valid as `number` literals (see Chapter 2).
+`ToNumber` для `string` значения, по сути, работает по большей части так же, как правила/синтаксис для числовых литералов (см. Главу 3). В случае неудачи, результатом будет `NaN` (вместо синтаксической ошибки, как в случае с `number`-литералами). Один из примеров отличий - в этой операции восьмеричные числа с `0`-префиксом обрабатываются не как восьмеричные (с основанием 8) а, как обычные десятичные числа (с основанием 10), хотя такие восьмеричные являются корректным `number` литералом (см. Главу 2).
 
-**Note:** The differences between `number` literal grammar and `ToNumber` on a `string` value are subtle and highly nuanced, and thus will not be covered further here. Consult section 9.3.1 of the ES5 spec for more information.
+**Примечание:** Различия между грамматикой `number`-литерала и `string`-значением в `ToNumber` тонкие и с многими нюансами, поэтому здесь они не будут рассматриваться. Для получения дополнительной информации обратитесь к разделу 9.3.1 спецификации ES5.
 
-Objects (and arrays) will first be converted to their primitive value equivalent, and the resulting value (if a primitive but not already a `number`) is coerced to a `number` according to the `ToNumber` rules just mentioned.
+Объекты (и массивы) сначала преобразуются в их эквивалент примитивного значения, а результирующее значение (если оно примитив, но еще не `number`) преобразуется в `number` в соответствии с выше описанными правилами `ToNumber`.
 
-To convert to this primitive value equivalent, the `ToPrimitive` abstract operation (ES5 spec, section 9.1) will consult the value (using the internal `DefaultValue` operation -- ES5 spec, section 8.12.8) in question to see if it has a `valueOf()` method. If `valueOf()` is available and it returns a primitive value, *that* value is used for the coercion. If not, but `toString()` is available, it will provide the value for the coercion.
+Для преобразования в этот эквивалент примитивного значения, абстрактная операция `ToPrimitive` (спецификация ES5, раздел 9.1) использует внутреннюю операцию `DefaultValue` (спецификация ES5, раздел 8.12.8), чтобы определить, есть ли у значения метод `valueOf()`. Если `valueOf()` доступен, и он возвращает примитивное значение, то *это* значение используется для приведения. Если нет, но доступен `toString()`, он обеспечивает значение для приведения.
 
-If neither operation can provide a primitive value, a `TypeError` is thrown.
+Если ни одна из операций не может предоставить примитивное значение, выбрасывается ошибка `TypeError`.
 
-As of ES5, you can create such a noncoercible object -- one without `valueOf()` and `toString()` -- if it has a `null` value for its `[[Prototype]]`, typically created with `Object.create(null)`. See the *this & Object Prototypes* title of this series for more information on `[[Prototype]]`s.
+Начиная с ES5, вы можете создавать такой неприводимый объект - без `valueOf()` и `toString()` - если его скрытое свойство `[[Prototype]]` равно `null`. Обычно он создаётся с помощью `Object.create(null)`. Обратитесь к книге *This и Прототипы Объектов* из этой же серии для получения дополнительной информации о `[[Prototype]]`.
 
-**Note:** We cover how to coerce to `number`s later in this chapter in detail, but for this next code snippet, just assume the `Number(..)` function does so.
+**Примечание:** Позже в этой главе мы подробно рассмотрим, как приводить `number`, но для следующего фрагмента кода просто предположите, что это выполняет функция `Number(..)`.
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = {
