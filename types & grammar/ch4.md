@@ -291,46 +291,46 @@ Number( [ "abc" ] );	// NaN
 
 ### `ToBoolean`
 
-Next, let's have a little chat about how `boolean`s behave in JS. There's **lots of confusion and misconception** floating out there around this topic, so pay close attention!
+Далее, давайте немного поговорим о том, как ведут себя `boolean` значения в JS. Вокруг этой темы **много путаницы и неправильных представлений**, так что будьте бдительны!
 
-First and foremost, JS has actual keywords `true` and `false`, and they behave exactly as you'd expect of `boolean` values. It's a common misconception that the values `1` and `0` are identical to `true`/`false`. While that may be true in other languages, in JS the `number`s are `number`s and the `boolean`s are `boolean`s. You can coerce `1` to `true` (and vice versa) or `0` to `false` (and vice versa). But they're not the same.
+Прежде всего, в JS есть реальные ключевые слова `true` и `false`, и они ведут себя точно так, как вы ожидаете от `boolean` значений. Распространенное заблуждение, что значения `1` и `0` идентичны `true`/`false`. Хотя это может быть верно для других языков, в JS `number` - это `number`, а `boolean` - это `boolean`. Вы можете привести `1` в `true` (и наоборот) или `0` в `false` (и наоборот). Но это не одно и то же.
 
-#### Falsy Values
+#### Ложные значения
 
-But that's not the end of the story. We need to discuss how values other than the two `boolean`s behave whenever you coerce *to* their `boolean` equivalent.
+Но это еще не конец истории. Нам нужно обсудить, как ведут себя значения, отличные от двух `boolean`, когда вы приводите их *к* `boolean` эквиваленту.
 
-All of JavaScript's values can be divided into two categories:
+В JavaScript все значения можно разделить на две категории:
 
-1. values that will become `false` if coerced to `boolean`
-2. everything else (which will obviously become `true`)
+1. значения, которые станут `false`, если их привести в `boolean`
+2. все остальное (которые, очевидно, станет `true`)
 
-I'm not just being facetious. The JS spec defines a specific, narrow list of values that will coerce to `false` when coerced to a `boolean` value.
+Я не шучу. Спецификация JS определяет конкретный, узкий список значений, которые становятся `false` при приведении в `boolean`.
 
-How do we know what the list of values is? In the ES5 spec, section 9.2 defines a `ToBoolean` abstract operation, which says exactly what happens for all the possible values when you try to coerce them "to boolean."
+Как мы узнаем, что это за список значений? В спецификации ES5 раздел 9.2 определяет абстрактную операцию `ToBoolean`, которая точно определяет, что происходит для всех возможных значений, когда вы пытаетесь привести их "к булевому (логическому) значению".
 
-From that table, we get the following as the so-called "falsy" values list:
+Из этой таблицы мы получаем список так называемых "ложных" значений:
 
 * `undefined`
 * `null`
 * `false`
-* `+0`, `-0`, and `NaN`
+* `+0`, `-0` и `NaN`
 * `""`
 
-That's it. If a value is on that list, it's a "falsy" value, and it will coerce to `false` if you force a `boolean` coercion on it.
+Это он. Если значение находится в этом списке, это "ложное" значение, и оно будет равно `false`, если вы приведёте его к `boolean`.
 
-By logical conclusion, if a value is *not* on that list, it must be on *another list*, which we call the "truthy" values list. But JS doesn't really define a "truthy" list per se. It gives some examples, such as saying explicitly that all objects are truthy, but mostly the spec just implies: **anything not explicitly on the falsy list is therefore truthy.**
+Согласно логике, если значение *отсутствует* в этом списке, то оно должно быть в *другом списке*, который мы называем списком "правдивых" значений. Но JS спецификация на самом деле не определяет "правдивый" список как таковой. Она приводит отдельные примеры, как, например, явное указание, что все объекты - правдивые. Спецификация просто подразумевает: **все, что явно не указано в списке ложных, является правдивым**.
 
-#### Falsy Objects
+#### Ложные объекты
 
-Wait a minute, that section title even sounds contradictory. I literally *just said* the spec calls all objects truthy, right? There should be no such thing as a "falsy object."
+Погодите минутку, название этого раздела даже звучит противоречиво. Я буквально *только что сказал*, что спецификация называет все объекты правдивыми, верно? Такого понятия, как "ложный объект", не должно быть.
 
-What could that possibly even mean?
+Что бы это вообще могло значить?
 
-You might be tempted to think it means an object wrapper (see Chapter 3) around a falsy value (such as `""`, `0` or `false`). But don't fall into that *trap*.
+У вас может возникнуть соблазн подумать, что это объект-обертка (см. Главу 3) вокруг ложного значения (такого как `""`, `0` или `false`). Но не попадайтесь на эту *удочку*.
 
-**Note:** That's a subtle specification joke some of you may get.
+**Примечание:** Это тонкая шутка с уточнением, которую некоторые из вас смогут понять.
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = new Boolean( false );
@@ -338,7 +338,7 @@ var b = new Number( 0 );
 var c = new String( "" );
 ```
 
-We know all three values here are objects (see Chapter 3) wrapped around obviously falsy values. But do these objects behave as `true` or as `false`? That's easy to answer:
+Мы знаем, что все три значения здесь являются объектами (см. Главу 3), обернутыми вокруг явно ложных значений. Но ведут ли себя эти объекты как `true` или как `false`? На это легко ответить:
 
 ```js
 var d = Boolean( a && b && c );
@@ -346,45 +346,45 @@ var d = Boolean( a && b && c );
 d; // true
 ```
 
-So, all three behave as `true`, as that's the only way `d` could end up as `true`.
+Итак, все три ведут себя как `true`, ибо только так `d` может оказаться `true`.
 
-**Tip:** Notice the `Boolean( .. )` wrapped around the `a && b && c` expression -- you might wonder why that's there. We'll come back to that later in this chapter, so make a mental note of it. For a sneak-peek (trivia-wise), try for yourself what `d` will be if you just do `d = a && b && c` without the `Boolean( .. )` call!
+**Совет:** Обратите внимание на `Boolean( .. )`, обернутое вокруг выражения `a && b && c` - вы можете задаться вопросом, зачем оно там. Мы вернемся к этому позже, так что запомните это. Для краткости (с точки зрения мелочей) попробуйте узнать сами, каким будет `d`, если вы просто выполните `d = a && b && c` без вызова `Boolean( .. )`!
 
-So, if "falsy objects" are **not just objects wrapped around falsy values**, what the heck are they?
+Итак, если "ложные объекты" - это **не просто объекты, обернутые вокруг ложных значений**, то что же это такое, черт возьми?
 
-The tricky part is that they can show up in your JS program, but they're not actually part of JavaScript itself.
+Сложность заключается в том, что они могут появляться в вашем JS коде, но на самом деле они не являются частью самого JavaScript.
 
-**What!?**
+**Что!?**
 
-There are certain cases where browsers have created their own sort of *exotic* values behavior, namely this idea of "falsy objects," on top of regular JS semantics.
+Есть конкретные ситуации, когда браузеры изобрели свой вид поведения *экзотических* значений, а именно идею "ложных объектов" поверх обычной семантики JS.
 
-A "falsy object" is a value that looks and acts like a normal object (properties, etc.), but when you coerce it to a `boolean`, it coerces to a `false` value.
+"Ложный объект" - это значение, которое выглядит и действует как обычный объект (свойства и т.д.). Но, когда вы приводите его значение к `boolean`, оно превращается в `false`.
 
-**Why!?**
+**Почему!?**
 
-The most well-known case is `document.all`: an array-like (object) provided to your JS program *by the DOM* (not the JS engine itself), which exposes elements in your page to your JS program. It *used* to behave like a normal object--it would act truthy. But not anymore.
+Самым известным примером является `document.all`: массивоподобный (объект), предоставляемый вашей JS программе *DOM*-ом (не самим движком JS), который отражает элементы страницы для вашей программы. Он *вёл* себя как обычный объект - действовал бы он правдиво. Но больше это не так.
 
-`document.all` itself was never really "standard" and has long since been deprecated/abandoned.
+`document.all` само по себе никогда не было по-настоящему "стандартным" и уже давно признано устаревшим и стало неподдерживаемым.
 
-"Can't they just remove it, then?" Sorry, nice try. Wish they could. But there's far too many legacy JS code bases out there that rely on using it.
+"Не могут ли они просто удалить это тогда?" Извини, хорошая попытка. Жаль, что они не могут. Существует слишком много старого JS кода, который использует его.
 
-So, why make it act falsy? Because coercions of `document.all` to `boolean` (like in `if` statements) were almost always used as a means of detecting old, nonstandard IE.
+Так, зачем заставлять его действовать ложно? Потому что приведение `document.all` к `boolean` (например, в операторе `if`) почти всегда использовалось как средство обнаружения старого, нестандартного IE.
 
-IE has long since come up to standards compliance, and in many cases is pushing the web forward as much or more than any other browser. But all that old `if (document.all) { /* it's IE */ }` code is still out there, and much of it is probably never going away. All this legacy code is still assuming it's running in decade-old IE, which just leads to bad browsing experience for IE users.
+IE уже давно соответствует стандартам и во многих случаях продвигает веб вперед не меньше, а то и больше, чем любой другой браузер. Но весь этот старый код `if (document.all) { /* это IE */ }` все еще работает, и большая его часть, вероятно, никогда не уйдёт. Всё это наследие из старого кода по-прежнему предполагает, что он работает в IE десятилетней давности, что попросту приводит к некорректной работе страниц у пользователей IE.
 
-So, we can't remove `document.all` completely, but IE doesn't want `if (document.all) { .. }` code to work anymore, so that users in modern IE get new, standards-compliant code logic.
+Итак, мы не можем удалить `document.all` полностью, но IE не хочет, чтобы код `if (document.all) { .. }` больше работал. Он хочет, чтобы пользователи современного IE получали новую, соответствующую стандартам логику кода.
 
-"What should we do?" **"I've got it! Let's bastardize the JS type system and pretend that `document.all` is falsy!"
+**"Что нам делать?"** "Я знаю! Давайте уничтожим систему типов JS и притворимся, что `document.all` - ложный!"
 
-Ugh. That sucks. It's a crazy gotcha that most JS developers don't understand. But the alternative (doing nothing about the above no-win problems) sucks *just a little bit more*.
+Фу. Это отстой. Это сумасшедшая уловка, которую большинство разработчиков JS не понимают. Но альтернатива (ничего не делать с вышеупомянутыми проблемами) - *еще больший отстой*.
 
-So... that's what we've got: crazy, nonstandard "falsy objects" added to JavaScript by the browsers. Yay!
+Итак... вот что мы имеем: сумасшедшие, нестандартные "ложные объекты", добавленные браузерами в JavaScript. Ура!
 
-#### Truthy Values
+#### Правдивые значения
 
-Back to the truthy list. What exactly are the truthy values? Remember: **a value is truthy if it's not on the falsy list.**
+Вернемся к правдивому списку. Какие именно значения правдивые? Помните: **значение правдивое, если его нет в списке ложных**.
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = "false";
@@ -396,45 +396,45 @@ var d = Boolean( a && b && c );
 d;
 ```
 
-What value do you expect `d` to have here? It's gotta be either `true` or `false`.
+По вашему мнению, какое значение будет иметь `d` здесь? Это должно быть либо `true`, либо `false`.
 
-It's `true`. Why? Because despite the contents of those `string` values looking like falsy values, the `string` values themselves are all truthy, because `""` is the only `string` value on the falsy list.
+Это будет `true`. Почему? Потому что, хотя содержимое этих `string` выглядит как ложные значения, сами `string` значения являются истинными, потому что в списке ложных `string` есть единственное значение - это `""`.
 
-What about these?
+А эти?
 
 ```js
-var a = [];				// empty array -- truthy or falsy?
-var b = {};				// empty object -- truthy or falsy?
-var c = function(){};	// empty function -- truthy or falsy?
+var a = [];				// пустой array -- правдивое или ложное?
+var b = {};				// пустой object -- правдивое или ложное?
+var c = function(){};	// пустая function -- правдивое или ложное?
 
 var d = Boolean( a && b && c );
 
 d;
 ```
 
-Yep, you guessed it, `d` is still `true` here. Why? Same reason as before. Despite what it may seem like, `[]`, `{}`, and `function(){}` are *not* on the falsy list, and thus are truthy values.
+Да, вы уже догадались, `d` здесь по-прежнему `true`. Почему? Та же причина, что и раньше. Несмотря на то, чем это может казаться, `[]`, `{}` и `function(){}` *отсутствуют* в списке ложных значений и, следовательно, являются истинными значениями.
 
-In other words, the truthy list is infinitely long. It's impossible to make such a list. You can only make a finite falsy list and consult *it*.
+Другими словами, правдивый список бесконечно длинен. Составить такой список невозможно. Вы можете только составить конечный список ложных значений и сверяться *с ним*.
 
-Take five minutes, write the falsy list on a post-it note for your computer monitor, or memorize it if you prefer. Either way, you'll easily be able to construct a virtual truthy list whenever you need it by simply asking if it's on the falsy list or not.
+Потратьте пять минут, напишите ложный список на стикере для монитора или запомните его, если хотите. Тогда, вы легко сможете воспроизвести виртуальный правдивый список, когда это вам понадобится, просто спросив, есть ли он в ложном списке или нет.
 
-The importance of truthy and falsy is in understanding how a value will behave if you coerce it (either explicitly or implicitly) to a `boolean` value. Now that you have those two lists in mind, we can dive into coercion examples themselves.
+Важность правдивости и ложности заключается в понимании того, как будет вести себя значение, если вы его приведёте (явно или неявно) к `boolean` значению. Теперь, когда у вас есть эти два списка, мы можем углубиться в примеры приведения.
 
-## Explicit Coercion
+## Явное приведение
 
-*Explicit* coercion refers to type conversions that are obvious and explicit. There's a wide range of type conversion usage that clearly falls under the *explicit* coercion category for most developers.
+*Явное* приведение относится к преобразованиям типов, которые являются очевидными и явными. Существует широкий спектр применений преобразования типов, которое соответствует категории *явного* приведения у большинства разработчиков.
 
-The goal here is to identify patterns in our code where we can make it clear and obvious that we're converting a value from one type to another, so as to not leave potholes for future developers to trip into. The more explicit we are, the more likely someone later will be able to read our code and understand without undue effort what our intent was.
+Цель заключается в том, чтобы выявить в нашем коде шаблоны - ясного и очевидного преобразования значения из одного типа в другой - так, чтобы не оставлять ям, в которые могут угодить будущие разработчики. Чем более демонстративны мы будем, тем больше вероятность, что кто-то после сможет прочитать и понять наш код без излишних усилий, какие у нас были намерения.
 
-It would be hard to find any salient disagreements with *explicit* coercion, as it most closely aligns with how the commonly accepted practice of type conversion works in statically typed languages. As such, we'll take for granted (for now) that *explicit* coercion can be agreed upon to not be evil or controversial. We'll revisit this later, though.
+Думается, не будет каких-либо существенных разногласий относительно *явного* приведения, поскольку оно наиболее точно соответствует общепринятой практике преобразования типов, сложившейся в языках со статической типизацией. Таким образом, мы примем как должное (на данный момент), что *явное* приведение едино в том, чтобы не быть злонамеренным или противоречивым. Однако мы вернемся к этому позже.
 
-### Explicitly: Strings <--> Numbers
+### Явно: Строки <--> Числа
 
-We'll start with the simplest and perhaps most common coercion operation: coercing values between `string` and `number` representation.
+Мы начнем с самой простой и, возможно, наиболее распространенной операции приведения: преобразование значений между  `string` и `number` представлениями.
 
-To coerce between `string`s and `number`s, we use the built-in `String(..)` and `Number(..)` functions (which we referred to as "native constructors" in Chapter 3), but **very importantly**, we do not use the `new` keyword in front of them. As such, we're not creating object wrappers.
+Для приведения между `string` и `number` мы используем встроенные функции `String(..)` и `Number(..)` (которые мы назвали "собственными конструкторами" в Главе 3), при этом **очень важно**, мы не используем ключевое слово `new` перед ними. Таким образом, мы не создаем объекты-обёртки.
 
-Instead, we're actually *explicitly coercing* between the two types:
+Вместо этого мы на самом деле выполняем *явное приведение* между двумя этими типами:
 
 ```js
 var a = 42;
@@ -447,15 +447,15 @@ b; // "42"
 d; // 3.14
 ```
 
-`String(..)` coerces from any other value to a primitive `string` value, using the rules of the `ToString` operation discussed earlier. `Number(..)` coerces from any other value to a primitive `number` value, using the rules of the `ToNumber` operation discussed earlier.
+`String(..)` преобразует любое значение в примитивное значение `string`, используя ранее рассмотренные правила операции `ToString`. `Number(..)` преобразует любое значение в примитивное значение `number`, используя ранее описанные правила операции `ToNumber`.
 
-I call this *explicit* coercion because in general, it's pretty obvious to most developers that the end result of these operations is the applicable type conversion.
+Я называю это *явным* приведением, потому что в целом для большинства разработчиков довольно очевидно, что конечным результатом этих операций является приемлемое преобразование типа.
 
-In fact, this usage actually looks a lot like it does in some other statically typed languages.
+Действительно, это очень похоже на то, как это работает в некоторых других статически типизированных языках.
 
-For example, in C/C++, you can say either `(int)x` or `int(x)`, and both will convert the value in `x` to an integer. Both forms are valid, but many prefer the latter, which kinda looks like a function call. In JavaScript, when you say `Number(x)`, it looks awfully similar. Does it matter that it's *actually* a function call in JS? Not really.
+Например, в C/C++ вы можете написать либо `(int)x`, либо `int(x)`, и оба они преобразуют значение в `x` в целое число. Обе формы допустимы, но многие предпочитают последнюю, которая выглядит как вызов функции. В JavaScript, когда вы пишете `Number(x)`, это выглядит ужасно похоже. Имеет ли значение, что это *на самом деле* вызов функции в JS? Не совсем.
 
-Besides `String(..)` and `Number(..)`, there are other ways to "explicitly" convert these values between `string` and `number`:
+Помимо `String(..)` и `Number(..)`, существуют другие способы "явного" приведения значений между `string` и `number`:
 
 ```js
 var a = 42;
@@ -468,15 +468,15 @@ b; // "42"
 d; // 3.14
 ```
 
-Calling `a.toString()` is ostensibly explicit (pretty clear that "toString" means "to a string"), but there's some hidden implicitness here. `toString()` cannot be called on a *primitive* value like `42`. So JS automatically "boxes" (see Chapter 3) `42` in an object wrapper, so that `toString()` can be called against the object. In other words, you might call it "explicitly implicit."
+Вызов `a.toString()` считается явным (довольно ясно, что "toString" означает "к строке"), но здесь есть определенная скрытая неявность. `toString()` не может быть вызван для *примитивного* значения, такого как `42`. Поэтому JS автоматически "упаковывает" (см. Главу 3) `42` в объект-обёртку, так что `toString()` может быть вызван. Другими словами, вы могли бы назвать это "явно неявным".
 
-`+c` here is showing the *unary operator* form (operator with only one operand) of the `+` operator. Instead of performing mathematic addition (or string concatenation -- see below), the unary `+` explicitly coerces its operand (`c`) to a `number` value.
+`+c` здесь демонстрирует форму *унарного оператора* `+` (оператор только с одним операндом). Однако вместо выполнения математического сложения (или сцепления строк - см. ниже) унарный символ `+` явно приводит свой операнд (`c`) в значение `number`.
 
-Is `+c` *explicit* coercion? Depends on your experience and perspective. If you know (which you do, now!) that unary `+` is explicitly intended for `number` coercion, then it's pretty explicit and obvious. However, if you've never seen it before, it can seem awfully confusing, implicit, with hidden side effects, etc.
+Является ли `+c` *явным* приведением? Зависит от вашего опыта и точки зрения. Если вы знаете (а вы теперь знаете!), что унарный `+` явно предназначен для приведения к `number`, то это достаточно явно и очевидно. Однако, если вы никогда не видели этого раньше, это может показаться ужасно запутанным, неявным, со скрытыми побочными эффектами и т.д.
 
-**Note:** The generally accepted perspective in the open-source JS community is that unary `+` is an accepted form of *explicit* coercion.
+**Примечание:** Общепринятая точка зрения JS-сообщества с открытым исходным кодом заключается в том, что унарный `+` является приемлемой формой *явного* приведения.
 
-Even if you really like the `+c` form, there are definitely places where it can look awfully confusing. Consider:
+Даже если вам действительно нравится форма `+c`, определенно есть места, где она может выглядеть ужасно запутанной. Рассмотрим пример:
 
 ```js
 var c = "3.14";
@@ -485,39 +485,38 @@ var d = 5+ +c;
 d; // 8.14
 ```
 
-The unary `-` operator also coerces like `+` does, but it also flips the sign of the number. However, you cannot put two `--` next to each other to unflip the sign, as that's parsed as the decrement operator. Instead, you would need to do: `- -"3.14"` with a space in between, and that would result in coercion to `3.14`.
+Унарный оператор `-` также выполняет приведение, как и `+`, но он ещё меняет знак числа. При этом вы не можете поместить два оператора рядом с друг другом `--`, чтобы отменить смену знака, так как это интерпретируется как оператор уменьшения. Вместо этого вам нужно было бы сделать: `- -"3.14"` с пробелом между ними, тогда бы это вызвало приведение к `3.14`.
 
-You can probably dream up all sorts of hideous combinations of binary operators (like `+` for addition) next to the unary form of an operator. Here's another crazy example:
+Вероятно, вы можете придумать всевозможные отвратительные комбинации двоичных операторов (подобно `+` для сложения) рядом с унарной формой оператора. Вот еще один безумный пример:
 
 ```js
 1 + - + + + - + 1;	// 2
 ```
 
-You should strongly consider avoiding unary `+` (or `-`) coercion when it's immediately adjacent to other operators. While the above works, it would almost universally be considered a bad idea. Even `d = +c` (or `d =+ c` for that matter!) can far too easily be confused for `d += c`, which is entirely different!
+Вам следует настойчиво избегать приведения с унарным `+` (или `-`), когда он примыкает к другим операторам. Хотя пример выше работает, такое почти везде считается плохой идеей. Даже `d = +c` (или `d = + c`, если уж на то пошло!) слишком легко спутать с `d + = c`, что совершенно другое!
 
-**Note:** Another extremely confusing place for unary `+` to be used adjacent to another operator would be the `++` increment operator and `--` decrement operator. For example: `a +++b`, `a + ++b`, and `a + + +b`. See "Expression Side-Effects" in Chapter 5 for more about `++`.
+**Примечание:** Другим чрезвычайно запутанным случаем использования унарного `+` - это помещение его рядом с операторами инкремента `++` и декремента `--`. Например: `a +++b`, `a + ++b` и `a + + +b`. Больше подробностей о `++` смотрите в разделе "Побочные эффекты выражений" в Главе 5.
 
-Remember, we're trying to be explicit and **reduce** confusion, not make it much worse!
+Помните, мы пытаемся явно выразить свои намерения и **уменьшить** путаницу, а не усугублять ее!
 
-#### `Date` To `number`
+#### `Date` в `number`
 
-Another common usage of the unary `+` operator is to coerce a `Date` object into a `number`, because the result is the unix timestamp (milliseconds elapsed since 1 January 1970 00:00:00 UTC) representation of the date/time value:
+Другим распространенным случаем использования унарного оператора `+` является приведение объекта `Date` в `number`, так как в результате мы получаем метку времени unix (миллисекунды, прошедшие с 1 января 1970 года 00:00:00 UTC), представляющую значение даты/времени:
 
 ```js
 var d = new Date( "Mon, 18 Aug 2014 08:53:06 CDT" );
 
 +d; // 1408369986000
 ```
-
-The most common usage of this idiom is to get the current *now* moment as a timestamp, such as:
+Самым распространенным применением этой идиомы является фиксация времени *текущего времени* в виде метки времени, например, так:
 
 ```js
 var timestamp = +new Date();
 ```
 
-**Note:** Some developers are aware of a peculiar syntactic "trick" in JavaScript, which is that the `()` set on a constructor call (a function called with `new`) is *optional* if there are no arguments to pass. So you may run across the `var timestamp = +new Date;` form. However, not all developers agree that omitting the `()` improves readability, as it's an uncommon syntax exception that only applies to the `new fn()` call form and not the regular `fn()` call form.
+**Примечание:** Некоторые разработчики знают о специфическом синтаксическом "трюке" в JavaScript, который заключается в том, что `()` при вызове конструктора (функция, вызываемая с `new`), являются *необязательными*, если нет аргументов для передачи. Поэтому, вы можете встретить такой вариант: `var timestamp = +new Date;`. Однако не все разработчики согласны с тем, что отсутствие `()` улучшает читаемость, поскольку это необычное синтаксическое исключение применяется только к форме вызова `new fn()`, а не к обычной форме вызова `fn()`.
 
-But coercion is not the only way to get the timestamp out of a `Date` object. A noncoercion approach is perhaps even preferable, as it's even more explicit:
+Но приведение - это не единственный способ получить метку времени из объекта `Date`. Вариант без приведения, возможно, даже предпочтительнее, поскольку он более явный:
 
 ```js
 var timestamp = new Date().getTime();
@@ -525,13 +524,13 @@ var timestamp = new Date().getTime();
 // var timestamp = (new Date).getTime();
 ```
 
-But an *even more* preferable noncoercion option is to use the ES5 added `Date.now()` static function:
+Но *еще более* предпочтительным вариантом без приведения является использование появившейся в ES5 статической функции `Date.now()`:
 
 ```js
 var timestamp = Date.now();
 ```
 
-And if you want to polyfill `Date.now()` into older browsers, it's pretty simple:
+В старых браузерах вы можете использовать полифил `Date.now()`, он довольно простой:
 
 ```js
 if (!Date.now) {
@@ -541,19 +540,19 @@ if (!Date.now) {
 }
 ```
 
-I'd recommend skipping the coercion forms related to dates. Use `Date.now()` for current *now* timestamps, and `new Date( .. ).getTime()` for getting a timestamp of a specific *non-now* date/time that you need to specify.
+Я бы рекомендовал избегать приведений, связанных с датами. Используйте `Date.now()` для метки времени *текущего момента* и `new Date( .. ).getTime()` для получения метки времени *не текущего момента*, который можно указать в виде даты/времени.
 
-#### The Curious Case of the `~`
+#### Любопытный случай с `~`
 
-One coercive JS operator that is often overlooked and usually very confused is the tilde `~` operator (aka "bitwise NOT"). Many of those who even understand what it does will often times still want to avoid it. But sticking to the spirit of our approach in this book and series, let's dig into it to find out if `~` has anything useful to give us.
+Одним из операторов приведения, который часто упускается из виду и обычно сбивает с толку, является оператор тильды `~` ("побитовое НЕ"). Многие из тех, кто даже понимает, что он делает, часто избегают его. Но, придерживаясь духа этой книги и серии, давайте углубимся в него, чтобы выяснить, может ли `~` дать нам что-нибудь полезное.
 
-In the "32-bit (Signed) Integers" section of Chapter 2, we covered how bitwise operators in JS are defined only for 32-bit operations, which means they force their operands to conform to 32-bit value representations. The rules for how this happens are controlled by the `ToInt32` abstract operation (ES5 spec, section 9.5).
+В разделе "32-битные целые числа (со знаком)" Главы 2 мы писали, что в JS побитовые операторы работают только как 32-разрядные операторы, то есть они требуют от своих операндов иметь значение в 32-разрядном представлении. Правила того, как это происходит, управляется абстрактной операцией `ToInt32` (спецификация ES5, раздел 9.5).
 
-`ToInt32` first does a `ToNumber` coercion, which means if the value is `"123"`, it's going to first become `123` before the `ToInt32` rules are applied.
+`ToInt32` сначала выполняет приведение `ToNumber`, что означает, что, если значение равно `"123"`, оно сначала станет `123`, прежде чем будут применены правила `ToInt32`.
 
-While not *technically* coercion itself (since the type doesn't change!), using bitwise operators (like `|` or `~`) with certain special `number` values produces a coercive effect that results in a different `number` value.
+Хотя *технически* это не приведение (поскольку тип не меняется!), использование побитовых операторов (такого как `|` или `~`) с определенными специальными значениями `number` дает эффект приведения и другое значение `number`.
 
-For example, let's first consider the `|` "bitwise OR" operator used in the otherwise no-op idiom `0 | x`, which (as Chapter 2 showed) essentially only does the `ToInt32` conversion:
+Например, давайте сначала рассмотрим оператор `|` - "побитовое ИЛИ", используемый в идиоме `0 | x`, которая (как показано в Главе 2) по сути выполняет лишь преобразование `ToInt32`:
 
 ```js
 0 | -0;			// 0
@@ -562,101 +561,101 @@ For example, let's first consider the `|` "bitwise OR" operator used in the othe
 0 | -Infinity;	// 0
 ```
 
-These special numbers aren't 32-bit representable (since they come from the 64-bit IEEE 754 standard -- see Chapter 2), so `ToInt32` just specifies `0` as the result from these values.
+Эти специальные числа нельзя представить в 32-разрядном виде (поскольку они взяты из 64-разрядного стандарта IEEE 754 - см. Главу 2), поэтому `ToInt32` просто указывает `0` как результат этих значений.
 
-It's debatable if `0 | __` is an *explicit* form of this coercive `ToInt32` operation or if it's more *implicit*. From the spec perspective, it's unquestionably *explicit*, but if you don't understand bitwise operations at this level, it can seem a bit more *implicitly* magical. Nevertheless, consistent with other assertions in this chapter, we will call it *explicit*.
+Спорно, является ли `0 | __` *явной* формой приведения операции `ToInt32` или она всё же *неявная*. С точки зрения спецификации, она безусловно *явная*, но если вы не понимаете побитовые операции, то она вероятно может показаться *неявной* и волшебной. Тем не менее, в соответствии с другими утверждениями в этой главе, мы будем называть приведение *явным*.
 
-So, let's turn our attention back to `~`. The `~` operator first "coerces" to a 32-bit `number` value, and then performs a bitwise negation (flipping each bit's parity).
+Итак, давайте опять обратим наше внимание на `~`. Оператор `~` сначала "приводит" к 32-разрядному значению `number`, а затем выполняет побитовое отрицание (инвертируя каждый бит).
 
-**Note:** This is very similar to how `!` not only coerces its value to `boolean` but also flips its parity (see discussion of the "unary `!`" later).
+**Примечание:** Это очень похоже на то, как `!` не только преобразует значение в `boolean`, но и инвертирует его значение (см. обсуждение "унарного `!`" ниже).
 
-But... what!? Why do we care about bits being flipped? That's some pretty specialized, nuanced stuff. It's pretty rare for JS developers to need to reason about individual bits.
+Но... что?! Почему нас волнует, что биты инвертируются? Это довольно специфичная тема. JS-разработчикам довольно редко приходится задумываться об отдельных битах.
 
-Another way of thinking about the definition of `~` comes from old-school computer science/discrete Mathematics: `~` performs two's-complement. Great, thanks, that's totally clearer!
+Иной смысл сущности `~` даёт информатика старой школы / дискретная математика: здесь `~` - это операция дополнения двойки. Отлично, спасибо, это совершенно ясно!
 
-Let's try again: `~x` is roughly the same as `-(x+1)`. That's weird, but slightly easier to reason about. So:
+Давайте попробуем еще раз: `~x` примерно совпадает с `-(x+1)`. Это странно, но рассуждать об этом немного легче. Итак:
 
 ```js
 ~42;	// -(42+1) ==> -43
 ```
 
-You're probably still wondering what the heck all this `~` stuff is about, or why it really matters for a coercion discussion. Let's quickly get to the point.
+Вы, вероятно, все еще задаетесь вопросом, к чему, черт возьми, вся эта ерунда с `~`, или почему это действительно важно в обсуждении приведения? Давайте сразу перейдем к делу.
 
-Consider `-(x+1)`. What's the only value that you can perform that operation on that will produce a `0` (or `-0` technically!) result? `-1`. In other words, `~` used with a range of `number` values will produce a falsy (easily coercible to `false`) `0` value for the `-1` input value, and any other truthy `number` otherwise.
+Рассмотрим `-(x+1)`. Какое единственное значение, с которым вы можете выполнить эту операцию и получить результат `0` (или `-0` технически!)? `-1`. Другими словами, `~`, используемая с разными значениями `number`, даст ложное значение `0` (легко приводимое к `false`) для входного значения `-1`. В любом другом случае мы значение `number` будет правдивым.
 
-Why is that relevant?
+Какое отношение это имеет к делу?
 
-`-1` is commonly called a "sentinel value," which basically means a value that's given an arbitrary semantic meaning within the greater set of values of its same type (`number`s). The C-language uses `-1` sentinel values for many functions that return `>= 0` values for "success" and `-1` for "failure."
+`-1` обычно зовётся "контрольным значением" - это значение, которому придается определенный семантический смысл в наборе данных того же типа (`number`). Язык C использует контрольные значения `-1` во многих функциях, которые возвращают значения `>= 0` в случае "успеха" и `-1` для "неудач".
 
-JavaScript adopted this precedent when defining the `string` operation `indexOf(..)`, which searches for a substring and if found returns its zero-based index position, or `-1` if not found.
+JavaScript заимствовал этот подход для `string` операции `indexOf(..)`, которая ищет подстроку и, если найдена, возвращает ее индекс-позицию или `-1`, если она не найдена.
 
-It's pretty common to try to use `indexOf(..)` not just as an operation to get the position, but as a `boolean` check of presence/absence of a substring in another `string`. Here's how developers usually perform such checks:
+Довольно часто пытаются использовать `indexOf(..)` не только для поиска позиции, но и как `boolean` проверку наличия/отсутствия подстроки в другой `string`. Вот как обычно выполняют такие проверки:
 
 ```js
 var a = "Hello World";
 
 if (a.indexOf( "lo" ) >= 0) {	// true
-	// found it!
+	// нашёл!
 }
 if (a.indexOf( "lo" ) != -1) {	// true
-	// found it
+	// нашёл
 }
 
 if (a.indexOf( "ol" ) < 0) {	// true
-	// not found!
+	// не нашёл!
 }
 if (a.indexOf( "ol" ) == -1) {	// true
-	// not found!
+	// не нашёл!
 }
 ```
 
-I find it kind of gross to look at `>= 0` or `== -1`. It's basically a "leaky abstraction," in that it's leaking underlying implementation behavior -- the usage of sentinel `-1` for "failure" -- into my code. I would prefer to hide such a detail.
+Я нахожу довольно неэстетичным видеть в коде `>= 0` или `== -1`. По сути, это "дырявая абстракция", поскольку она выставляет наружу, в мой код, свою внутреннюю реализацию - использование контрольного `-1` для "сбоя". Я бы предпочел, чтобы такие детали были скрыты.
 
-And now, finally, we see why `~` could help us! Using `~` with `indexOf()` "coerces" (actually just transforms) the value **to be appropriately `boolean`-coercible**:
+Наконец, мы видим, как `~` могла бы нам помочь! Использование `~` с `indexOf()` "приводит" (на самом деле просто преобразует) результат **к значению, которое можно привести к `boolean`**:
 
 ```js
 var a = "Hello World";
 
-~a.indexOf( "lo" );			// -4   <-- truthy!
+~a.indexOf( "lo" );			// -4   <-- правдивое!
 
 if (~a.indexOf( "lo" )) {	// true
-	// found it!
+	// нашёл!
 }
 
-~a.indexOf( "ol" );			// 0    <-- falsy!
+~a.indexOf( "ol" );			// 0    <-- ложное!
 !~a.indexOf( "ol" );		// true
 
 if (!~a.indexOf( "ol" )) {	// true
-	// not found!
+	// не нашёл!
 }
 ```
 
-`~` takes the return value of `indexOf(..)` and transforms it: for the "failure" `-1` we get the falsy `0`, and every other value is truthy.
+`~` принимает возвращаемое значение `indexOf(..)` и преобразует его: для `-1` "сбоя" мы получаем ложный `0`, а все остальные значения являются правдивыми.
 
-**Note:** The `-(x+1)` pseudo-algorithm for `~` would imply that `~-1` is `-0`, but actually it produces `0` because the underlying operation is actually bitwise, not mathematic.
+**Примечание:** Псевдоалгоритм `-(x + 1)` для `~` подразумевает, что `~-1` равно `-0`, но на самом деле тильда выдает `0`, потому что операция на самом деле побитовая, а не математическая.
 
-Technically, `if (~a.indexOf(..))` is still relying on *implicit* coercion of its resultant `0` to `false` or nonzero to `true`. But overall, `~` still feels to me more like an *explicit* coercion mechanism, as long as you know what it's intended to do in this idiom.
+Технически, `if (~a.indexOf(..))` использует *неявное* приведение результирующего значения `0` к `false` или ненулевого значения к `true`. Но в целом, мне кажется, `~` больше похожа на *явное* приведение, если вы знаете, цель этого оператора в этой идиоме.
 
-I find this to be cleaner code than the previous `>= 0` / `== -1` clutter.
+Я считаю, что это более ясный код, чем беспорядок с `>= 0` / `== -1`.
 
-##### Truncating Bits
+##### Отбрасывание битов
 
-There's one more place `~` may show up in code you run across: some developers use the double tilde `~~` to truncate the decimal part of a `number` (i.e., "coerce" it to a whole number "integer"). It's commonly (though mistakingly) said this is the same result as calling `Math.floor(..)`.
+Ещё одно место, где `~` может появиться в коде, с которым вы сталкиваетесь: некоторые разработчики используют двойную тильду `~~`, чтобы отбросить десятичную часть `number` (т.е. "привести" его к целому числу "integer"). Часто утверждается (хотя и ошибочно), что это тот же самое, что и вызов `Math.floor(..)`.
 
-How `~~` works is that the first `~` applies the `ToInt32` "coercion" and does the bitwise flip, and then the second `~` does another bitwise flip, flipping all the bits back to the original state. The end result is just the `ToInt32` "coercion" (aka truncation).
+Как работает `~~`: первая `~` выполняет "приведение" `ToInt32`  и побитовую инверсию, затем вторая `~` выполняет еще одно побитовое переключение, возвращая все биты обратно в исходное состояние. Итог - просто "приведение" `ToInt32` (оно же усечение/отбрасывание).
 
-**Note:** The bitwise double-flip of `~~` is very similar to the parity double-negate `!!` behavior, explained in the "Explicitly: * --> Boolean" section later.
+**Примечание:** Побитовая двойная инверсия `~~` очень похожа на действие двойного отрицания `!!`, которое рассматривается ниже в разделе "Явно: * --> Булево значение".
 
-However, `~~` needs some caution/clarification. First, it only works reliably on 32-bit values. But more importantly, it doesn't work the same on negative numbers as `Math.floor(..)` does!
+Однако `~~` нуждается в некотором предостережении/разъяснении. Во-первых, он корректно работает только с 32-разрядными значениями. Но что еще более важно, с отрицательными числами она действует не так, как `Math.floor (..)`!
 
 ```js
 Math.floor( -49.6 );	// -50
 ~~-49.6;				// -49
 ```
 
-Setting the `Math.floor(..)` difference aside, `~~x` can truncate to a (32-bit) integer. But so does `x | 0`, and seemingly with (slightly) *less effort*.
+Оставляя в стороне отличие `Math.floor(..)`, `~~x` усекает до (32-разрядного) целого числа. Но то же самое делает и `x | 0`, и, по-видимому, с (немного) *меньшими усилиями*.
 
-So, why might you choose `~~x` over `x | 0`, then? Operator precedence (see Chapter 5):
+Итак, почему же тогда вы могли бы выбрать `~~x` вместо `x | 0`? Приоритет операторов (см. Главу 5):
 
 ```js
 ~~1E20 / 10;		// 166199296
@@ -665,13 +664,13 @@ So, why might you choose `~~x` over `x | 0`, then? Operator precedence (see Chap
 (1E20 | 0) / 10;	// 166199296
 ```
 
-Just as with all other advice here, use `~` and `~~` as explicit mechanisms for "coercion" and value transformation only if everyone who reads/writes such code is properly aware of how these operators work!
+Как и во всех других советах здесь, используйте `~` и `~~` в качестве явного механизма "приведения" и преобразования значений только в том случае, если каждый, кто читает/пишет такой код, в курсе, как работают эти операторы! 
 
-### Explicitly: Parsing Numeric Strings
+### Явно: Парсинг числовых строк
 
-A similar outcome to coercing a `string` to a `number` can be achieved by parsing a `number` out of a `string`'s character contents. There are, however, distinct differences between this parsing and the type conversion we examined above.
+Аналогичный приведению `string` к `number` результат можно получить путем выявления чисел в символах строки. Однако есть явные различия между таким парсингом и преобразованием типов, рассмотренным ранее.
 
-Consider:
+Взгляните:
 
 ```js
 var a = "42";
@@ -684,21 +683,21 @@ Number( b );	// NaN
 parseInt( b );	// 42
 ```
 
-Parsing a numeric value out of a string is *tolerant* of non-numeric characters -- it just stops parsing left-to-right when encountered -- whereas coercion is *not tolerant* and fails resulting in the `NaN` value.
+Парсинг числового значения из строки *терпим* к нечисловым символам - он просто прекращает синтаксический анализ слева направо при их обнаружении. Приведение же *не терпимо* и приводит к значению `NaN`.
 
-Parsing should not be seen as a substitute for coercion. These two tasks, while similar, have different purposes. Parse a `string` as a `number` when you don't know/care what other non-numeric characters there may be on the right-hand side. Coerce a `string` (to a `number`) when the only acceptable values are numeric and something like `"42px"` should be rejected as a `number`.
+Парсинг не следует рассматривать как замену приведению. Эти две задачи, хотя и схожи, имеют разные цели. Разбирайте `string` как `number`, когда вы не знаете / неважно, появятся ли нечисловые символы с правой стороны. Приводите `string` (к `number`), когда допустимы лишь числовые значения, а что-то вроде `"42px"` должно быть отклонено.
 
-**Tip:** `parseInt(..)` has a twin, `parseFloat(..)`, which (as it sounds) pulls out a floating-point number from a string.
+**Совет:** `parseInt(..)` имеет двойника, `parseFloat(..)`, который (как понятно) извлекает из строки число с плавающей запятой.
 
-Don't forget that `parseInt(..)` operates on `string` values. It makes absolutely no sense to pass a `number` value to `parseInt(..)`. Nor would it make sense to pass any other type of value, like `true`, `function(){..}` or `[1,2,3]`.
+Не забывайте, что `parseInt(..)` работает со значениями `string`. Нет абсолютно никакого смысла передавать значение `number` в `parseInt(..)`. Также не имеет смысла передавать значение любого другого типа, например, `true`, `function(){..}` или `[1,2,3]`.
 
-If you pass a non-`string`, the value you pass will automatically be coerced to a `string` first (see "`ToString`" earlier), which would clearly be a kind of hidden *implicit* coercion. It's a really bad idea to rely upon such a behavior in your program, so never use `parseInt(..)` with a non-`string` value.
+Если вы передаете значение, отличное от `string`, то оно сначала автоматически приводится в `string` (см. "`ToString`" выше), что очевидно своего рода скрытое *неявное* приведение. Это действительно плохая идея полагаться на такое поведение в вашей программе, поэтому никогда не используйте `parseInt(..)` со значением, отличным от `string`.
 
-Prior to ES5, another gotcha existed with `parseInt(..)`, which was the source of many JS programs' bugs. If you didn't pass a second argument to indicate which numeric base (aka radix) to use for interpreting the numeric `string` contents, `parseInt(..)` would look at the beginning character(s) to make a guess.
+До ES5 была другая ошибка с `parseInt(..)`, которая служила источником ошибок во многих программах на JS. Если вы не передавали второй аргумент (radix), чтобы обозначить, какую систему счисления использовать для интерпретации строки, `parseInt(..)` анализировала первые символы строки и делала предположения.
 
-If the first two characters were `"0x"` or `"0X"`, the guess (by convention) was that you wanted to interpret the `string` as a hexadecimal (base-16) `number`. Otherwise, if the first character was `"0"`, the guess (again, by convention) was that you wanted to interpret the `string` as an octal (base-8) `number`.
+Если первые два символа `"0x"` или `"0X"`, предполагалось (по соглашению), что вы хотели интерпретировать `string` как шестнадцатеричное `number` (основание - 16). Иначе, если первый символ `"0"`, предполагалось (опять же, по соглашению), что вы хотели интерпретировать `string` как восьмеричное `number` (основание - 8).
 
-Hexadecimal `string`s (with the leading `0x` or `0X`) aren't terribly easy to get mixed up. But the octal number guessing proved devilishly common. For example:
+Шестнадцатеричную строку (с начальным значением `0x` или `0X`) не так-то просто перепутать. Но угадывание восьмеричных чисел оказалось дьявольским явлением. Например:
 
 ```js
 var hour = parseInt( selectedHour.value );
@@ -707,42 +706,42 @@ var minute = parseInt( selectedMinute.value );
 console.log( "The time you selected was: " + hour + ":" + minute);
 ```
 
-Seems harmless, right? Try selecting `08` for the hour and `09` for the minute. You'll get `0:0`. Why? because neither `8` nor `9` are valid characters in octal base-8.
+Выглядит безобидным, правда? Попробуйте взять `08` для часа и `09` для минуты. Вы получите `0:0`. Почему? потому что ни `8`, ни `9` не являются допустимыми символами в восьмеричной системе.
 
-The pre-ES5 fix was simple, but so easy to forget: **always pass `10` as the second argument**. This was totally safe:
+До ES5 заплатка была простой, но её так легко забыть: **всегда передавайте `10` в качестве второго аргумента**. Это было абсолютно безопасно:
 
 ```js
 var hour = parseInt( selectedHour.value, 10 );
 var minute = parseInt( selectedMiniute.value, 10 );
 ```
 
-As of ES5, `parseInt(..)` no longer guesses octal. Unless you say otherwise, it assumes base-10 (or base-16 for `"0x"` prefixes). That's much nicer. Just be careful if your code has to run in pre-ES5 environments, in which case you still need to pass `10` for the radix.
+Начиная с ES5, `parseInt(..)` больше не угадывает восьмеричные числа. Если вы не скажете обратное, он предполагает базу - 10 (или базу - 16 для префиксов `"0x"`). Это гораздо приятнее. Просто будьте осторожны, если ваш код должен выполняться в окружении до ES5.В этом случае вам нужно передать `10` в radix (основание).
 
-#### Parsing Non-Strings
+#### Парсинг не строк
 
-One somewhat infamous example of `parseInt(..)`'s behavior is highlighted in a sarcastic joke post a few years ago, poking fun at this JS behavior:
+Один печально известный пример поведения `parseInt(..)` был опубликован в саркастически-шутливом посте несколько лет назад:
 
 ```js
 parseInt( 1/0, 19 ); // 18
 ```
 
-The assumptive (but totally invalid) assertion was, "If I pass in Infinity, and parse an integer out of that, I should get Infinity back, not 18." Surely, JS must be crazy for this outcome, right?
+Предположительное (но совершенно неверное) утверждение гласило: "Если я передам Infinity и разберу её в целое число, то я должен получить Infinity, а не 18". Вероятно, JS совсем без ума раз дает такой результат, верно?
 
-Though this example is obviously contrived and unreal, let's indulge the madness for a moment and examine whether JS really is that crazy.
+Хотя этот пример явно надуман и нереален, давайте на мгновение предадимся безумию и посмотрим, действительно ли JS настолько дурацкий.
 
-First off, the most obvious sin committed here is to pass a non-`string` to `parseInt(..)`. That's a no-no. Do it and you're asking for trouble. But even if you do, JS politely coerces what you pass in into a `string` that it can try to parse.
+Во-первых, самый очевидный грех, совершенный здесь, заключается в передаче не-`string` в `parseInt(..)`. Этого не должно быть. Делая так, ты напрашиваешься на неприятности. Но даже совершая такое, JS вежливо приведет то, что вы передаете, в `string`, которую он затем может попытаться распарсить.
 
-Some would argue that this is unreasonable behavior, and that `parseInt(..)` should refuse to operate on a non-`string` value. Should it perhaps throw an error? That would be very Java-like, frankly. I shudder at thinking JS should start throwing errors all over the place so that `try..catch` is needed around almost every line.
+Некоторые могут возразить, что это неоправданное поведение, и что `parseInt(..)` должен отказаться работать со значением, отличным от `string`. Возможно, это должно выдавать ошибку? Честно говоря, это было бы очень похоже на Java. Я содрогаюсь при мысли, что JS должен начать выдавать ошибки повсюду, так что `try..catch` требуется почти в каждой строке.
 
-Should it return `NaN`? Maybe. But... what about:
+Должен ли он возвращать `NaN`? Может быть. Но... как насчет:
 
 ```js
 parseInt( new String( "42") );
 ```
 
-Should that fail, too? It's a non-`string` value. If you want that `String` object wrapper to be unboxed to `"42"`, then is it really so unusual for `42` to first become `"42"` so that `42` can be parsed back out?
+Потерпит ли это тоже неудачу? Это значение, отличное от `string`. Если вы хотите, чтобы объект-обёртка `String` был распакован в `"42"`, то действительно ли так необычно, что `42` сначала становится `"42"`, чтобы потом превратиться в `42`?
 
-I would argue that this half-*explicit*, half-*implicit* coercion that can occur can often be a very helpful thing. For example:
+Я бы сказал, что это наполовину *явное* и наполовину *неявное* приведение, которое может иметь место, и может быть очень полезным. Например:
 
 ```js
 var a = {
@@ -753,37 +752,37 @@ var a = {
 parseInt( a ); // 42
 ```
 
-The fact that `parseInt(..)` forcibly coerces its value to a `string` to perform the parse on is quite sensible. If you pass in garbage, and you get garbage back out, don't blame the trash can -- it just did its job faithfully.
+Тот, что `parseInt(..)` принудительно приводит значение к `string` перед парсингом, вполне разумно. Если вы кладёте мусор и вынимаете его обратно, не вините мусорное ведро - оно просто добросовестно выполняло свою работу.
 
-So, if you pass in a value like `Infinity` (the result of `1 / 0` obviously), what sort of `string` representation would make the most sense for its coercion? Only two reasonable choices come to mind: `"Infinity"` and `"∞"`. JS chose `"Infinity"`. I'm glad it did.
+Итак, если вы передаете значение типа `Infinity` (очевидный результат `1 / 0`), какое `string`-представление имеет наибольший смысл для его дальнейшего приведения? На ум приходят только два разумных варианта: `"Infinity"` и `"∞"`. JS выбрал `"Infinity"` и я рад, что он так поступил.
 
-I think it's a good thing that **all values** in JS have some sort of default `string` representation, so that they aren't mysterious black boxes that we can't debug and reason about.
+Я думаю, это хорошо, что **все значения** в JS имеют какое-то `string` представление по умолчанию, поэтому они не таинственные черные ящики, которые мы не можем отлаживать и анализировать их.
 
-Now, what about base-19? Obviously, completely bogus and contrived. No real JS programs use base-19. It's absurd. But again, let's indulge the ridiculousness. In base-19, the valid numeric characters are `0` - `9` and `a` - `i` (case insensitive).
+Хорошо, что насчет основания 19? Очевидно, совершенно фальшивая и надуманная. Никакие реальные JS-программы не используют основание 19. Это абсурд. Но опять же, давайте предадимся нелепице. В системе с основанием 19 допустимыми числовыми символами являются `0` - `9` и `a` - `i` (без учета регистра).
 
-So, back to our `parseInt( 1/0, 19 )` example. It's essentially `parseInt( "Infinity", 19 )`. How does it parse? The first character is `"I"`, which is value `18` in the silly base-19. The second character `"n"` is not in the valid set of numeric characters, and as such the parsing simply politely stops, just like when it ran across `"p"` in `"42px"`.
+Итак, вернемся к нашему примеру `parseInt( 1/0, 19 )`. По сути, это `parseInt( "Infinity", 19 )`. Как это анализируется? Первый символ - `"I"` - в глупой девятнадцатеричной системе имеет значение `18`. Второй символ `"n"` в допустимом наборе числовых символов отсутствует, и поэтому анализ просто вежливо останавливается, точно так же, как когда он наткнулся на `"p"` в `"42px"`.
 
-The result? `18`. Exactly like it sensibly should be. The behaviors involved to get us there, and not to an error or to `Infinity` itself, are **very important** to JS, and should not be so easily discarded.
+Результат? `18`. Получилось именно так, как и должно быть. Логика привела нас сюда, а не к ошибке или к `Infinity`, что **очень важно** для JS, и поэтому его не следует так легко отбрасывать.
 
-Other examples of this behavior with `parseInt(..)` that may be surprising but are quite sensible include:
+Приведём ещё примеры такого поведения `parseInt(..)`, которые могут показаться удивительными, но которые вполне разумные:
 
 ```js
-parseInt( 0.000008 );		// 0   ("0" from "0.000008")
-parseInt( 0.0000008 );		// 8   ("8" from "8e-7")
-parseInt( false, 16 );		// 250 ("fa" from "false")
-parseInt( parseInt, 16 );	// 15  ("f" from "function..")
+parseInt( 0.000008 );		// 0   ("0" из "0.000008")
+parseInt( 0.0000008 );		// 8   ("8" из "8e-7")
+parseInt( false, 16 );		// 250 ("fa" из "false")
+parseInt( parseInt, 16 );	// 15  ("f" из "function..")
 
 parseInt( "0x10" );			// 16
 parseInt( "103", 2 );		// 2
 ```
 
-`parseInt(..)` is actually pretty predictable and consistent in its behavior. If you use it correctly, you'll get sensible results. If you use it incorrectly, the crazy results you get are not the fault of JavaScript.
+`parseInt(..)` на самом деле довольно предсказуем и последователен в своем поведении. Если вы будете использовать его правильно, вы получите разумные результаты. Если вы используете его неправильно, сумасшедшие результаты, которые вы получаете, не являются ошибкой JavaScript.
 
-### Explicitly: * --> Boolean
+### Явно: * --> Булево значение
 
-Now, let's examine coercing from any non-`boolean` value to a `boolean`.
+Теперь давайте рассмотрим приведение любого значения, не являющегося `boolean`, к `boolean`.
 
-Just like with `String(..)` and `Number(..)` above, `Boolean(..)` (without the `new`, of course!) is an explicit way of forcing the `ToBoolean` coercion:
+Точно так же, как со `String(..)` и `Number(..)` выше, `Boolean(..)` (без `new`, конечно!) - это явный способ приведения `ToBoolean`.:
 
 ```js
 var a = "0";
@@ -805,9 +804,9 @@ Boolean( f ); // false
 Boolean( g ); // false
 ```
 
-While `Boolean(..)` is clearly explicit, it's not at all common or idiomatic.
+Хотя `Boolean (..)` явно выражает намерение, он мало распространен или не идиоматичен.
 
-Just like the unary `+` operator coerces a value to a `number` (see above), the unary `!` negate operator explicitly coerces a value to a `boolean`. The *problem* is that it also flips the value from truthy to falsy or vice versa. So, the most common way JS developers explicitly coerce to `boolean` is to use the `!!` double-negate operator, because the second `!` will flip the parity back to the original:
+Точно так же, как унарный оператор `+` преобразует значение в `number` (см. выше), унарный оператор отрицания `!` явно преобразует значение в `boolean`. *Проблема* заключается в том, что он также меняет значение с истинного на ложное или наоборот. Поэтому, самый популярный способ явного приведения к `boolean`, к которому прибегают JS разработчики, - это оператор двойного отрицания `!!`. В нём второй `!` вернет исходный `true`/`false`:
 
 ```js
 var a = "0";
@@ -829,9 +828,9 @@ var g;
 !!g;	// false
 ```
 
-Any of these `ToBoolean` coercions would happen *implicitly* without the `Boolean(..)` or `!!`, if used in a `boolean` context such as an `if (..) ..` statement. But the goal here is to explicitly force the value to a `boolean` to make it clearer that the `ToBoolean` coercion is intended.
+Любое приведение `ToBoolean` выполняется *неявно* без `Boolean(..)` или `!!`, если используется в `boolean` контексте, таком как оператор `if (..) ..`. Но наша цель - это явное приведение значения к `boolean`, чтобы было понятно, что мы используем намеренное приведение `ToBoolean`.
 
-Another example use-case for explicit `ToBoolean` coercion is if you want to force a `true`/`false` value coercion in the JSON serialization of a data structure:
+Другой пример использования явного приведения `ToBoolean` - это, когда вы хотите выполнить приведение к `true`/`false` при сериализации структуры данных в формате JSON:
 
 ```js
 var a = [
@@ -845,7 +844,7 @@ JSON.stringify( a ); // "[1,null,2,null]"
 
 JSON.stringify( a, function(key,val){
 	if (typeof val == "function") {
-		// force `ToBoolean` coercion of the function
+		// выполнить приведение `ToBoolean` для функции
 		return !!val;
 	}
 	else {
@@ -855,7 +854,7 @@ JSON.stringify( a, function(key,val){
 // "[1,true,2,true]"
 ```
 
-If you come to JavaScript from Java, you may recognize this idiom:
+Если вы пришли в JavaScript из Java, вы можете узнать эту идиому:
 
 ```js
 var a = 42;
@@ -863,13 +862,13 @@ var a = 42;
 var b = a ? true : false;
 ```
 
-The `? :` ternary operator will test `a` for truthiness, and based on that test will either assign `true` or `false` to `b`, accordingly.
+Тернарный оператор `? :` проверит `a` на правдивость и на основе этого присвоит `b` либо `true`, либо `false`.
 
-On its surface, this idiom looks like a form of *explicit* `ToBoolean`-type coercion, since it's obvious that only either `true` or `false` come out of the operation.
+На первый взгляд эта идиома выглядит как форма *явного* приведения `ToBoolean`, поскольку, очевидно, операция выдает `true` или `false`.
 
-However, there's a hidden *implicit* coercion, in that the `a` expression has to first be coerced to `boolean` to perform the truthiness test. I'd call this idiom "explicitly implicit." Furthermore, I'd suggest **you should avoid this idiom completely** in JavaScript. It offers no real benefit, and worse, masquerades as something it's not.
+Однако присутствует скрытое *неявное* приведение, заключающееся в том, что выражение `a` сначала должно быть приведено в `boolean` для прохождения теста на правдивость. Я бы назвал эту идиому "явно неявной". Кроме того, я бы посоветовал вам **всегда избегайте эту идиому** в JavaScript. Это не дает никакой пользы, но, что куда хуже, выдает себя за то, чем оно не является.
 
-`Boolean(a)` and `!!a` are far better as *explicit* coercion options.
+`Boolean(a)` и `!!a` намного лучше в качестве *явных* вариантов приведения.
 
 ## Implicit Coercion
 
