@@ -1881,17 +1881,17 @@ click( "#mybtn", function(evt){
 
 Но помимо безобразия, связанного с необходимостью определять всю цепочку промисов внутри обработчика события, эта конструкция в некоторых отношениях нарушает идею разделения обязанностей/возможностей (SoC). Вполне возможно, что вы захотите определить обработчик события в другом месте вашего кода, а не там, где вы определяете *ответ* на событие (цепочка промисов). Это довольно неудобно делать в этом шаблоне без вспомогательных механизмов..
 
-**Примечание** Another way of articulating this limitation is that it'd be nice if we could construct some sort of "observable" that we can subscribe a Promise chain to. There are libraries that have created these abstractions (such as RxJS -- http://rxjs.codeplex.com/), but the abstractions can seem so heavy that you can't even see the nature of Promises anymore. Such heavy abstraction brings important questions to mind such as whether (sans Promises) these mechanisms are as *trustable* as Promises themselves have been designed to be. We'll revisit the "Observable" pattern in Appendix B.
+**Примечание** Другой способ сформулировать это ограничение заключается в том, что было бы неплохо, если бы мы могли создать некую "наблюдаемую штуку", на которую мы могли бы подписать цепочку промисов. Существуют библиотеки, которые создали такие абстракции (такие как RxJS -- http://rxjs.codeplex.com/), но абстракции могут показаться настолько тяжелыми, что вы больше не можете видеть природу промисов. Такая тяжелая абстракция заставляет задуматься о таких важных вопросах, как: являются ли (вне промисов) эти механизмы настолько *надежными*, насколько сами промисы были разработаны для этого. Мы вернемся к шаблону "Наблюдаемый" в Приложении B.
 
-### Inertia
+### Инерция
 
-One concrete barrier to starting to use Promises in your own code is all the code that currently exists which is not already Promise-aware. If you have lots of callback-based code, it's far easier to just keep coding in that same style.
+Одним из конкретных препятствий для начала использования промисов в вашем собственном коде является весь существующий код, который еще не поддерживает промисы. Если у вас много кода, основанного на колбеках, гораздо проще просто продолжать кодировать в том же стиле.
 
-"A code base in motion (with callbacks) will remain in motion (with callbacks) unless acted upon by a smart, Promises-aware developer."
+"Кодовая база в движении (с колбеками) будет оставаться в движении (с колбеками), если не будут приняты меры со стороны умного, знающего промисы разработчика."
 
-Promises offer a different paradigm, and as such, the approach to the code can be anywhere from just a little different to, in some cases, radically different. You have to be intentional about it, because Promises will not just naturally shake out from the same ol' ways of doing code that have served you well thus far.
+Промисы предлагают другую парадигму, и поэтому подход к коду может быть разным - от просто немного другого до, в некоторых случаях, радикально другого. Вы должны быть целенаправленными в этом, потому что промисы не будут просто естественным образом вытекать из тех же старых способов выполнения кода, которые до сих пор хорошо вам служили.
 
-Consider a callback-based scenario like the following:
+Рассмотрим следующий сценарий, основанный на колбеке:
 
 ```js
 function foo(x,y,cb) {
@@ -1911,14 +1911,14 @@ foo( 11, 31, function(err,text) {
 } );
 ```
 
-Is it immediately obvious what the first steps are to convert this callback-based code to Promise-aware code? Depends on your experience. The more practice you have with it, the more natural it will feel. But certainly, Promises don't just advertise on the label exactly how to do it -- there's no one-size-fits-all answer -- so the responsibility is up to you.
+Очевидно ли сразу, каковы первые шаги по преобразованию этого кода, основанного на колбеках, в код, ориентированный на промисы? Зависит от вашего опыта. Чем больше у вас будет практики, тем естественнее оно будет ощущаться. Но, безусловно, Промисы не только в том, что на этикетке написано, как именно это сделать - универсального ответа не существует, так что ответственность лежит на вас.
 
-As we've covered before, we definitely need an Ajax utility that is Promise-aware instead of callback-based, which we could call `request(..)`. You can make your own, as we have already. But the overhead of having to manually define Promise-aware wrappers for every callback-based utility makes it less likely you'll choose to refactor to Promise-aware coding at all.
+Как мы уже писали ранее, нам определенно требуется Ajax-функция, которая поддерживает промисы вместо колбеков, которую мы могли бы назвать `request(..)`. Вы можете сделать свою собственную, как мы уже делали. Но накладные расходы, связанные с необходимостью вручную определять промис-совместимые обертки для каждой функции, основанной на колбеках, снижают вероятность того, что вы вообще решите перейти на промис-совместимое кодирование.
 
-Promises offer no direct answer to that limitation. Most Promise libraries do offer a helper, however. But even without a library, imagine a helper like this:
+Промисы не дают прямого ответа на это ограничение. Однако, большинство библиотек промисов предлагают вспомогательные средства. НО даже без библиотеки, представьте вспомогательный код подобный этому:
 
 ```js
-// polyfill-safe guard check
+// защитная проверка в стиле безопасного полифила
 if (!Promise.wrap) {
 	Promise.wrap = function(fn) {
 		return function() {
@@ -1942,9 +1942,9 @@ if (!Promise.wrap) {
 }
 ```
 
-OK, that's more than just a tiny trivial utility. However, although it may look a bit intimidating, it's not as bad as you'd think. It takes a function that expects an error-first style callback as its last parameter, and returns a new one that automatically creates a Promise to return, and substitutes the callback for you, wired up to the Promise fulfillment/rejection.
+Хорошо, это больше, чем просто маленькая тривиальная утилита. Однако, хотя это может выглядеть немного пугающе, все не так плохо, как вы думаете. Она принимает функцию, которая ожидает колбек в стиле ошибка-первым-аргументом, как  свой последний параметр и возвращает новый, который автоматически создает промис в качестве возвращаемого значения и подставляет колбек за вас, присоединяя к завершению/отказу промиса.
 
-Rather than waste too much time talking about *how* this `Promise.wrap(..)` helper works, let's just look at how we use it:
+Вместо того, чтобы тратить много времени на обсуждение того, *как* эта вспомогательная функция  `Promise.wrap(..)` работает, давайте просто взглянем на то, как мы ее используем:
 
 ```js
 var request = Promise.wrap( ajax );
@@ -1954,28 +1954,28 @@ request( "http://some.url.1/" )
 ..
 ```
 
-Wow, that was pretty easy!
+Ого, это было довольно просто!
 
-`Promise.wrap(..)` does **not** produce a Promise. It produces a function that will produce Promises. In a sense, a Promise-producing function could be seen as a "Promise factory." I propose "promisory" as the name for such a thing ("Promise" + "factory").
+`Promise.wrap(..)` **не** создает промис. Она создает функцию, которая создаст промисы. В каком-то смысле, промисо-генерирующая функция может рассматриваться как "фабрика промисов". Я предлагаю "promisory" в качестве названия для такой вещи ("Promise" + "factory" (промис + фабрика)).
 
-The act of wrapping a callback-expecting function to be a Promise-aware function is sometimes referred to as "lifting" or "promisifying". But there doesn't seem to be a standard term for what to call the resultant function other than a "lifted function", so I like "promisory" better as I think it's more descriptive.
+Процесс обертывания функции, ожидающей колбек, в функцию с поддержкой промисов иногда называют "поднятием" (lifting) или "промисификацией" (promisifying). Но, похоже, нет стандартного термина для того, как следует называть результирующую функцию, кроме как "поднятая функция", поэтому мне больше нравится "промисофабрика (promisory)", поскольку я считаю его более описательным.
 
-**Примечание** Promisory isn't a made-up term. It's a real word, and its definition means to contain or convey a promise. That's exactly what these functions are doing, so it turns out to be a pretty perfect terminology match!
+**Примечание** Promisory - это не выдуманный термин. Это реальное слово, и его определение означает "содержать или передать промис". Именно это и делают эти функции, так что получается довольно идеальное терминологическое соответствие!
 
-So, `Promise.wrap(ajax)` produces an `ajax(..)` promisory we call `request(..)`, and that promisory produces Promises for Ajax responses.
+Таким образом, `Promise.wrap(ajax)` создает промисофабрику для `ajax(..)`, который мы назвали `request(..)` и эта промисофабрика создает промисы для Ajax-ответов.
 
-If all functions were already promisories, we wouldn't need to make them ourselves, so the extra step is a tad bit of a shame. But at least the wrapping pattern is (usually) repeatable so we can put it into a `Promise.wrap(..)` helper as shown to aid our promise coding.
+Если бы все функции уже были бы промисофабриками, нам бы не пришлось создавать из самим, так что лишний шаг - это немного досадно. Но, по крайней мере, шаблон упаковки (обычно) повторяемый, поэтому мы можем поместить его во вспомогательную функцию `Promise.wrap(...)`, как показано на примере, чтобы облегчить кодирование промисов.
 
-So back to our earlier example, we need a promisory for both `ajax(..)` and `foo(..)`:
+Итак, возвращаясь к нашему предыдущему примеру, нам нужна промисофабрика для обоих `ajax(..)` и `foo(..)`:
 
 ```js
-// make a promisory for `ajax(..)`
+// создать промисофабрику для `ajax(..)`
 var request = Promise.wrap( ajax );
 
-// refactor `foo(..)`, but keep it externally
-// callback-based for compatibility with other
-// parts of the code for now -- only use
-// `request(..)`'s promise internally.
+// отрефакторить `foo(..)`, но оставить его снаружи
+// на основе колбека для совместимости с другими
+// частями кода пока что, и использовать промис из
+// `request(..)` только внутри.
 function foo(x,y,cb) {
 	request(
 		"http://some.url.1/?x=" + x + "&y=" + y
@@ -1988,11 +1988,11 @@ function foo(x,y,cb) {
 	);
 }
 
-// now, for this code's purposes, make a
-// promisory for `foo(..)`
+// теперь, для целей данного кода, сделаем
+// промисофабрику для `foo(..)`
 var betterFoo = Promise.wrap( foo );
 
-// and use the promisory
+// и используем эту промисофабрику
 betterFoo( 11, 31 )
 .then(
 	function fulfilled(text){
@@ -2004,13 +2004,13 @@ betterFoo( 11, 31 )
 );
 ```
 
-Of course, while we're refactoring `foo(..)` to use our new `request(..)` promisory, we could just make `foo(..)` a promisory itself, instead of remaining callback-based and needing to make and use the subsequent `betterFoo(..)` promisory. This decision just depends on whether `foo(..)` needs to stay callback-based compatible with other parts of the code base or not.
+Конечно, в то время как мы рефакторим `foo(..)`, чтобы использовать нашу новую промисофабрику `request(..)`, мы могли бы просто превратить саму `foo(..)` в промисофабрику, вместо того, чтобы оставлять основу из колбеков и необходимость создания и использования последующей промисофабрики `betterFoo(..)`. Это решение зависит только от того. надо ли оставлять `foo(..)`  колбеко-совместимой с другими частями кода или нет.
 
-Consider:
+Представим:
 
 ```js
-// `foo(..)` is now also a promisory because it
-// delegates to the `request(..)` promisory
+// `foo(..)` теперь является промисофабрикой, поскольку она
+// делегирует работу промисофабрике `request(..)`
 function foo(x,y) {
 	return request(
 		"http://some.url.1/?x=" + x + "&y=" + y
@@ -2022,13 +2022,13 @@ foo( 11, 31 )
 ..
 ```
 
-While ES6 Promises don't natively ship with helpers for such promisory wrapping, most libraries provide them, or you can make your own. Either way, this particular limitation of Promises is addressable without too much pain (certainly compared to the pain of callback hell!).
+В то время как ES6 промисы не оснащены нативно вспомогательными функциями для такого обертывания с помощью промисофабрик, многие библиотеки предоставляют их, либо вы можете сами сделать свои собственные. В любом случае, это конкретное ограничение промисов можно устранить без особых проблем. (конечно, по сравнению с муками ада обратных вызовов!).
 
-### Promise Uncancelable
+### Неотменяемый промис
 
-Once you create a Promise and register a fulfillment and/or rejection handler for it, there's nothing external you can do to stop that progression if something else happens to make that task moot.
+Как только вы создадите промис и зарегистрируете для него обработчик завершения и/или отказа, не будет ничего снаружи, что вы могли бы сделать, чтобы остановить это движение, если произойдет что-то еще, что сделает эту задачу неактуальной.
 
-**Примечание** Many Promise abstraction libraries provide facilities to cancel Promises, but this is a terrible idea! Many developers wish Promises had natively been designed with external cancelation capability, but the problem is that it would let one consumer/observer of a Promise affect some other consumer's ability to observe that same Promise. This violates the future-value's trustability (external immutability), but morever is the embodiment of the "action at a distance" anti-pattern (http://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29). Regardless of how useful it seems, it will actually lead you straight back into the same nightmares as callbacks.
+**Примечание** Многие библиотеки абстракций над промисами предоставляют возможности для отмены промисов, но это ужасная идея! Many developers wish Promises had natively been designed with external cancelation capability, but the problem is that it would let one consumer/observer of a Promise affect some other consumer's ability to observe that same Promise. This violates the future-value's trustability (external immutability), but morever is the embodiment of the "action at a distance" anti-pattern (http://en.wikipedia.org/wiki/Action_at_a_distance_%28computer_programming%29). Regardless of how useful it seems, it will actually lead you straight back into the same nightmares as callbacks.
 
 Consider our Promise timeout scenario from earlier:
 
