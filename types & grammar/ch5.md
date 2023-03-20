@@ -532,9 +532,9 @@ else {
 
 Конечно, идиома `else if` чрезвычайно распространена и приводит к уменьшению отступа на один уровень, поэтому она так привлекательна. Какой бы способ вы ни выбрали, просто пишите явно в своем собственном руководстве по стилю/правилах и не предполагайте, что такие вещи, как `else if`, являются прямыми грамматическими правилами.
 
-## Operator Precedence
+## Приоритет оператора
 
-As we covered in Chapter 4, JavaScript's version of `&&` and `||` are interesting in that they select and return one of their operands, rather than just resulting in `true` or `false`. That's easy to reason about if there are only two operands and one operator.
+Как мы рассмотрели в Главе 4, `&&` и `||` в Javascript интересны тем, что они выбирают и возвращают один из своих операндов, а не просто приводят к `true` или `false`. Это легко анализировать, если есть только два операнда и один оператор.
 
 ```js
 var a = 42;
@@ -544,7 +544,7 @@ a && b;	// "foo"
 a || b;	// 42
 ```
 
-But what about when there's two operators involved, and three operands?
+А, если задействованы два оператора и три операнда, что тогда?
 
 ```js
 var a = 42;
@@ -555,13 +555,13 @@ a && b || c; // ???
 a || b && c; // ???
 ```
 
-To understand what those expressions result in, we're going to need to understand what rules govern how the operators are processed when there's more than one present in an expression.
+Чтобы понять, какой результат этих выражений, нам нужно понять, какие правила регламентируют обработку операторов, когда их в выражении более одного.
 
-These rules are called "operator precedence."
+Эти правила называются "приоритетом операторов".
 
-I bet most readers feel they have a decent grasp on operator precedence. But as with everything else we've covered in this book series, we're going to poke and prod at that understanding to see just how solid it really is, and hopefully learn a few new things along the way.
+Бьюсь об заклад, большинство читателей считают, что они неплохо разбираются в приоритете операторов. Но, как и во всем остальном, что мы рассмотрели в этой серии книг, мы собираемся испытать это понимание на прочность, и, надеемся, узнать новое на этом пути.
 
-Recall the example from above:
+Вспомним приведенный выше пример:
 
 ```js
 var a = 42, b;
@@ -571,7 +571,7 @@ a;	// 43
 b;	// 43
 ```
 
-But what would happen if we remove the `( )`?
+А какой будет результат, если убрать `( )`?
 
 ```js
 var a = 42, b;
@@ -581,13 +581,13 @@ a;	// 43
 b;	// 42
 ```
 
-Wait! Why did that change the value assigned to `b`?
+Погодите! Почему это изменило значение, присвоенное `b`?
 
-Because the `,` operator has a lower precedence than the `=` operator. So, `b = a++, a` is interpreted as `(b = a++), a`. Because (as we explained earlier) `a++` has *after side effects*, the assigned value to `b` is the value `42` before the `++` changes `a`.
+Потому что оператор `,` имеет более низкий приоритет, чем оператор `=`. Поэтому, `b = a++, a` интерпретируется как `(b = a++), a`. Поскольку (как мы выяснили ранее) `a++` имеет *пост-побочные эффекты*, `b` присвоено значение `42` до того, как `++` изменит `a`.
 
-This is just a simple matter of needing to understand operator precedence. If you're going to use `,` as a statement-series operator, it's important to know that it actually has the lowest precedence. Every other operator will more tightly bind than `,` will.
+Это простейший пример необходимости понимать приоритет оператора. Если вы планируете использовать `,` в качестве инструкции серии операторов, то важно знать, что он имеет наименьший приоритет. Любой другой оператор будет использован раньше, чем `,`.
 
-Now, recall this example from above:
+Теперь вспомним другой рассмотренный ранее пример:
 
 ```js
 if (str && (matches = str.match( /[aeiou]/g ))) {
@@ -595,11 +595,11 @@ if (str && (matches = str.match( /[aeiou]/g ))) {
 }
 ```
 
-We said the `( )` around the assignment is required, but why? Because `&&` has higher precedence than `=`, so without the `( )` to force the binding, the expression would instead be treated as `(str && matches) = str.match..`. But this would be an error, because the result of `(str && matches)` isn't going to be a variable, but instead a value (in this case `undefined`), and so it can't be the left-hand side of an `=` assignment!
+Мы говорили, что `( )` вокруг присваивания обязательны, но почему? Потому что `&&` имеет более высокий приоритет, чем `=`. Поэтому без принудительной группировки `( )` выражение интерпретировалось бы как `(str && matches) = str.match..`. И это инициировало бы ошибку, потому что результат `(str && matches)` будет не переменной, а значением (в данном случае `undefined`), и поэтому оно не может быть левой частью присваивания `=`!
 
-OK, so you probably think you've got this operator precedence thing down.
+Хорошо, итак, вы, вероятно, думаете, что эта проблема с приоритетом оператора у вас решена.
 
-Let's move on to a more complex example (which we'll carry throughout the next several sections of this chapter) to *really* test your understanding:
+Тогда, давайте перейдем к более сложному примеру (который мы рассмотрим в следующих разделах этой главы), чтобы *действительно* проверить ваше понимание:
 
 ```js
 var a = 42;
@@ -611,56 +611,56 @@ var d = a && b || c ? c || b ? a : c && b : a;
 d;		// ??
 ```
 
-OK, evil, I admit it. No one would write a string of expressions like that, right? *Probably* not, but we're going to use it to examine various issues around chaining multiple operators together, which *is* a very common task.
+Ладно, я признаю, - это зло. Никто не стал бы писать подобную строку набора инструкций, верно? *Вероятно*, нет, но мы используем её для изучения различных проблем, связанных с объединением нескольких операторов в цепочку, что *является* очень распространенной задачей.
 
-The result above is `42`. But that's not nearly as interesting as how we can figure out that answer without just plugging it into a JS program to let JavaScript sort it out.
+Результат выражения выше равен `42`. Но это не так интересно, как то, как мы нашли ответ, не запуская JS программу, дав ей его посчитать.
 
-Let's dig in.
+Давайте копнём.
 
-The first question -- it may not have even occurred to you to ask -- is, does the first part (`a && b || c`) behave like `(a && b) || c` or like `a && (b || c)`? Do you know for certain? Can you even convince yourself they are actually different?
+Первый вопрос - который вам, возможно, даже не пришёл в голову - в том, ведет ли себя первая часть (`a && b || c`) как `(a && b) || c` или как `a && (b || c)`? Вы уверены? Можете ли вы хотя бы себя убедить, что они действительно разные?
 
 ```js
 (false && true) || true;	// true
 false && (true || true);	// false
 ```
 
-So, there's proof they're different. But still, how does `false && true || true` behave? The answer:
+Итак, доказано, что они разные. И все же, как ведет себя `false && true || true`? Ответ:
 
 ```js
 false && true || true;		// true
 (false && true) || true;	// true
 ```
 
-So we have our answer. The `&&` operator is evaluated first and the `||` operator is evaluated second.
+Теперь у нас есть ответ. Оператор `&&` вычисляется первым, а оператор `||` вычисляется вторым.
 
-But is that just because of left-to-right processing? Let's reverse the order of operators:
+Но вызвано ли это обработкой слева направо? Давайте поменяем порядок операторов на обратный:
 
 ```js
 true || false && false;		// true
 
-(true || false) && false;	// false -- nope
-true || (false && false);	// true -- winner, winner!
+(true || false) && false;	// false -- нет
+true || (false && false);	// true -- победитель!
 ```
 
-Now we've proved that `&&` is evaluated first and then `||`, and in this case that was actually counter to generally expected left-to-right processing.
+Теперь мы доказали, что сначала вычисляется `&&`, а затем `||`, и в данном случае это шло явно в разрез с привычно ожидаемой обработкой слева направо.
 
-So what caused the behavior? **Operator precedence**.
+Так что же вызвало такое поведение? **Приоритет оператора**.
 
-Every language defines its own operator precedence list. It's dismaying, though, just how uncommon it is that JS developers have read JS's list.
+Каждый язык определяет свой список приоритетов операторов. То, насколько уникален он, приводит в отчаяние, так как JS разработчикам приходится лезть в него и читать.
 
-If you knew it well, the above examples wouldn't have tripped you up in the slightest, because you'd already know that `&&` is more precedent than `||`. But I bet a fair amount of readers had to think about it a little bit.
+Если бы вы хорошо его знали, то приведенные выше примеры ничуть не сбили бы вас с толку, потому что вы бы уже знали, что `&&` более приоритетен, чем `||`. Но, я уверен, изрядному числу читателей пришлось задуматься над этим.
 
-**Note:** Unfortunately, the JS spec doesn't really have its operator precedence list in a convenient, single location. You have to parse through and understand all the grammar rules. So we'll try to lay out the more common and useful bits here in a more convenient format. For a complete list of operator precedence, see "Operator Precedence" on the MDN site (* https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence).
+**Примечание:** К сожалению, в спецификации JS нет списка приоритетов операторов в одном удобном списке. Вы должны прошерстить и понять все правила грамматики. Поэтому мы постараемся описать здесь наиболее типичные и полезные ситуации в более удобной подаче. Полный список приоритетов операторов см. в разделе "Приоритет операторов" на сайте MDN *(https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Operator_Precedence)*.
 
-### Short Circuited
+### Короткий цикл вычислений
 
-In Chapter 4, we mentioned in a side note the "short circuiting" nature of operators like `&&` and `||`. Let's revisit that in more detail now.
+В дополнительном примечании Главы 4 мы упоминали о "коротком цикле вычислений" (short circuiting) таких операторов, как `&&` и `||`. Давайте вернемся к нему более подробно.
 
-For both `&&` and `||` operators, the right-hand operand will **not be evaluated** if the left-hand operand is sufficient to determine the outcome of the operation. Hence, the name "short circuited" (in that if possible, it will take an early shortcut out).
+Для обоих операторов `&&` и `||` правый операнд **не будет вычислен**, если для определения результата операции достаточно левого операнда. Отсюда и название "короткий цикл" (в том смысле, что возможно досрочное завершение).
 
-For example, with `a && b`, `b` is not evaluated if `a` is falsy, because the result of the `&&` operand is already certain, so there's no point in bothering to check `b`. Likewise, with `a || b`, if `a` is truthy, the result of the operand is already certain, so there's no reason to check `b`.
+Например, в `a && b` значение `b` не вычисляется, если `a` ложное, потому что результат операнда `&&` уже понятен, и нет смысла беспокоиться о проверке `b`. Аналогично, с `a || b`, если `a` правдиво, результат операнда также понятен, и нет резона проверять `b`.
 
-This short circuiting can be very helpful and is commonly used:
+Этот короткий цикл бывает очень полезным и широко используется:
 
 ```js
 function doSomething(opts) {
@@ -670,9 +670,9 @@ function doSomething(opts) {
 }
 ```
 
-The `opts` part of the `opts && opts.cool` test acts as sort of a guard, because if `opts` is unset (or is not an `object`), the expression `opts.cool` would throw an error. The `opts` test failing plus the short circuiting means that `opts.cool` won't even be evaluated, thus no error!
+`opts` в проверке `opts && opts.cool` действует как предохранитель, потому что, если `opts` не установлен (или не `object`), то `opts.cool` выдаст ошибку. При отрицательном результате проверки `opts` короткий цикл отменит проверку `opts.cool`, и никакой ошибки не возникнет!
 
-Similarly, you can use `||` short circuiting:
+Аналогично, вы можете использовать короткий цикл `||`:
 
 ```js
 function doSomething(opts) {
@@ -682,76 +682,76 @@ function doSomething(opts) {
 }
 ```
 
-Here, we're checking for `opts.cache` first, and if it's present, we don't call the `primeCache()` function, thus avoiding potentially unnecessary work.
+Здесь мы сначала проверяем наличие `opts.cache`, и если он есть, то не вызываем функцию `prime Cache()`, избегая таким образом потенциально лишней работы.
 
-### Tighter Binding
+### Более тесная связка
 
-But let's turn our attention back to that earlier complex statement example with all the chained operators, specifically the `? :` ternary operator parts. Does the `? :` operator have more or less precedence than the `&&` and `||` operators?
+Но давайте вновь обратим наше внимание на тот предыдущий пример инструкции с цепочкой операторов, в частности на тернарные операторы `? :`. Имеет ли оператор `? :` больший или меньший приоритет, чем `&&` и `||`?
 
 ```js
 a && b || c ? c || b ? a : c && b : a
 ```
 
-Is that more like this:
+Идентичен ли он этому:
 
 ```js
 a && b || (c ? c || (b ? a : c) && b : a)
 ```
 
-or this?
+или этому?
 
 ```js
 (a && b || c) ? (c || b) ? a : (c && b) : a
 ```
 
-The answer is the second one. But why?
+Правильный ответ второй. Но почему?
 
-Because `&&` is more precedent than `||`, and `||` is more precedent than `? :`.
+Потому что `&&` более приоритетный, чем `||`, а `||` более приоритетный, чем `? :`.
 
-So, the expression `(a && b || c)` is evaluated *first* before the `? :` it participates in. Another way this is commonly explained is that `&&` and `||` "bind more tightly" than `? :`. If the reverse was true, then `c ? c...` would bind more tightly, and it would behave (as the first choice) like `a && b || (c ? c..)`.
+Поэтому *первым* вычисляется выражение `(a && b || c)`, а затем `? :`, частью которого он является. Другой популярный вариант объяснения следующий: `&&` и `||` "более тесно связаны", чем `? :`. Если бы было верно обратное, то `c ? c...` было бы более тесно связано, и работал бы первый вариант - `a && b || (c ? c..)`.
 
-### Associativity
+### Ассоциативность
 
-So, the `&&` and `||` operators bind first, then the `? :` operator. But what about multiple operators of the same precedence? Do they always process left-to-right or right-to-left?
+Итак, сначала группируются `&&` и `||`, затем оператор `? :`. Но как быть в ситуации нескольких операторов с одинаковым приоритетом? Обрабатываются ли они всегда слева направо или справа налево?
 
-In general, operators are either left-associative or right-associative, referring to whether **grouping happens from the left or from the right**.
+Операторы обычно бывают либо левоассоциативными, либо правоассоциативными, в зависимости от этого **группировка выполняется слева или справа**.
 
-It's important to note that associativity is *not* the same thing as left-to-right or right-to-left processing.
+Важно отметить, что ассоциативность - это *не* то же самое, что обработка слева направо или справа налево.
 
-But why does it matter whether processing is left-to-right or right-to-left? Because expressions can have side effects, like for instance with function calls:
+Почему же тогда так важно, выполняется ли обработка слева направо или справа налево? Потому что выражения могут иметь побочные эффекты, как, например, при вызове функций:
 
 ```js
 var a = foo() && bar();
 ```
 
-Here, `foo()` is evaluated first, and then possibly `bar()` depending on the result of the `foo()` expression. That definitely could result in different program behavior than if `bar()` was called before `foo()`.
+Здесь сначала вычисляется `foo()`, а затем в зависимости от результата `foo()`, возможно, `bar()`. Это безусловно могло бы сказаться на поведении программы, если бы `bar()` вызывался перед `foo()`.
 
-But this behavior is *just* left-to-right processing (the default behavior in JavaScript!) -- it has nothing to do with the associativity of `&&`. In that example, since there's only one `&&` and thus no relevant grouping here, associativity doesn't even come into play.
+Но здесь обработка идет *просто* слева направо (поведение по умолчанию в JavaScript!) - здесь не важна ассоциативность `&&`. Поскольку в этом примере есть только одно `&&`, то, следовательно, здесь нет места группировке, ассоциативность даже не вступает в игру.
 
-But with an expression like `a && b && c`, grouping *will* happen implicitly, meaning that either `a && b` or `b && c` will be evaluated first.
+Однако в выражении `a && b && c` группировка *будет* происходить неявно, что означает, что сначала будет вычислено либо `a && b`, либо `b && c`.
 
-Technically, `a && b && c` will be handled as `(a && b) && c`, because `&&` is left-associative (so is `||`, by the way). However, the right-associative alternative `a && (b && c)` behaves observably the same way. For the same values, the same expressions are evaluated in the same order.
+Технически `a && b && c` будет обрабатываться как `(a && b) && c`, потому что `&&` является левоассоциативным (как и `||`, кстати). Однако правоассоциативная альтернатива `a && (b && c)` ведет себя, очевидно, точно также. Для одних и тех же значений одни и те же выражения вычисляются в одном и том же порядке.
 
-**Note:** If hypothetically `&&` was right-associative, it would be processed the same as if you manually used `( )` to create grouping like `a && (b && c)`. But that still **doesn't mean** that `c` would be processed before `b`. Right-associativity does **not** mean right-to-left evaluation, it means right-to-left **grouping**. Either way, regardless of the grouping/associativity, the strict ordering of evaluation will be `a`, then `b`, then `c` (aka left-to-right).
+**Примечание:** Гипотетически, если бы `&&` был правоассоциативным, он был бы обработан аналогично ручной группировке `a && (b && c)`. Но это все еще **не означает**, что `c` будет вычислен перед `b`. Правая ассоциативность **не означает** вычисления справа налево, это означает **группировку** справа налево. В любом случае, независимо от группировки / ассоциативности, строгий порядок вычисления будет `a`, затем `b`, затем `c` (то есть слева направо).
 
-So it doesn't really matter that much that `&&` and `||` are left-associative, other than to be accurate in how we discuss their definitions.
+Поэтому не так уж важно, что `&&` и `||` являются левоассоциативными, кроме как для точности обсуждаемых определений.
 
-But that's not always the case. Some operators would behave very differently depending on left-associativity vs. right-associativity.
+Но это не всегда так. Некоторые операторы будут вести себя очень по-разному в зависимости от лево- и правоассоциативности.
 
-Consider the `? :` ("ternary" or "conditional") operator:
+Рассмотрим `? :` ("тернарный" или "условный") оператор:
 
 ```js
 a ? b : c ? d : e;
 ```
 
-`? :` is right-associative, so which grouping represents how it will be processed?
+`? :` является правоассоциативным. Итак, какая группировка соответствует очерёдности выполнения?
 
 * `a ? b : (c ? d : e)`
 * `(a ? b : c) ? d : e`
 
-The answer is `a ? b : (c ? d : e)`. Unlike with `&&` and `||` above, the right-associativity here actually matters, as `(a ? b : c) ? d : e` *will* behave differently for some (but not all!) combinations of values.
+Ответ таков: `a ? b : (c ? d : e)`. В отличие от `&&` и `||` выше, правая ассоциативность здесь действительно имеет значение, поскольку `(a ? b : c) ? d : e` *будет* вести себя по-разному для некоторых (но не для всех!) комбинаций значений.
 
-One such example:
+Один из таких примеров:
 
 ```js
 true ? false : true ? true : true;		// false
@@ -760,7 +760,7 @@ true ? false : (true ? true : true);	// false
 (true ? false : true) ? true : true;	// true
 ```
 
-Even more nuanced differences lurk with other value combinations, even if the end result is the same. Consider:
+Еще более тонкие различия скрываются в других комбинациях значений, даже если конечный результат тот же. Взглянем:
 
 ```js
 true ? false : true ? true : false;		// false
@@ -769,18 +769,18 @@ true ? false : (true ? true : false);	// false
 (true ? false : true) ? true : false;	// false
 ```
 
-From that scenario, the same end result implies that the grouping is moot. However:
+В этом случае одинаковые результаты сеют сомнения, какой вариант группировки действует. Однако:
 
 ```js
 var a = true, b = false, c = true, d = true, e = false;
 
-a ? b : (c ? d : e); // false, evaluates only `a` and `b`
-(a ? b : c) ? d : e; // false, evaluates `a`, `b` AND `e`
+a ? b : (c ? d : e); // false, вычисляются только `a` и `b`
+(a ? b : c) ? d : e; // false, вычисляются `a`, `b` и `e`
 ```
 
-So, we've clearly proved that `? :` is right-associative, and that it actually matters with respect to how the operator behaves if chained with itself.
+Итак, мы четко доказали, что `? :` является правоассоциативным, и что это действительно имеет значение в отношении того, как ведет себя оператор в цепочке с самим собой.
 
-Another example of right-associativity (grouping) is the `=` operator. Recall the chained assignment example from earlier in the chapter:
+Другим примером правой ассоциативности (группировки) является оператор `=`. Вспомните пример с цепочкой присваивания, рассмотренный выше в этой главе:
 
 ```js
 var a, b, c;
@@ -788,9 +788,9 @@ var a, b, c;
 a = b = c = 42;
 ```
 
-We asserted earlier that `a = b = c = 42` is processed by first evaluating the `c = 42` assignment, then `b = ..`, and finally `a = ..`. Why? Because of the right-associativity, which actually treats the statement like this: `a = (b = (c = 42))`.
+Ранее мы сказали, что обработка `a = b = c = 42` ведётся, начиная с присваивания `c = 42`, затем `b = ..` и, наконец, `a = ..`. Почему? Из-за правой ассоциативности, которая на самом деле трактует инструкцию следующим образом: `a = (b = (c = 42))`.
 
-Remember our running complex assignment expression example from earlier in the chapter?
+Помните наш первый пример присваивания сложного выражения в этой главе?
 
 ```js
 var a = 42;
@@ -802,13 +802,13 @@ var d = a && b || c ? c || b ? a : c && b : a;
 d;		// 42
 ```
 
-Armed with our knowledge of precedence and associativity, we should now be able to break down the code into its grouping behavior like this:
+Вооружившись нашими знаниями о приоритете и ассоциативности, мы теперь способны разбить код на группы, описывающие обработку этой инструкции:
 
 ```js
 ((a && b) || c) ? ((c || b) ? a : (c && b)) : a
 ```
 
-Or, to present it indented if that's easier to understand:
+Или с отступами, если это легче понять:
 
 ```js
 (
@@ -828,57 +828,57 @@ Or, to present it indented if that's easier to understand:
 a
 ```
 
-Let's solve it now:
+Давайте решим это сейчас:
 
-1. `(a && b)` is `"foo"`.
-2. `"foo" || c` is `"foo"`.
-3. For the first `?` test, `"foo"` is truthy.
-4. `(c || b)` is `"foo"`.
-5. For the second `?` test, `"foo"` is truthy.
-6. `a` is `42`.
+1. `(a && b)` равно `"foo"`.
+2. `"foo" || c` равно `"foo"`.
+3. В первом `?` проверка `"foo"` правдивая.
+4. `(c || b)` равно `"foo"`.
+5. Во втором `?` проверка `"foo"` правдивая.
+6. `a` равно `42`.
 
-That's it, we're done! The answer is `42`, just as we saw earlier. That actually wasn't so hard, was it?
+Вот и все, мы закончили! Ответ - `42`, как и раньше. На самом деле это было не так уж трудно, не правда ли?
 
-### Disambiguation
+### Избежание двусмысленностей
 
-You should now have a much better grasp on operator precedence (and associativity) and feel much more comfortable understanding how code with multiple chained operators will behave.
+Теперь вы гораздо лучше понимаете ассоциативность и приоритеты операторов, и чувствуете себя увереннее, понимая, как будет вести себя код с цепочкой операторов.
 
-But an important question remains: should we all write code understanding and perfectly relying on all the rules of operator precedence/associativity? Should we only use `( )` manual grouping when it's necessary to force a different processing binding/order?
+Но остается важный вопрос: должны ли мы все писать код, понимая и исключительно полагаясь на все правила ассоциативности / приоритета операторов? Следует ли нам использовать ручную группировку `( )` лишь тогда, когда необходимо применить другой порядок обработки?
 
-Or, on the other hand, should we recognize that even though such rules *are in fact* learnable, there's enough gotchas to warrant ignoring automatic precedence/associativity? If so, should we thus always use `( )` manual grouping and remove all reliance on these automatic behaviors?
+Или, с другой стороны, принимая, что, хотя эти правила *на самом деле* поддаются изучению, но тут достаточно ловушек, чтобы не полагаться на автоматические приоритеты и ассоциативности? Если да, то должны ли мы тогда, всегда использовать ручную группировку `( )` и полностью отказаться от заложенного механизма поведения?
 
-This debate is highly subjective, and heavily symmetrical to the debate in Chapter 4 over *implicit* coercion. Most developers feel the same way about both debates: either they accept both behaviors and code expecting them, or they discard both behaviors and stick to manual/explicit idioms.
+Эта дискуссия в высшей степени субъективна и аналогична дискуссии в Главе 4 о *неявном* приведении. Большинство разработчиков исповедуют единый подход в обоих случаях: либо они принимают оба варианта поведения и код, ожидающий их, либо они отбрасывают оба варианта поведения и придерживаются ручных / явных идиом.
 
-Of course, I cannot answer this question definitively for the reader here anymore than I could in Chapter 4. But I've presented you the pros and cons, and hopefully encouraged enough deeper understanding that you can make informed rather than hype-driven decisions.
+Конечно, тут я не могу ответить читателю на вопрос более однозначно, чем в Главе 4. Но я показал вам плюсы и минусы и, надеюсь, помог достаточно глубоко понять тему, чтобы вы могли принять обоснованное, а не продиктованное ажиотажем решение.
 
-In my opinion, there's an important middle ground. We should mix both operator precedence/associativity *and* `( )` manual grouping into our programs -- I argue the same way in Chapter 4 for healthy/safe usage of *implicit* coercion, but certainly don't endorse it exclusively without bounds.
+На мой взгляд, есть важная золотая середина. Нам следует использовать *и* приоритет операторов/ассоциативность, *и* ручную группировку `( )` в нашем коде. Той же подход я предлагал в Главе 4, выступая за здоровое/безопасное использование *неявного* приведения, и против его повсеместного применения.
 
-For example, `if (a && b && c) ..` is perfectly OK to me, and I wouldn't do `if ((a && b) && c) ..` just to explicitly call out the associativity, because I think it's overly verbose.
+Например, `if (a && b && c) ..` для меня норма, и я не стал бы писать `if ((a && b) && c) ..`, чтобы явно задать ассоциативность, потому что я думаю, это излишне.
 
-On the other hand, if I needed to chain two `? :` conditional operators together, I'd certainly use `( )` manual grouping to make it absolutely clear what my intended logic is.
+С другой стороны, если бы мне нужно было связать два оператора `? :` вместе, я бы, конечно, использовал ручную группировку `( )`, чтобы было абсолютно ясно, какую логику я заложил здесь.
 
-Thus, my advice here is similar to that of Chapter 4: **use operator precedence/associativity where it leads to shorter and cleaner code, but use `( )` manual grouping in places where it helps create clarity and reduce confusion.**
+Таким образом, мой совет здесь аналогичен совету из Главы 4: **используйте приоритет операторов/ассоциативность там, где это приводит к более короткому и чистому коду, но используйте ручную группировку `( )` там, где это вносит ясность и уменьшает путаницу**.
 
-## Automatic Semicolons
+## Автоматическая расстановка точки с запятой
 
-ASI (Automatic Semicolon Insertion) is when JavaScript assumes a `;` in certain places in your JS program even if you didn't put one there.
+ASI (автоматическая вставка точки с запятой) - это когда JavaScript подразумевает `;` в определенных местах вашей JS-программы, даже если вы её туда не ставили.
 
-Why would it do that? Because if you omit even a single required `;` your program would fail. Not very forgiving. ASI allows JS to be tolerant of certain places where `;` aren't commonly thought  to be necessary.
+Зачем ему это делать? Потому что, если вы опустите хотя бы одну обязательную `;`, ваша программа завершится сбоем. Не всегда всепрощающе. ASI позволяет JS быть терпимым к определенным местам, где обычно `;` не считается необходимой.
 
-It's important to note that ASI will only take effect in the presence of a newline (aka line break). Semicolons are not inserted in the middle of a line.
+Важно отметить, что ASI работает только при наличии новой строки (она же разрыв строки). Точки с запятой не вставляются в середину строки.
 
-Basically, if the JS parser parses a line where a parser error would occur (a missing expected `;`), and it can reasonably insert one, it does so. What's reasonable for insertion? Only if there's nothing but whitespace and/or comments between the end of some statement and that line's newline/line break.
+По существу, если JS-парсер анализирует строку, в которой произошла бы ошибка синтаксического анализа (ожидаемое отсутствие `;`), и он может разумно вставить ее, он это делает. Что разумно для вставки? Только если между концом какого-либо оператора и новой строкой/разрывом строки нет ничего, кроме пробелов и/или комментариев.
 
-Consider:
+Рассмотрим:
 
 ```js
 var a = 42, b
 c;
 ```
 
-Should JS treat the `c` on the next line as part of the `var` statement? It certainly would if a `,` had come anywhere (even another line) between `b` and `c`. But since there isn't one, JS assumes instead that there's an implied `;` (at the newline) after `b`. Thus, `c;` is left as a standalone expression statement.
+Должен ли JS рассматривать `c` в следующей строке как часть инструкции `var`? Это, конечно, так и было бы, если бы где-нибудь была `,` (даже в другой строке) между `b` и `c`. Но поскольку её нет, JS вместо этого предполагает, что после `b` есть подразумеваемая `;` (в новой строке). Таким образом, `c;` остается как отдельный оператор выражения.
 
-Similarly:
+Аналогично:
 
 ```js
 var a = 42, b = "foo";
@@ -887,33 +887,33 @@ a
 b	// "foo"
 ```
 
-That's still a valid program without error, because expression statements also accept ASI.
+Это все еще допустимая программа без ошибок, потому что выражения также признают действие ASI.
 
-There's certain places where ASI is helpful, like for instance:
+Есть определенные места, где ASI полезен, например:
 
 ```js
 var a = 42;
 
 do {
 	// ..
-} while (a)	// <-- ; expected here!
+} while (a)	// <-- ; ожидается здесь!
 a;
 ```
 
-The grammar requires a `;` after a `do..while` loop, but not after `while` or `for` loops. But most developers don't remember that! So, ASI helpfully steps in and inserts one.
+Грамматика требует `;` после цикла `do..while`, но не после циклов `while` или `for`. Однако большинство разработчиков этого не помнит! Поэтому ASI услужливо вмешивается и вставляет её.
 
-As we said earlier in the chapter, statement blocks do not require `;` termination, so ASI isn't necessary:
+Как мы говорили ранее в этой главе, блоки операторов не требуют завершающей `;`, поэтому в ASI нет необходимости:
 
 ```js
 var a = 42;
 
 while (a) {
 	// ..
-} // <-- no ; expected here
+} // <-- ; не ожидается здесь.
 a;
 ```
 
-The other major case where ASI kicks in is with the `break`, `continue`, `return`, and (ES6) `yield` keywords:
+Другой важный случай, когда ASI срабатывает, - это ключевые слова `break`, `continue`, `return` и (ES6) `yield`:
 
 ```js
 function foo(a) {
@@ -923,7 +923,7 @@ function foo(a) {
 }
 ```
 
-The `return` statement doesn't carry across the newline to the `a *= 2` expression, as ASI assumes the `;` terminating the `return` statement. Of course, `return` statements *can* easily break across multiple lines, just not when there's nothing after `return` but the newline/line break.
+Оператор `return` не включает выражение следующей строки `a *= 2`, поскольку ASI предполагает завершающую `;` у оператора `return`. Конечно, операторы `return` *можно* легко разбивать на несколько строк, но только не тогда, когда после `return` ничего нет, кроме новой строки/разрыва строки.
 
 ```js
 function foo(a) {
@@ -933,39 +933,39 @@ function foo(a) {
 }
 ```
 
-Identical reasoning applies to `break`, `continue`, and `yield`.
+Аналогичные рассуждения применимы к `break`, `continue` и `yield`.
 
-### Error Correction
+### Исправление ошибок
 
-One of the most hotly contested *religious wars* in the JS community (besides tabs vs. spaces) is whether to rely heavily/exclusively on ASI or not.
+Одна из самых горячих *религиозных войн* JS-сообщества (помимо табуляции и пробелов) ведётся о том, следует ли сильно/исключительно полагаться на ASI или нет.
 
-Most, but not all, semicolons are optional, but the two `;`s in the `for ( .. ) ..` loop header are required.
+Большинство точек с запятой необязательны, но не все. Две `;` требуется в заголовок цикла `for ( .. ) ..`.
 
-On the pro side of this debate, many developers believe that ASI is a useful mechanism that allows them to write more terse (and more "beautiful") code by omitting all but the strictly required `;`s (which are very few). It is often asserted that ASI makes many `;`s optional, so a correctly written program *without them* is no different than a correctly written program *with them*.
+На стороне сторонников многие разработчики считают, что ASI - это полезный механизм, который позволяет им писать более лаконичный (и более "красивый") код, опуская все, кроме строго обязательных `;` (которых очень мало). Часто утверждается, что ASI делает многие `;` необязательными, поэтому правильно написанная программа *без них* ничем не отличается от правильно написанной программы *с ними*.
 
-On the con side of the debate, many other developers will assert that there are *too many* places that can be accidental gotchas, especially for newer, less experienced developers, where unintended `;`s being magically inserted change the meaning. Similarly, some developers will argue that if they omit a semicolon, it's a flat-out mistake, and they want their tools (linters, etc.) to catch it before the JS engine *corrects* the mistake under the covers.
+Из стана противников многие разработчики говорят, что существует *слишком много* мест, способных стать источниками случайных ошибок, особенно для молодых, менее опытных разработчиков, где непреднамеренная, вставленная волшебным образом `;` меняет смысл. Аналогично, некоторые разработчики утверждают, что, если они опускают точку с запятой, это явная ошибка, и они хотят, чтобы их инструменты (линтеры и т.д.) обнаружили ее до того, как движок JS *исправит* ошибку под капотом.
 
-Let me just share my perspective. A strict reading of the spec implies that ASI is an "error correction" routine. What kind of error, you may ask? Specifically, a **parser error**. In other words, in an attempt to have the parser fail less, ASI lets it be more tolerant.
+Позвольте мне просто поделиться своей точкой зрения. Строгое прочтение спецификации подразумевает, что ASI - это процедура "исправления ошибок". Что это за ошибка, спросите вы? В частности, ошибка **синтаксического анализатора**. Другими словами, в попытке уменьшить количество сбоев парсера ASI позволяет ему быть более терпимым.
 
-But tolerant of what? In my view, the only way a **parser error** occurs is if it's given an incorrect/errored program to parse. So, while ASI is strictly correcting parser errors, the only way it can get such errors is if there were first program authoring errors -- omitting semicolons where the grammar rules require them.
+Но терпимый к чему? На мой взгляд, единственная причина возникновения ошибки **синтаксического анализа** - это если для анализа дана неправильная программа с ошибками. Таким образом, хотя ASI строго исправляет ошибки синтаксического анализатора, единственный способ получить такие ошибки - это ошибки автора программы - пропуск точек с запятой там, где этого требуют правила грамматики.
 
-So, to put it more bluntly, when I hear someone claim that they want to omit "optional semicolons," my brain translates that claim to "I want to write the most parser-broken program I can that will still work."
+Итак, честно говоря, когда я слышу, как кто-то утверждает, что они хотят опустить "необязательные точки с запятой", мой мозг переводит это утверждение в "Я хочу написать максимально неправильную для синтаксического анализатора программу, которая все же будет работать".
 
-I find that to be a ludicrous position to take and the arguments of saving keystrokes and having more "beautiful code" to be weak at best.
+Я нахожу это нелепым, а аргументы в пользу сокращения нажатий клавиш и получения более "красивого кода" в лучшем случае слабыми.
 
-Furthermore, I don't agree that this is the same thing as the spaces vs tabs debate -- that it's purely cosmetic -- but rather I believe it's a fundamental question of writing code that adheres to grammar requirements vs. code that relies on grammar exceptions to just barely skate through.
+Более того, я не согласен с тем, что это то же самое, что дебаты о пробелах и табуляциях - что это лишь вопрос оформления. Я считаю, это фундаментальный вопрос: написание кода, соответствующего требованиям грамматики, или код, который полагается на грамматические исключения, чтобы только-только пройти проверку.
 
-Another way of looking at it is that relying on ASI is essentially considering newlines to be significant "whitespace." Other languages like Python have true significant whitespace. But is it really appropriate to think of JavaScript as having significant newlines as it stands today?
+Ещё один взгляд на проблему в том, что полагаться на ASI - это, по сути, рассматривать новые строки как значимые "пробелы". Другие языки, такие как Python, имеют действительно значимые пробелы. Но уместно ли думать о JavaScript как о языке, имеющем значимые новые строки в том виде, в каком он существует сегодня?
 
-My take: **use semicolons wherever you know they are "required," and limit your assumptions about ASI to a minimum.**
+Мое мнение: **используйте точки с запятой везде, где вы знаете, что они "обязательны", и по минимуму полагайтесь на ASI**.
 
-But don't just take my word for it. Back in 2012, creator of JavaScript Brendan Eich said (http://brendaneich.com/2012/04/the-infernal-semicolon/) the following:
+Однако не верьте мне на слово. Еще в 2012 году создатель JavaScript Брендан Эйх сказал (http://brendaneich.com/2012/04/the-infernal-semicolon /) следующее:
 
-> The moral of this story: ASI is (formally speaking) a syntactic error correction procedure. If you start to code as if it were a universal significant-newline rule, you will get into trouble.
+> Мораль этой истории: ASI - это (формально говоря) процедура исправления синтаксических ошибок. Если вы начнете кодировать так, как если бы это было универсальное правило - значимых новый строк, то у вас будут проблемы.
 > ..
-> I wish I had made newlines more significant in JS back in those ten days in May, 1995.
+> Жаль, что я не сделал новые строки более значимыми в JS в те десять дней мая 1995 года.
 > ..
-> Be careful not to use ASI as if it gave JS significant newlines.
+> Будьте осторожны, не используйте ASI так, как если бы у JS новые строки значимы.
 
 ## Errors
 
