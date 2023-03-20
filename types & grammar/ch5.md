@@ -967,38 +967,38 @@ function foo(a) {
 > ..
 > Будьте осторожны, не используйте ASI так, как если бы у JS новые строки значимы.
 
-## Errors
+## Ошибки
 
-Not only does JavaScript have different *subtypes* of errors (`TypeError`, `ReferenceError`, `SyntaxError`, etc.), but also the grammar defines certain errors to be enforced at compile time, as compared to all other errors that happen during runtime.
+Мало того, что JavaScript имеет различные *подтипы* ошибок (`TypeError`, `ReferenceError`, `SyntaxError` и т.д.), но грамматика также определяет перечень ошибок, которые должны быть вызваны во время компиляции, в дополнение ко всем другим ошибкам, которые происходят во время выполнения кода.
 
-In particular, there have long been a number of specific conditions that should be caught and reported as "early errors" (during compilation). Any straight-up syntax error is an early error (e.g., `a = ,`), but also the grammar defines things that are syntactically valid but disallowed nonetheless.
+В частности, уже давно существует ряд специфических условий, которые следует отлавливать и сообщать о них как о "ранних ошибках" (во время компиляции). Любая прямая синтаксическая ошибка является ранней ошибкой (например, `a = ,`), но также грамматика определяет вещи, которые синтаксически допустимы, но, тем не менее, запрещены.
 
-Since execution of your code has not begun yet, these errors are not catchable with `try..catch`; they will just fail the parsing/compilation of your program.
+Поскольку выполнение вашего кода еще не началось, эти ошибки не могут быть перехвачены с помощью `try..catch`; они просто ведут к сбою синтаксического анализа/компиляции вашей программы.
 
-**Tip:** There's no requirement in the spec about exactly how browsers (and developer tools) should report errors. So you may see variations across browsers in the following error examples, in what specific subtype of error is reported or what the included error message text will be.
+**Совет:** В спецификации нет требования о том, как именно браузеры (и инструменты разработчика) должны сообщать об ошибках. Поэтому вы видите расхождения в сообщениях разных браузеров о подтипе ошибки или её описании.
 
-One simple example is with syntax inside a regular expression literal. There's nothing wrong with the JS syntax here, but the invalid regex will throw an early error:
+Один простой пример - синтаксис внутри литерала регулярного выражения. Здесь нет ничего плохого в синтаксисе JS, но недопустимое регулярное выражение выдаст раннюю ошибку:
 
 ```js
-var a = /+foo/;		// Error!
+var a = /+foo/;		// Ошибка!
 ```
 
-The target of an assignment must be an identifier (or an ES6 destructuring expression that produces one or more identifiers), so a value like `42` in that position is illegal and can be reported right away:
+Целью присваивания должен быть идентификатор (или выражение деструктурирования ES6, которое создает один или несколько идентификаторов), поэтому значение `42` в этой позиции недопустимо и об этом сразу можно сообщить:
 
 ```js
 var a;
-42 = a;		// Error!
+42 = a;		// Ошибка!
 ```
 
-ES5's `strict` mode defines even more early errors. For example, in `strict` mode, function parameter names cannot be duplicated:
+`strict` режим ES5 даёт еще больше ранних ошибок. Например, в `strict` режиме имена параметров функции не могут дублироваться:
 
 ```js
-function foo(a,b,a) { }					// just fine
+function foo(a,b,a) { }					// всё хорошо
 
-function bar(a,b,a) { "use strict"; }	// Error!
+function bar(a,b,a) { "use strict"; }	// Ошибка!
 ```
 
-Another `strict` mode early error is an object literal having more than one property of the same name:
+Другая ранняя ошибка `strict` режима - это литерал объекта, имеющий несколько свойств с одинаковым именем:
 
 ```js
 (function(){
@@ -1007,19 +1007,19 @@ Another `strict` mode early error is an object literal having more than one prop
 	var a = {
 		b: 42,
 		b: 43
-	};			// Error!
+	};			// Ошибка!
 })();
 ```
 
-**Note:** Semantically speaking, such errors aren't technically *syntax* errors but more *grammar* errors -- the above snippets are syntactically valid. But since there is no `GrammarError` type, some browsers use `SyntaxError` instead.
+**Примечание:** С семантической точки зрения, такие ошибки технически не являются *синтаксическими*, а скорее *грамматическими* ошибками - приведенные выше фрагменты являются синтаксически допустимыми. Но поскольку типа `GrammarError` не существует, некоторые браузеры вместо этого используют `SyntaxError`.
 
-### Using Variables Too Early
+### Использование переменных слишком рано
 
-ES6 defines a (frankly confusingly named) new concept called the TDZ ("Temporal Dead Zone").
+ES6 определяет новую (откровенно сбивающую с толку) концепцию, называемую TDZ ("Временная мертвая зона").
 
-The TDZ refers to places in code where a variable reference cannot yet be made, because it hasn't reached its required initialization.
+TDZ относится к местам в коде, где ещё нельзя использовать переменную, поскольку она ещё не была должным образом инициализирована.
 
-The most clear example of this is with ES6 `let` block-scoping:
+Наиболее наглядный пример этого -- использование `let` блоковой области действия в ES6:
 
 ```js
 {
@@ -1028,9 +1028,9 @@ The most clear example of this is with ES6 `let` block-scoping:
 }
 ```
 
-The assignment `a = 2` is accessing the `a` variable (which is indeed block-scoped to the `{ .. }` block) before it's been initialized by the `let a` declaration, so it's in the TDZ for `a` and throws an error.
+Присвоение `a = 2` обращается к переменной `a` (которая ограничена областью действия блока `{ .. }`) до того, как она была объявлена `let a`, поэтому `a` находится в TDZ и появляется ошибка.
 
-Interestingly, while `typeof` has an exception to be safe for undeclared variables (see Chapter 1), no such safety exception is made for TDZ references:
+Интересно, что если для `typeof` сделано исключение, он безопасно работает с необъявленными переменными (см. Главу 1), для TDZ такого исключения безопасности не сделано:
 
 ```js
 {
@@ -1040,9 +1040,9 @@ Interestingly, while `typeof` has an exception to be safe for undeclared variabl
 }
 ```
 
-## Function Arguments
+## Аргументы фунции
 
-Another example of a TDZ violation can be seen with ES6 default parameter values (see the *ES6 & Beyond* title of this series):
+Другой пример ошибки TDZ можно увидеть в значениях по умолчанию ES6 для параметров функции (см. книгу этой серии *ES6 и не только*):
 
 ```js
 var b = 3;
@@ -1052,9 +1052,9 @@ function foo( a = 42, b = a + b + 5 ) {
 }
 ```
 
-The `b` reference in the assignment would happen in the TDZ for the parameter `b` (not pull in the outer `b` reference), so it will throw an error. However, the `a` in the assignment is fine since by that time it's past the TDZ for parameter `a`.
+Ссылка на `b` в присваивании параметра `b` будет в TDZ (ссылка на внешнюю `b` не будет действовать), поэтому она выдаст ошибку. Однако с `a` в присваивании всё в порядке, так как к этому моменту для параметра `a` TDZ уже закончилась.
 
-When using ES6's default parameter values, the default value is applied to the parameter if you either omit an argument, or you pass an `undefined` value in its place:
+При использовании значений по умолчанию параметров (ES6) это значение применяется, если вы либо опускаете аргумент, либо передаете `undefined`:
 
 ```js
 function foo( a = 42, b = a + 1 ) {
@@ -1068,9 +1068,9 @@ foo( void 0, 7 );		// 42 7
 foo( null );			// null 1
 ```
 
-**Note:** `null` is coerced to a `0` value in the `a + 1` expression. See Chapter 4 for more info.
+**Примечание:** `null` в выражении `a + 1` приводится к значению `0`. За дополнительной информацией обращайтесь к Главе 4.
 
-From the ES6 default parameter values perspective, there's no difference between omitting an argument and passing an `undefined` value. However, there is a way to detect the difference in some cases:
+С точки зрения значений по умолчанию параметров (ES6), нет никакой разницы между пропуском аргумента и передачей значения `undefined`. Однако в отдельных случаях эту разницу можно обнаружить:
 
 ```js
 function foo( a = 42, b = a + 1 ) {
@@ -1086,11 +1086,11 @@ foo( 10, undefined );	// 2 10 11 10 undefined
 foo( 10, null );		// 2 10 null 10 null
 ```
 
-Even though the default parameter values are applied to the `a` and `b` parameters, if no arguments were passed in those slots, the `arguments` array will not have entries.
+Несмотря на то, что параметры `a` и `b` используют значения по умолчанию, если для них не было передано никаких аргументов, массив `arguments` не будет содержать записей.
 
-Conversely, if you pass an `undefined` argument explicitly, an entry will exist in the `arguments` array for that argument, but it will be `undefined` and not (necessarily) the same as the default value that was applied to the named parameter for that same slot.
+И наоборот, если вы передадите аргумент `undefined` явно, в массиве `arguments` будет запись для этого аргумента, она будет `undefined` и не обязательно будет совпадать со значением по умолчанию, которое было применено к данному именованному параметру.
 
-While ES6 default parameter values can create divergence between the `arguments` array slot and the corresponding named parameter variable, this same disjointedness can also occur in tricky ways in ES5:
+Также как значения по умолчанию параметров могут расходиться с ячейками массива `arguments` и соответствующей именованной переменной в ES6, такое же расхождение может возникать сложными способами и в ES5:
 
 ```js
 function foo(a) {
@@ -1098,13 +1098,13 @@ function foo(a) {
 	console.log( arguments[0] );
 }
 
-foo( 2 );	// 42 (linked)
-foo();		// undefined (not linked)
+foo( 2 );	// 42 (связано)
+foo();		// undefined (не связано)
 ```
 
-If you pass an argument, the `arguments` slot and the named parameter are linked to always have the same value. If you omit the argument, no such linkage occurs.
+Если вы передаете аргумент, слот `arguments` и именованный параметр связаны, чтобы всегда иметь одно и то же значение. Если вы опустите аргумент, такая связь не возникнет.
 
-But in `strict` mode, the linkage doesn't exist regardless:
+Однако в `strict` режиме такой связи нет в любом случае:
 
 ```js
 function foo(a) {
@@ -1113,19 +1113,19 @@ function foo(a) {
 	console.log( arguments[0] );
 }
 
-foo( 2 );	// 2 (not linked)
-foo();		// undefined (not linked)
+foo( 2 );	// 2 (не связано)
+foo();		// undefined (не связано)
 ```
 
-It's almost certainly a bad idea to ever rely on any such linkage, and in fact the linkage itself is a leaky abstraction that's exposing an underlying implementation detail of the engine, rather than a properly designed feature.
+Определённо это плохая идея - когда-либо полагаться на любую такую привязку. На самом деле связка это хлипкая абстракция, которая показывает внутреннюю реализацию движка, а не правильно спроектированную возможность.
 
-Use of the `arguments` array has been deprecated (especially in favor of ES6 `...` rest parameters -- see the *ES6 & Beyond* title of this series), but that doesn't mean that it's all bad.
+Использование массива `arguments` объявлено устаревшим (в пользу остаточных параметров ES6 `...` - см. книгу этой серии *ES6 и не только*), но это не значит, что всё это неправильно.
 
-Prior to ES6, `arguments` is the only way to get an array of all passed arguments to pass along to other functions, which turns out to be quite useful. You can also mix named parameters with the `arguments` array and be safe, as long as you follow one simple rule: **never refer to a named parameter *and* its corresponding `arguments` slot at the same time.** If you avoid that bad practice, you'll never expose the leaky linkage behavior.
+До ES6 `arguments` был единственным способом получить массив всех переданных аргументов для передачи другим функциям, что было весьма полезным. Вы также можете смешивать именованные параметры и массив `arguments` и оставаться в безопасности, если будете следовать одному простому правилу: **никогда не ссылайтесь на именованный параметр *и* соответствующий ему слот `arguments` одновременно**. Если вы избежите этой плохой практики, вы никогда не столкнётесь с потерей связи.
 
 ```js
 function foo(a) {
-	console.log( a + arguments[1] ); // safe!
+	console.log( a + arguments[1] ); // безопасно!
 }
 
 foo( 10, 32 );	// 42
@@ -1133,11 +1133,11 @@ foo( 10, 32 );	// 42
 
 ## `try..finally`
 
-You're probably familiar with how the `try..catch` block works. But have you ever stopped to consider the `finally` clause that can be paired with it? In fact, were you aware that `try` only requires either `catch` or `finally`, though both can be present if needed.
+Вы, вероятно, знакомы с тем, как работает блок `try..catch`. Но задумывались ли вы когда-нибудь над `finally`, которое может быть вместе с ним? Действительно, знаете ли вы, что `try` требуется только `catch` или `finally`, хотя при необходимости могут присутствовать и то, и другое.
 
-The code in the `finally` clause *always* runs (no matter what), and it always runs right after the `try` (and `catch` if present) finish, before any other code runs. In one sense, you can kind of think of the code in a `finally` clause as being in a callback function that will always be called regardless of how the rest of the block behaves.
+Код в `finally` выполняется *всегда* (что бы ни случилось), и он всегда выполняется сразу после `try` (и `catch`, если присутствует), перед запуском любого другого кода. В каком-то смысле вы можете думать о коде в `finally` как о функции обратного вызова, которая всегда будет вызываться независимо от того, как ведет себя остальная часть блока.
 
-So what happens if there's a `return` statement inside a `try` clause? It obviously will return a value, right? But does the calling code that receives that value run before or after the `finally`?
+Итак, что произойдет, если внутри предложения `try` есть оператор `return`? Очевидно, что это вернет значение, верно? Но выполняется ли код, который получает это значение, до или после `finally`?
 
 ```js
 function foo() {
@@ -1148,7 +1148,7 @@ function foo() {
 		console.log( "Hello" );
 	}
 
-	console.log( "never runs" );
+	console.log( "никогда не выполнится" );
 }
 
 console.log( foo() );
@@ -1156,9 +1156,9 @@ console.log( foo() );
 // 42
 ```
 
-The `return 42` runs right away, which sets up the completion value from the `foo()` call. This action completes the `try` clause and the `finally` clause immediately runs next. Only then is the `foo()` function complete, so that its completion value is returned back for the `console.log(..)` statement to use.
+`return 42` выполняется сразу, устанавливая значение завершения вызова `foo()`. Это действие завершает `try`, поэтому следом немедленно выполняется `finally`. И только тогда завершается `foo()`, возвращая значение завершения, которое используется в инструкции `console.log(..)`.
 
-The exact same behavior is true of a `throw` inside `try`:
+Точно такое же поведение верно для `throw` внутри `try`:
 
 ```js
  function foo() {
@@ -1169,7 +1169,7 @@ The exact same behavior is true of a `throw` inside `try`:
 		console.log( "Hello" );
 	}
 
-	console.log( "never runs" );
+	console.log( "никогда не выполнится" );
 }
 
 console.log( foo() );
@@ -1177,7 +1177,7 @@ console.log( foo() );
 // Uncaught Exception: 42
 ```
 
-Now, if an exception is thrown (accidentally or intentionally) inside a `finally` clause, it will override as the primary completion of that function. If a previous `return` in the `try` block had set a completion value for the function, that value will be abandoned.
+Теперь, если инициируется исключение (случайно или намеренно) внутри `finally`, оно переопределит завершение функции. Если вышестоящий `return` в блоке `try` установил значение завершения функции, то это значение будет отброшено.
 
 ```js
 function foo() {
@@ -1188,14 +1188,14 @@ function foo() {
 		throw "Oops!";
 	}
 
-	console.log( "never runs" );
+	console.log( "никогда не выполнится" );
 }
 
 console.log( foo() );
 // Uncaught Exception: Oops!
 ```
 
-It shouldn't be surprising that other nonlinear control statements like `continue` and `break` exhibit similar behavior to `return` and `throw`:
+Неудивительно, что другие операторы нелинейного управления, такие как `continue` и `break`, действуют аналогично `return` и `throw`:
 
 ```js
 for (var i=0; i<10; i++) {
@@ -1209,11 +1209,11 @@ for (var i=0; i<10; i++) {
 // 0 1 2 3 4 5 6 7 8 9
 ```
 
-The `console.log(i)` statement runs at the end of the loop iteration, which is caused by the `continue` statement. However, it still runs before the `i++` iteration update statement, which is why the values printed are `0..9` instead of `1..10`.
+Инструкция `console.log(i)` выполняется в конце итерации, который инициируется инструкцией `continue`. Однако она по-прежнему длится до оператора обновления итерации `i++`, поэтому печатаются значения `0..9` вместо `1..10`.
 
-**Note:** ES6 adds a `yield` statement, in generators (see the *Async & Performance* title of this series) which in some ways can be seen as an intermediate `return` statement. However, unlike a `return`, a `yield` isn't complete until the generator is resumed, which means a `try { .. yield .. }` has not completed. So an attached `finally` clause will not run right after the `yield` like it does with `return`.
+**Примечание:** ES6 добавляет оператор `yield` в генераторах (см. книгу этой серии *Асинхронность и Производительность*), который в некотором смысле можно рассматривать как промежуточный оператор `return`. Однако, в отличие от `return`, `yield` не завершен до тех пор, пока генератор не будет возобновлен, что означает, что `try { .. yield .. }` не завершен. Таким образом, прикрепленное `finally` не будет выполняться сразу после `yield`, как это происходит с `return`.
 
-A `return` inside a `finally` has the special ability to override a previous `return` from the `try` or `catch` clause, but only if `return` is explicitly called:
+`return` внутри `finally` обладает специальной способностью переопределять предыдущий `return` из предложения `try` или `catch`, но только если `return` вызывается явно:
 
 ```js
 function foo() {
@@ -1221,7 +1221,7 @@ function foo() {
 		return 42;
 	}
 	finally {
-		// no `return ..` here, so no override
+		// здесь нет `return ..`, поэтому нет переопределения
 	}
 }
 
@@ -1230,7 +1230,7 @@ function bar() {
 		return 42;
 	}
 	finally {
-		// override previous `return 42`
+		// переопределяет вышестоящий `return 42`
 		return;
 	}
 }
@@ -1240,7 +1240,7 @@ function baz() {
 		return 42;
 	}
 	finally {
-		// override previous `return 42`
+		// переопределяет вышестоящий `return 42`
 		return "Hello";
 	}
 }
@@ -1250,9 +1250,9 @@ bar();	// undefined
 baz();	// "Hello"
 ```
 
-Normally, the omission of `return` in a function is the same as `return;` or even `return undefined;`, but inside a `finally` block the omission of `return` does not act like an overriding `return undefined`; it just lets the previous `return` stand.
+Обычно пропуск `return` в функции идентично `return;` или даже `return undefined;`, но пропуск `return` внутри блока `finally` не действует как переопределяющий `return undefined`; он просто оставляет в силе вышестоящий `return`.
 
-In fact, we can really up the craziness if we combine `finally` with labeled `break` (discussed earlier in the chapter):
+На самом деле, мы действительно можем усилить безумие, если объединим `finally` с `break` (обсуждалось ранее в этой главе):
 
 ```js
 function foo() {
@@ -1261,7 +1261,7 @@ function foo() {
 			return 42;
 		}
 		finally {
-			// break out of `bar` labeled block
+			// выйти из блока с меткой `bar`
 			break bar;
 		}
 	}
@@ -1276,52 +1276,52 @@ console.log( foo() );
 // Hello
 ```
 
-But... don't do this. Seriously. Using a `finally` + labeled `break` to effectively cancel a `return` is doing your best to create the most confusing code possible. I'd wager no amount of comments will redeem this code.
+Но... не делайте так. Серьезно. Используя `finally` + `break` с меткой, чтобы отменить `return`, вы делаете всё, чтобы создать максимально запутанный код. Я спорю, что никакое количество комментариев не сделает этот код понятнее.
 
 ## `switch`
 
-Let's briefly explore the `switch` statement, a sort-of syntactic shorthand for an `if..else if..else..` statement chain.
+Давайте кратко взглянем на оператор `switch`, своего рода синтаксическое сокращение цепочки операторов `if..else if..else..`.
 
 ```js
 switch (a) {
 	case 2:
-		// do something
+		// выполнить что-нибудь
 		break;
 	case 42:
-		// do another thing
+		// выполнить что-то другое
 		break;
 	default:
-		// fallback to here
+		// здесь запасной вариант
 }
 ```
 
-As you can see, it evaluates `a` once, then matches the resulting value to each `case` expression (just simple value expressions here). If a match is found, execution will begin in that matched `case`, and will either go until a `break` is encountered or until the end of the `switch` block is found.
+Как вы видите, `a` вычисляется один раз, а затем результирующее значение сопоставляется с каждым `case` (здесь выражения только простых значений). Если совпадение найдено, выполняется код в этом `case` и будет продолжаться либо пока не будет встречен `break`, либо пока не встретится конец блока `switch`.
 
-That much may not surprise you, but there are several quirks about `switch` you may not have noticed before.
+Возможно, вас это не сильно удивит, но в `switch` есть несколько особенностей, которые вы вероятно раньше не замечали.
 
-First, the matching that occurs between the `a` expression and each `case` expression is identical to the `===` algorithm (see Chapter 4). Often times `switch`es are used with absolute values in `case` statements, as shown above, so strict matching is appropriate.
+Во-первых, сравнение, которое происходит между `a` и каждым `case`, идентично алгоритму `===` (см. Главу 4). Часто `switch` используются с абсолютными значениями в операторах `case`, как показано выше, поэтому строгое равенство уместно.
 
-However, you may wish to allow coercive equality (aka `==`, see Chapter 4), and to do so you'll need to sort of "hack" the `switch` statement a bit:
+Однако вы можете захотеть разрешить равенство с приведением (оно же `==`, см. Главу 4), но для этого вам нужно немного "взломать" оператор `switch`:
 
 ```js
 var a = "42";
 
 switch (true) {
 	case a == 10:
-		console.log( "10 or '10'" );
+		console.log( "10 или '10'" );
 		break;
 	case a == 42:
-		console.log( "42 or '42'" );
+		console.log( "42 или '42'" );
 		break;
 	default:
-		// never gets here
+		// никогда сюда не попадёте
 }
-// 42 or '42'
+// 42 или '42'
 ```
 
-This works because the `case` clause can have any expression (not just simple values), which means it will strictly match that expression's result to the test expression (`true`). Since `a == 42` results in `true` here, the match is made.
+Это работает, потому что `case` может содержать любое выражение (не только простые значения), что означает, что оно будет строго сравнивать результат выражения и тестовое значение (`true`). Поскольку `a == 42` здесь превращается в `true`, совпадение найдено.
 
-Despite `==`, the `switch` matching itself is still strict, between `true` and `true` here. If the `case` expression resulted in something that was truthy but not strictly `true` (see Chapter 4), it wouldn't work. This can bite you if you're for instance using a "logical operator" like `||` or `&&` in your expression:
+Несмотря на `==`, сам поиск в `switch` ведётся на строгое равенство, между `true` и `true`. Если выражение `case` приводит к чему-то правдивому, а не к строго `true` (см. Главу 4), то это не сработает. Это может ударить по вам, если, например, вы используете "логический оператор", такой как `||` или `&&` в вашем выражении:
 
 ```js
 var a = "hello world";
@@ -1329,7 +1329,7 @@ var b = 10;
 
 switch (true) {
 	case (a || b == 10):
-		// never gets here
+		// никогда сюда не попадём
 		break;
 	default:
 		console.log( "Oops" );
@@ -1337,9 +1337,9 @@ switch (true) {
 // Oops
 ```
 
-Since the result of `(a || b == 10)` is `"hello world"` and not `true`, the strict match fails. In this case, the fix is to force the expression explicitly to be a `true` or `false`, such as `case !!(a || b == 10):` (see Chapter 4).
+Поскольку результатом `(a || b == 10)` является `"hello world"`, а не `true`, строгое сравнение завершается неудачей. В данном случае решением проблемы было бы в том, чтобы заставить выражение стать явно `true` или `false`, например, `case !!(a || b == 10):` (см. Главу 4).
 
-Lastly, the `default` clause is optional, and it doesn't necessarily have to come at the end (although that's the strong convention). Even in the `default` clause, the same rules apply about encountering a `break` or not:
+Наконец, вариант `default` опционален, поэтому он и не обязан присутствовать (хотя это рекомендуемая практика). Даже к `default` применяются те же правила, что и при обнаружении `break` или его отсутствии:
 
 ```js
 var a = 10;
@@ -1347,7 +1347,7 @@ var a = 10;
 switch (a) {
 	case 1:
 	case 2:
-		// never gets here
+		// никогда не окажемся здесь
 	default:
 		console.log( "default" );
 	case 3:
@@ -1360,28 +1360,28 @@ switch (a) {
 // 3
 ```
 
-**Note:** As discussed previously about labeled `break`s, the `break` inside a `case` clause can also be labeled.
+**Примечание:** Как обсуждалось ранее о `break` с меткой, `break` внутри `case` также может быть с меткой.
 
-The way this snippet processes is that it passes through all the `case` clause matching first, finds no match, then goes back up to the `default` clause and starts executing. Since there's no `break` there, it continues executing in the already skipped over `case 3` block, before stopping once it hits that `break`.
+Этот фрагмент работает так: сначала обходятся все `case` в поиске совпадения, и когда их не находит, возвращается к варианту `default` и выполняет его. Но, поскольку в нём нет `break`, он продолжает работу в ранее пропущенном `case 3` до того, как встретит `break`.
 
-While this sort of round-about logic is clearly possible in JavaScript, there's almost no chance that it's going to make for reasonable or understandable code. Be very skeptical if you find yourself wanting to create such circular logic flow, and if you really do, make sure you include plenty of code comments to explain what you're up to!
+Хотя такого рода логика действительно возможна в JavaScript, нет почти никаких шансов, что это даст оправданный или понятный код. Будьте самокритичны, если поймаете себя на мысли воспользоваться такой завёрнутой логикой работы. И если вы всё же решитесь на это, не забудьте сопроводить код подробными комментариями, чтобы объяснить, что вы задумали!
 
-## Review
+## Итоги
 
-JavaScript grammar has plenty of nuance that we as developers should spend a little more time paying closer attention to than we typically do. A little bit of effort goes a long way to solidifying your deeper knowledge of the language.
+Грамматика JavaScript имеет множество нюансов, на которые нам, разработчикам, следует потратить немного больше времени, уделяя им более пристальное внимание, чем мы обычно делаем. Лёгкое усилие имеет большое значение для укрепления наших знаний языка.
 
-Statements and expressions have analogs in English language -- statements are like sentences and expressions are like phrases. Expressions can be pure/self-contained, or they can have side effects.
+Инструкции и выражения имеют аналоги в английском языке - инструкции похожи на предложения, а выражения - на фразы. Выражения могут быть ясными/самодостаточными, или они могут иметь побочные эффекты.
 
-The JavaScript grammar layers semantic usage rules (aka context) on top of the pure syntax. For example, `{ }` pairs used in various places in your program can mean statement blocks, `object` literals, (ES6) destructuring assignments, or (ES6) named function arguments.
+Грамматика JavaScript накладывает правила семантического использования (они же контекст) поверх чистого синтаксиса. Например, пара `{ }`, используемая в различных местах вашей программы, может означать блоки инструкций, литералы `object`, (ES6) деструктурирующие присваивание или (ES6) именованные аргументы функции.
 
-JavaScript operators all have well-defined rules for precedence (which ones bind first before others) and associativity (how multiple operator expressions are implicitly grouped). Once you learn these rules, it's up to you to decide if precedence/associativity are *too implicit* for their own good, or if they will aid in writing shorter, clearer code.
+Все операторы JavaScript имеют четкие правила приоритета (какие из них выполняются первыми, а какие следом) и ассоциативности (как операторы неявно группируются, если их несколько). Изучив эти правила, вы сможете сами решить, *слишком ли неявен* приоритет/ассоциативность, чтобы пользоваться ими для написания более короткого и понятного кода.
 
-ASI (Automatic Semicolon Insertion) is a parser-error-correction mechanism built into the JS engine, which allows it under certain circumstances to insert an assumed `;` in places where it is required, was omitted, *and* where insertion fixes the parser error. The debate rages over whether this behavior implies that most `;` are optional (and can/should be omitted for cleaner code) or whether it means that omitting them is making mistakes that the JS engine merely cleans up for you.
+ASI (Автоматическая вставка точки с запятой) - это механизм исправления ошибок синтаксического анализа, встроенный в движок JS, который позволяет ему в определенных обстоятельствах вставлять ожидаемую `;` в местах, где она требуется, но была опущена, *и*, где вставка исправляет ошибку синтаксического анализа. Ведутся споры о том, подразумевает ли этот механизм, что большинство `;` являются необязательными (и могут/должны быть опущены ради более чистого кода), или это означает, что их пропуск ведёт к ошибкам, которые движок JS просто исправляет за вас.
 
-JavaScript has several types of errors, but it's less known that it has two classifications for errors: "early" (compiler thrown, uncatchable) and "runtime" (`try..catch`able). All syntax errors are obviously early errors that stop the program before it runs, but there are others, too.
+В JavaScript есть несколько типов ошибок, но менее известно, что в нём есть две категории: "ранние" ошибки (неперехватываемые ошибки компилятора) и ошибки "выполнения" (перехватываемые `try..catch`). Все синтаксические ошибки, очевидно, являются ранними, которые останавливают программу ещё до ее запуска, но есть и другие.
 
-Function arguments have an interesting relationship to their formal declared named parameters. Specifically, the `arguments` array has a number of gotchas of leaky abstraction behavior if you're not careful. Avoid `arguments` if you can, but if you must use it, by all means avoid using the positional slot in `arguments` at the same time as using a named parameter for that same argument.
+Аргументы функции имеют интересную взаимосвязь с их формально объявленными именованными параметрами. В частности, массив `arguments` имеет ряд ловушек, связанных утечкой внутренней реализации языка, если вы не будете осторожны. Избегайте `arguments`, если можете, но если вы должны его использовать, всеми способами избегайте одновременного использования ячейки `arguments` и его именованного параметра.
 
-The `finally` clause attached to a `try` (or `try..catch`) offers some very interesting quirks in terms of execution processing order. Some of these quirks can be helpful, but it's possible to create lots of confusion, especially if combined with labeled blocks. As always, use `finally` to make code better and clearer, not more clever or confusing.
+Блок `finally`, прикрепленный к `try` (или `try ..catch`), предлагает несколько очень интересных особенностей с точки зрения очерёдности выполнения. Некоторые из них могут быть полезны, но могут принести и много путаницы особенно в сочетании с блоками с метками. Общее правило: используйте `finally`, чтобы сделать код лучше и понятнее, а не заумным или запутанным.
 
-The `switch` offers some nice shorthand for `if..else if..` statements, but beware of many common simplifying assumptions about its behavior. There are several quirks that can trip you up if you're not careful, but there's also some neat hidden tricks that `switch` has up its sleeve!
+`switch` предлагает приятную компактную замену для инструкций `if..else if..`, но остерегайтесь распространенных упрощенных предположений о его поведении. Тут есть причуды, которые могут сбить вас с толку, если вы не будете осторожны, но есть также несколько искусно скрытых трюков, которые у `switch` припасены в рукаве!
