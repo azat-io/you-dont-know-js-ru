@@ -455,7 +455,7 @@ var foo = (function CoolModule(id) {
 
 foo.identify(); // foo module
 foo.change();
-foo.identify(); // FOO MODULE
+foo.identify2(); // FOO MODULE
 ```
 
 Сохраняя внутреннюю ссылку на объект публичного API внутри экземпляра модуля вы можете менять эту ссылку на модуль **изнутри**, включая добавление и удаление методов, свойств *и* изменение их значений.
@@ -473,7 +473,7 @@ var MyModules = (function Manager() {
 			deps[i] = modules[deps[i]];
 		}
 		modules[name] = impl.apply( impl, deps );
-	}
+	}foo.identify();
 
 	function get(name) {
 		return modules[name];
