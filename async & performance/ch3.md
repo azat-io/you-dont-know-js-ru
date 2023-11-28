@@ -2096,32 +2096,32 @@ p.then( function(){
 
 Сравнивая, сколько частей двигается в базовой цепочке асинхронных задач, основанных на колбеках, с цепочкой промисов, можно заметить, что в промисах происходит гораздо больше операций, а значит, они, естественно, по крайней мере немного медленнее. Вспомните простой список гарантий доверия, которые предоставляют промисы, по сравнению со специальным кодом решения, который пришлось бы накладывать поверх колбеков для достижения того же уровня защиты.
 
-More work to do, more guards to protect, means that Promises *are* slower as compared to naked, untrustable callbacks. That much is obvious, and probably simple to wrap your brain around.
+Больше работы, больше защитных мер, что означает, что обещания *медленнее* по сравнению с чистыми, ненадежными колбеками. Это очевидно и, вероятно, просто для восприятия.
 
-But how much slower? Well... that's actually proving to be an incredibly difficult question to answer absolutely, across the board.
+Но насколько медленнее? Ну... На этот вопрос, на самом деле, невероятно сложно ответить всесторонне.
 
-Frankly, it's kind of an apples-to-oranges comparison, so it's probably the wrong question to ask. You should actually compare whether an ad-hoc callback system with all the same protections manually layered in is faster than a Promise implementation.
+Честно говоря, это своего рода сравнение "яблок с апельсинами", так что, вероятно, это неправильный вопрос. На самом деле следует сравнить, насколько специализированная система колбеков со всеми теми же защитами, внедренными вручную, быстрее, чем реализация промисов.
 
-If Promises have a legitimate performance limitation, it's more that they don't really offer a line-item choice as to which trustability protections you want/need or not -- you get them all, always.
+Если у промисов и есть обоснованное ограничение производительности, то оно заключается в том, что они не дают возможности выбирать, какие средства защиты надежности вам нужны или не нужны - вы получаете их все и всегда.
 
-Nevertheless, if we grant that a Promise is generally a *little bit slower* than its non-Promise, non-trustable callback equivalent -- assuming there are places where you feel you can justify the lack of trustability -- does that mean that Promises should be avoided across the board, as if your entire application is driven by nothing but must-be-utterly-the-fastest code possible?
+Тем не менее, если мы признаем, что промис в целом *немного медленнее*, чем его эквивалент в виде не-промис и ненадежного колбека, предполагая, что есть места, где вы можете оправдать отсутствие надежности - означает ли это, что промиса следует избегать повсеместно, как будто все ваше приложение управляется только самым быстрым кодом, какой только может быть?
 
-Sanity check: if your code is legitimately like that, **is JavaScript even the right language for such tasks?** JavaScript can be optimized to run applications very performantly (see Chapter 5 and Chapter 6). But is obsessing over tiny performance tradeoffs with Promises, in light of all the benefits they offer, *really* appropriate?
+Если ваш код действительно такой, то **подходит ли JavaScript для таких задач?** JavaScript может быть оптимизирован для выполнения приложений с очень высокой производительностью (см. главу 5 и главу 6). Но действительно ли уместно зацикливаться на крошечных компромиссах производительности с промисами в свете всех преимуществ, которые они дают?
 
-Another subtle issue is that Promises make *everything* async, which means that some immediately (synchronously) complete steps still defer advancement of the next step to a Job (see Chapter 1). That means that it's possible that a sequence of Promise tasks could complete ever-so-slightly slower than the same sequence wired up with callbacks.
+Еще одна небольшая проблема заключается в том, что Promises делают *все* асинхронным, а это значит, что некоторые немедленно (синхронно) завершенные шаги все равно откладывают выполнение следующего шага до Задачи (см. главу 1). Это означает, что последовательность задач промиса может выполняться чуть медленнее, чем та же самая последовательность с колбеками.
 
-Of course, the question here is this: are these potential slips in tiny fractions of performance *worth* all the other articulated benefits of Promises we've laid out across this chapter?
+Конечно, вопрос заключается в следующем: стоят ли эти потенциальные снижения крошечных долей производительности всех остальных преимуществ промисов, которые мы изложили в этой главе?
 
-My take is that in virtually all cases where you might think Promise performance is slow enough to be concerned, it's actually an anti-pattern to optimize away the benefits of Promise trustability and composability by avoiding them altogether.
+Я считаю, что практически во всех случаях, когда производительность промисов кажется вам достаточно низкой, чтобы начать беспокоиться, в действительности это антипаттерн - оптимизировать преимущества надежности и комбинируемости промисов, избегая их полностью.
 
-Instead, you should default to using them across the code base, and then profile and analyze your application's hot (critical) paths. Are Promises *really* a bottleneck, or are they just a theoretical slowdown? Only *then*, armed with actual valid benchmarks (see Chapter 6) is it responsible and prudent to factor out the Promises in just those identified critical areas.
+Вместо этого вам следует по умолчанию использовать их во всей кодовой базе, а затем профилировать и анализировать ключевые (критические) места вашего приложения. Являются ли промисы *действительно* узким местом, или они просто теоретически замедляют работу? Только *после этого*, вооружившись реальными контрольными показателями (см. главу 6), можно ответственно и разумно исключить промисы именно в тех критических областях, которые были выявлены.
 
-Promises are a little slower, but in exchange you're getting a lot of trustability, non-Zalgo predictability, and composability built in. Maybe the limitation is not actually their performance, but your lack of perception of their benefits?
+Промисы немного медленнее, но в обмен на это вы получаете много надежности, не-Залго предсказуемости, и встроенную способность к композиции. Может быть, ограничением является не их производительность, а ваше недостаточное восприятие их преимуществ?
 
-## Review
+## Обзор
 
-Promises are awesome. Use them. They solve the *inversion of control* issues that plague us with callbacks-only code.
+Обещания - это круто. Используйте их. Они решают проблемы *инверсии контроля*, которые мучают нас в коде, основанном только на колбеках.
 
-They don't get rid of callbacks, they just redirect the orchestration of those callbacks to a trustable intermediary mechanism that sits between us and another utility.
+Они не избавляются от колбеков, а просто перепоручают их организацию надежному механизму-посреднику, который находится между нами и другой утилитой.
 
-Promise chains also begin to address (though certainly not perfectly) a better way of expressing async flow in sequential fashion, which helps our brains plan and maintain async JS code better. We'll see an even better solution to *that* problem in the next chapter!
+Цепочки промисов также начинают решать (хотя, конечно, не идеально) проблему лучшего способа последовательного выражения потока асинхронного кода, что помогает нашему мозгу лучше планировать и поддерживать асинхронный JS-код. Мы увидим еще более удачное решение *этой* проблемы в следующей главе!
