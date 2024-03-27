@@ -1,40 +1,39 @@
-# You Don't Know JS: *this* & Object Prototypes
+# Вы не знаете JS: *this* и прототипы объектов
 
-## Table of Contents
+## Содержимое
 
-* Foreword
-* Preface
-* Chapter 1: `this` Or That?
-	* Why `this`?
-	* Confusions
-	* What's `this`?
-* Chapter 2: `this` All Makes Sense Now!
-	* Call-site
-	* Nothing But Rules
-	* Everything In Order
-	* Binding Exceptions
-	* Lexical `this`
-* Chapter 3: Objects
-	* Syntax
-	* Type
-	* Contents
-	* Iteration
-* Chapter 4: Mixing (Up) "Class" Objects
-	* Class Theory
-	* Class Mechanics
-	* Class Inheritance
-	* Mixins
-* Chapter 5: Prototypes
-	* `[[Prototype]]`
-	* "Class"
-	* "(Prototypal) Inheritance"
-	* Object Links
-* Chapter 6: Behavior Delegation
-	* Towards Delegation-Oriented Design
-	* Classes vs. Objects
-	* Simpler Design
-	* Nicer Syntax
-	* Introspection
-* Appendix A: ES6 `class`
-* Appendix B: Acknowledgments
-
+- Введение
+- Предисловие
+- Глава 1: `this` (этот) или That (тот)?
+  - Зачем нужен `this`?
+  - Заблуждения
+  - Что же такое `this`?
+- Глава 2: Весь `this` теперь приобретает смысл!
+  - Точка вызова
+  - Ничего кроме правил
+  - Всё по порядку
+  - Исключения привязок
+  - Лексический `this`
+- Глава 3: Объекты
+  - Синтаксис
+  - Тип
+  - Содержимое
+  - Итерация
+- Глава 4: Смешивая объекты "классов"
+  - Теория классов
+  - Механика Классов
+  - Наследование классов
+  - Mixins - Примеси
+- Глава 5: Прототипы
+  - `[[Prototype]]`
+  - "Класс"
+  - "(Прототипное) наследование"
+  - Объектные ссылки
+- Глава 6: Делегирование поведения
+  - На пути к дизайну, ориентированному на делегирование
+  - Классы против объектов
+  - Более простой дизайн
+  - Более элегантный синтаксис
+  - Интроспекция
+- Приложение А: `class` в ES6
+- Приложение B: Благодарности
