@@ -1,59 +1,53 @@
 # Вы не знаете JS (серия книг)
 
-Представляю вам серию книг, погружение в которую позволит вам окунуться в основные механизмы языка JavaScript. Первое издание серии книг в настоящий момент завершено.
+Представляю вам серию книг, погружение в которую позволит вам окунуться в основные механизмы языка JavaScript.
 
-<a href="http://shop.oreilly.com/product/0636920039303.do"><img src="up %26 going/cover.jpg" width="75"></a>&nbsp;
-<a href="http://shop.oreilly.com/product/0636920026327.do"><img src="scope %26 closures/cover.jpg" width="75"></a>&nbsp;
-<a href="http://shop.oreilly.com/product/0636920033738.do"><img src="this %26 object prototypes/cover.jpg" width="75"></a>&nbsp;
-<a href="http://shop.oreilly.com/product/0636920033745.do"><img src="types %26 grammar/cover.jpg" width="75"></a>&nbsp;
-<a href="http://shop.oreilly.com/product/0636920033752.do"><img src="async %26 performance/cover.jpg" width="75"></a>&nbsp;
-<a href="http://shop.oreilly.com/product/0636920033769.do"><img src="es6 %26 beyond/cover.jpg" width="75"></a>
-
-Не стесняйтесь вносить свой вклад в улучшение качества материала данной серии книг, отправляйте свои PR для улучшения фрагментов кода, пояснений и т.д. Исправление опечаток также приветствуется.
+<img src="up %26 going/cover.jpg" width="75">&nbsp;
+<img src="scope %26 closures/cover.jpg" width="75">&nbsp;
+<img src="this %26 object prototypes/cover.jpg" width="75">&nbsp;
+<img src="types %26 grammar/cover.jpg" width="75">&nbsp;
+<img src="async %26 performance/cover.jpg" width="75">&nbsp;
+<img src="es6 %26 beyond/cover.jpg" width="75">
 
 **О том, что послужило причиной для написания данной серии книг, вы можете узнать из [Предисловия](preface.md).**
 
+## Главный спонсор
+
+Текущая серия книг была проспонсирована [Frontend Masters](https://frontendmasters.com). Frontend Masters это золотой стандарт обучающих материалов от экспертов в области фронтенд-разработки. Более 150 курсов по всем нюансам фронтенда, где вы сможете посмотреть качественные видеоуроки по HTML, CSS, JS, и смежным технологиям.
+
+----
+
+Я веду эксклюзивные дистанционные курсы на сервисе [Frontend Masters](https://frontendmasters.com/kyle-simpson). Если вам понравилась серия книг, то рекомендую посмотреть мои обучающие курсы.
+
+----
+
 ## Содержимое
 
-* Читать онлайн (бесплатно!): [«Начните и Совершенствуйтесь»](up%20%26%20going/README.md#Вы-не-знаете-js-Начните-и-Совершенствуйтесь), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920039303.do) в бумажном варианте, электронная книга бесплатна!
-* Читать онлайн (бесплатно!): [«Область Видимости и Замыкания»](scope%20%26%20closures/README.md#Вы-не-знаете-js-Область-видимости-и-замыкания), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920026327.do)
-* Читать онлайн (бесплатно!): [«This и Прототипы Объектов»](this%20%26%20object%20prototypes/README.md#you-dont-know-js-this--object-prototypes), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033738.do)
-* Читать онлайн (бесплатно!): [«Типы и Синтаксис»](types%20%26%20grammar/README.md#you-dont-know-js-types--grammar), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033745.do)
-* Читать онлайн (бесплатно!): [«Асинхронность и Производительность»](async%20%26%20performance/README.md#you-dont-know-js-async--performance), Опубликовано: [Купить сейчас](http://shop.oreilly.com/product/0636920033752.do)
-* Читать онлайн (бесплатно!): [«ES6 и не только»](es6%20%26%20beyond/README.md#you-dont-know-js-es6--beyond), Опубликовано: [Купить сейчас](https://www.ozon.ru/context/detail/id/137473815/)
+Я рекомендую читать книги в следующей последовательности:
 
-## Издательство
+* [«Начните и Совершенствуйтесь»](up%20%26%20going/README.md#Вы-не-знаете-js-Начните-и-Совершенствуйтесь)
+* [«Область Видимости и Замыкания»](scope%20%26%20closures/README.md#Вы-не-знаете-js-Область-видимости-и-замыкания)
+* [«This и Прототипы Объектов»](this%20%26%20object%20prototypes/README.md#you-dont-know-js-this--object-prototypes)
+* [«Типы и Синтаксис»](types%20%26%20grammar/README.md#you-dont-know-js-types--grammar)
+* [«Асинхронность и Производительность»](async%20%26%20performance/README.md#you-dont-know-js-async--performance)
+* [«ES6 и не только»](es6%20%26%20beyond/README.md#you-dont-know-js-es6--beyond)
 
-Серия книг свободно распространяется для чтения, но редактируется, производится и публикуется в книжном издательстве O'Reilly.
+## Издательство и публикация
 
-Если вам нравится содержание книг, и вы хотите поддержать развитие серии, пожалуйста, приобретите книги, как только они будут доступны для продажи, там, где вы обычно их покупаете. :)
+Вы можете читать эти книги онлайн абсолютно бесплатно.
 
-Если же вы хотите поддержать данную работу финансово, но не хотите покупать книги, вы можете это сделать через сервис [Patreon](https://www.patreon.com/getify); я буду глубоко признателен вам за вашу щедрость.
+Если хотите поддержать развитие книги финансово, то это можно сделать методами ниже:
 
-<a href="https://www.patreon.com/getify">[![patreon.png](https://c5.patreon.com/external/logo/become_a_patron_button.png)](https://www.patreon.com/getify)</a>
-
-## Очное обучение
-
-Содержание этих книг в значительной степени состоит из учебных материалов, которые я преподаю профессионально в формате следующих семинаров (как бесплатных, так и платных): "Deep JavaScript Foundations", "Rethinking Async" и "ES6: The Right Parts".
-
-Если вам нравятся мои книги, и вы бы хотели связаться со мной по поводу очного обучения в рамках вышеупомянутого учебного курса или других различных моих семинаров по JS / HTML5 / Node.JS, пожалуйста, обратитесь ко мне по электронной почте getify@gmail.com
-
-## Онлайн обучение
-
-Кроме этого, я также преподаю некоторый учебный материал в формате видео. Я веду дистанционные курсы на сервисе [Frontend Masters](https://FrontendMasters.com), такие как [Глубокое понимание основ JavaScript](https://frontendmasters.com/courses/javascript-foundations/). Вы можете найти [все мои курсы здесь](https://frontendmasters.com/kyle-simpson/).
-
-Некоторые из этих курсов также доступны на других платформах, таких как Pluralsight, Lynda.com и O'Reilly Safari Online.
+* [Github Sponsorship](https://github.com/users/getify/sponsorship)
+* [Patreon](https://www.patreon.com/getify)
+* [Paypal](https://www.paypal.me/getify)
 
 ## Вклад в развитие контента
 
 Любой вклад в развитие данного проекта **будет высоко оценён**.
 
-Тем не менее, учитывайте то, что если вы желаете внести свой вклад в содержание книг (а не только исправить опечатки) в этом репозитории, вы соглашаетесь на то, что вы даёте мне абсолютные права на использование добавленного вами контента для серии книг таким образом, каким я (и O'Reilly) сочту это целесообразным.
-
-Бла-бла-бла... :)
-
 ## Лицензия и Авторские права
 
-Автор материалов данной серии книг &copy; 2013-2015 Kyle Simpson.
+Автор материалов данной серии книг &copy; 2013-2020 Kyle Simpson.
 
-<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />Лицензируется в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/4.0/88x31.png" /></a><br />Лицензируется в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/4.0/">Creative Commons Attribution-NonCommercial-NoDerivs 4.0 Unported License</a>.

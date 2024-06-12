@@ -8,14 +8,14 @@
 	* Тип, как бы он ни назывался...
 	* Встроенные типы
 	* Значения как типы
-* Chapter 2: Values
-	* Arrays
-	* Strings
-	* Numbers
-	* Special Values
+* Глава 2: Типы
+	* Массивы
+	* Строки
+	* Числа
+	* Специальные значения
 	* Value vs Reference
-* Chapter 3: Natives
-	* Internal `[[Class]]`
+* Глава 3: Стандартные встроенные объекты
+	* Внутреннее свойство `[[Class]]`
 	* Boxing Wrappers
 	* Unboxing
 	* Natives as Constructors
