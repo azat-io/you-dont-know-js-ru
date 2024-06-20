@@ -57,3 +57,68 @@
 Автор материалов данной серии книг &copy; 2013-2015 Kyle Simpson.
 
 <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />Лицензируется в соответствии с <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
+---
+
+# You Don't Know JS (Series of Books)
+
+I present to you a series of books, an immersion which will allow you to plunge into the basic mechanisms of JavaScript. The first edition of the series is currently complete.
+
+<a href="http://shop.oreilly.com/product/0636920039303.do"><img src="up %26 going/cover.jpg" width="75"></a>&nbsp;
+<a href="http://shop.oreilly.com/product/0636920026327.do"><img src="scope %26 closures/cover.jpg" width="75"></a>&nbsp;
+<a href="http://shop.oreilly.com/product/0636920033738.do"><img src="this %26 object prototypes/cover.jpg" width="75"></a>&nbsp;
+<a href="http://shop.oreilly.com/product/0636920033745.do"><img src="types %26 grammar/cover.jpg" width="75"></a>&nbsp;
+<a href="http://shop.oreilly.com/product/0636920033752.do"><img src="async %26 performance/cover.jpg" width="75"></a>&nbsp;
+<a href="http://shop.oreilly.com/product/0636920033769.do"><img src="es6 %26 beyond/cover.jpg" width="75"></a>
+
+Don't be shy about contributing to the improvement of the quaity of this material in this book series.Please send your PR to improve the code snippets, explanations, etc. Correcting typos is also appreciated.
+
+**What was the reason for writing this series of books? You can learn from [Preface](preface.md).**
+
+## Content
+
+* Read online (for free!): [«Get Started and Improve»](up%20%26%20going/README.md#Вы-не-знаете-js-Начните-и-Совершенствуйтесь), Published [Buy now!](http://shop.oreilly.com/product/0636920039303.do) a hard copy, or use an electronic book for free!
+* Read online (for free!): [«Scope and Closure»](scope%20%26%20closures/README.md#Вы-не-знаете-js-Область-видимости-и-замыкания), Published [Buy now!](http://shop.oreilly.com/product/0636920026327.do)
+* Read online (for free!): [«This and Object Prototypes»](this%20%26%20object%20prototypes/README.md#you-dont-know-js-this--object-prototypes), Published [Buy now!](http://shop.oreilly.com/product/0636920033738.do)
+* Read online (for free!): [«Types and Syntax»](types%20%26%20grammar/README.md#you-dont-know-js-types--grammar), Published [Buy now!](http://shop.oreilly.com/product/0636920033745.do)
+* Read online (for free!): [«Asynchronous and Performance»](async%20%26%20performance/README.md#you-dont-know-js-async--performance), Published [Buy now!](http://shop.oreilly.com/product/0636920033752.do)
+* Read online (for free!): [«ES6 and More»](es6%20%26%20beyond/README.md#you-dont-know-js-es6--beyond), Published [Buy now!](https://www.ozon.ru/context/detail/id/137473815/)
+
+## Publishing
+
+The book series is freely distributed for reading. It is edited, produced, and published by the book publisher O'reilly.
+
+If you like the content of these books and you want to support the development of the series, please purchase the books as soon as they are available for sale, wherever they are sold. :)
+
+If you would like to support this work, but are not interested in purchasing the books, you can make a donation through [Patreon](https://www.patreon.com/getify), I deeply appreciate your generosity.
+
+<a href="https://www.patreon.com/getify">[![patreon.png](https://s11.postimg.org/axpzguh77/patreon.png)](https://www.patreon.com/getify)</a>
+
+## Resident instruction
+
+The content of these books mostly consists of teaching materials that I teach professionally in a seminar format called "Advanced JS: What you need to know".
+
+If you like my books and would like to contact me about full-time training via the above mentioned training course or by way of my other various workshops on JS / HTML5 / Node.JS, please contact me at your own convenience in any one of the following ways listed here:
+
+[http://getify.me](http://getify.me)
+
+## Online learning
+
+Other than that, I also teach material in video format. I conduct remote courses on the service [Frontend Masters] (https://Frontend Masters.com), such as [Advanced JS](https://frontendmasters.com/courses/advanced-javascript/) (There will be many more courses in the near future!).
+
+The same course is [available on Pluralsight](http://www.pluralsight.com/courses/advanced-javascript).
+
+## Contributions to Content Development
+
+Any contribution to the development of this project * * is highly appreciated**.
+
+However, please note, if you wish to contribute to the content of the books (and not just to correct typos) by way of this repository, you agree to give me absolute rights to use the content you have added for the book series in a way that I (and O'reilly) deem appropriate.
+
+Blah, blah, blah... :)
+
+## Licensing and Author's Rights
+
+The Author of Matrial in this Book Series (c) 2013-2015 Kyle Simpson.
+
+<a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-nd/3.0/88x31.png" /></a><br />Licensed in accordance with <a rel="license" href="http://creativecommons.org/licenses/by-nc-nd/3.0/">Creative Commons Attribution-NonCommercial-NoDerivs 3.0 Unported License</a>.
+
