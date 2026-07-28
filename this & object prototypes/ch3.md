@@ -212,8 +212,8 @@ myObject.someFoo;	// function foo(){..}
 ```js
 var myObject = {
     foo: function foo() {
-    console.log( "foo" );
-}
+        console.log( "foo" );
+    }
 };
 var someFoo = myObject.foo;
 someFoo;	    // function foo(){..}
